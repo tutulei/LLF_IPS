@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2021/07/14 09:49:14.998.pas,C:\Users\think\Documents\RAD Studio\Projects\Unit5.pas=D:\Projects\LLF_IPS\Unit5.pas</Transaction>
+    <Transaction>2021/07/14 09:49:14.998.dfm,C:\Users\think\Documents\RAD Studio\Projects\Unit5.dfm=D:\Projects\LLF_IPS\Unit5.dfm</Transaction>
+    <Transaction>2021/07/14 09:49:28.962.dproj,C:\Users\think\Documents\RAD Studio\Projects\Project8.dproj=D:\Projects\LLF_IPS\Project8.dproj</Transaction>
+    <Transaction>2021/07/14 16:42:23.566.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\Quotation_Manager\Unit1.pas</Transaction>
+    <Transaction>2021/07/14 16:43:00.159.pas,D:\Projects\LLF_IPS\Quotation_Manager\Unit1.pas=D:\Projects\LLF_IPS\Quotation_Manager\uQuotationThread.pas</Transaction>
+    <Transaction>2021/07/15 10:18:37.552.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uContractsSchedule.pas</Transaction>
+    <Transaction>2021/07/15 10:18:56.403.pas,D:\Projects\LLF_IPS\uContractsSchedule.pas=D:\Projects\LLF_IPS\Quotation_Manager\uContractsSchedule.pas</Transaction>
+    <Transaction>2021/07/16 16:12:40.432.dproj,D:\Projects\LLF_IPS\Project8.dproj=D:\Projects\LLF_IPS\LLF_IPS.dproj</Transaction>
+    <Transaction>2021/07/20 08:51:52.822.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\ufrmRemoveConteact.pas</Transaction>
+    <Transaction>2021/07/20 08:51:52.822.dfm,D:\Projects\LLF_IPS\Unit1.dfm=D:\Projects\LLF_IPS\ufrmRemoveConteact.dfm</Transaction>
+    <Transaction>2021/07/20 08:52:15.106.pas,D:\Projects\LLF_IPS\ufrmRemoveConteact.pas=</Transaction>
+    <Transaction>2021/07/20 08:52:15.106.dfm,D:\Projects\LLF_IPS\ufrmRemoveConteact.dfm=</Transaction>
+  </Transactions>
+</BorlandProject>

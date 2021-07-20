@@ -1,0 +1,20 @@
+program Project8;
+
+uses
+  Forms,
+  Unit5 in 'Unit5.pas' {MainWindow},
+  uConstants in 'uConstants.pas',
+  uQuotationAPI in 'uQuotationAPI.pas',
+  uQuotationDataStruct in 'uQuotationDataStruct.pas',
+  uQuotationThread in 'Quotation_Manager\uQuotationThread.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TMainWindow, MainWindow);
+  Application.Run;
+
+
+end.

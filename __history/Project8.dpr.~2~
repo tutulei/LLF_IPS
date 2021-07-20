@@ -1,0 +1,14 @@
+program Project8;
+
+uses
+  Forms,
+  Unit5 in 'Unit5.pas' {MainWindow};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TMainWindow, MainWindow);
+  Application.Run;
+end.

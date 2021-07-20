@@ -1,0 +1,118 @@
+unit Unit5;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Menus, Grids, ComCtrls, uQuotationAPI, uQuotationDataStruct,
+  uQuotationThread, DB, ADODB, uContractsSchedule;
+
+type
+  TMainWindow = class(TForm)
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    Total_Quotation: TStringGrid;
+    TabSheet2: TTabSheet;
+    QH_QuotationList: TStringGrid;
+    TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
+    QQ_QuotationList: TStringGrid;
+    XH_QuotationList: TStringGrid;
+    procedure QH_QuotationListClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+    procedure Connected();
+    procedure updateData();
+
+  end;
+
+var
+  MainWindow: TMainWindow;
+  title: TStrings;
+  str: string;
+  smdflowpath: string = 'D:\Projects\C++\CTPHQProject\CTPHQProject\CTPHQProject';
+  smdfornt: string = 'tcp://180.168.146.187:10211';
+  pserver: Pointer;
+  ilogin: Integer;
+  isubscribe: Integer;
+  iremove: Integer;
+  pget: Pointer;
+  nChar: PChar = PChar('');
+  myapi: TQuotationProxy;
+  DataSchedule: TDataSchedule;
+
+implementation
+
+{$R *.dfm}
+constructor TMainWindow.Create(AOwner: TComponent);
+begin
+  inherited;
+  title := TStringList.Create;
+  title.DelimitedText := '合约,合约名,最新价,涨跌,买价,买量,卖价,卖量,成交量,持仓量,涨停价,跌停价,今开盘,昨结算,最高价,最低价,现量,涨跌幅,昨收盘,成交额,交易所,行情更新时间';
+  QH_QuotationList.Rows[0] := title;
+  QQ_QuotationList.Rows[0] := title;
+  XH_QuotationList.Rows[0] := title;
+  title.DelimitedText := '合约,合约名,合约类别,最新价,涨跌,买价,买量,卖价,卖量,成交量,持仓量,涨停价,跌停价,今开盘,昨结算,最高价,最低价,现量,涨跌幅,昨收盘,成交额,交易所,行情更新时间';
+  Total_Quotation.Rows[0] := title;
+  DataSchedule :=  TDataSchedule.Create(@Total_Quotation,@QH_QuotationList,@QQ_QuotationList,@XH_QuotationList);
+  Connected();
+end;
+procedure TMainWindow.QH_QuotationListClick(Sender: TObject);
+begin
+
+end;
+
+//
+procedure TMainWindow.Connected();
+var
+  tmp: Integer;
+  arr: array of PChar;
+  size :  Integer;
+begin
+  myapi := TQuotationProxy.Create('QuotationCTP.dll');
+  myapi.Connected(PChar(smdfornt), PChar(smdflowpath));
+  while myapi.IsConnected <> True do
+  begin
+    Sleep(1000);
+//    Writeln('[delphi]: waiting for connected ...');
+  end;
+  myapi.SimpleLogin(nChar, nChar, nChar);
+  while myapi.LoginSucess <> True do
+  begin
+    Sleep(1000);
+//    Writeln('[delphi]: waiting for login ...');
+  end;
+ SetLength(arr,2);
+
+  
+  
+  arr[0] := Pchar('c2201');
+  arr[1] := Pchar('c2109');
+  size := 100;
+  myapi.Subscribe(arr, 2);
+  if tmp = 0 then
+  begin
+    DataSchedule.AddContracts([PChar('c2109'), PChar('c2201')]);
+  end;
+  TQuotationThread.Create(updateData);
+end;
+
+procedure TMainWindow.updateData();
+var
+  tick: rQuotationData;
+begin
+  while true do
+  begin
+    Sleep(1000);
+    tick := myapi.GetOneTick();
+    DataSchedule.ScheduleTick(tick);
+//    Total_Quotation.Rows[1] := fQuotationView(tick);
+
+  end;
+end;
+
+end.
+
