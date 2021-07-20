@@ -21,7 +21,6 @@ const
 
 type
   TmyTStringGrid = class(TStringGrid)
-  public
     procedure DeleteRow(ARow: Longint);
   end;
 

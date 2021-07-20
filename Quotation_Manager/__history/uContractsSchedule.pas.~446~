@@ -112,7 +112,7 @@ begin
   if (index = -1) then
   begin
 //    MessageBox(0, tick.InstrumentID, '错误ID不存在', MB_OKCANCEL);
-    Exit;
+    return;
   end;
   //确定涨跌和涨跌幅
   if (pGrid.Cells[2, index + 1] = '') then

@@ -5,8 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Menus, ComCtrls, uQuotationAPI, uQuotationDataStruct,
-  uQuotationThread, DB, ADODB, uContractsSchedule, StrUtils,uConstants, Grids,
-  ExtCtrls;
+  uQuotationThread, DB, ADODB, uContractsSchedule, StrUtils, uConstants, Grids,
+  ExtCtrls, TeeProcs, TeEngine, Chart, DBChart;
 
 type
   TMainWindow = class(TForm)

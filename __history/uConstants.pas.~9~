@@ -3,11 +3,10 @@ unit uConstants;
   常量单元
 *)
 
+
 interface
-
 uses
-  Grids;
-
+ Grids;
 const
   //函数名常量
   CREATE_QUOTATION_SERVER = 'CreateQuotationServer';
@@ -18,19 +17,18 @@ const
   DESTROY_QUOTATION_SERVER = 'DestroyQuotationServer';
   IS_CONNECTED = 'IsConnected';
   LOGIN_SUCESS = 'LoginSucess';
-
 type
   TmyTStringGrid = class(TStringGrid)
-  public
-    procedure DeleteRow(ARow: Longint);
-  end;
+  procedure DeleteRow(ARow: Longint);
 
+
+  end;
 implementation
 
-procedure TmyTStringGrid.DeleteRow(ARow: Longint);
-begin
-  inherited;
-end;
 
+ procedure TmyTStringGrid.DeleteRow(ARow: Longint);
+ begin
+ 
+ end;
 end.
 

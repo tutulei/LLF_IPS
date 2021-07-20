@@ -3,10 +3,8 @@ unit uConstants;
   常量单元
 *)
 
-interface
 
-uses
-  Grids;
+interface
 
 const
   //函数名常量
@@ -19,18 +17,7 @@ const
   IS_CONNECTED = 'IsConnected';
   LOGIN_SUCESS = 'LoginSucess';
 
-type
-  TmyTStringGrid = class(TStringGrid)
-  public
-    procedure DeleteRow(ARow: Longint);
-  end;
-
 implementation
-
-procedure TmyTStringGrid.DeleteRow(ARow: Longint);
-begin
-  inherited;
-end;
 
 end.
 

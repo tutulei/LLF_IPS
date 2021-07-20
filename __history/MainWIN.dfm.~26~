@@ -50,9 +50,12 @@ object MainWindow: TMainWindow
       ParentBiDiMode = False
       ParentFont = False
       TabOrder = 0
+      ExplicitHeight = 207
       object TabSheet2: TTabSheet
         Caption = #26399#36135#34892#24773
         ImageIndex = 1
+        ExplicitWidth = 763
+        ExplicitHeight = 275
         object FFuturesQuotationGrid: TStringGrid
           Left = 0
           Top = 0
@@ -80,6 +83,8 @@ object MainWindow: TMainWindow
           PopupMenu = PopupMenu1
           TabOrder = 0
           OnDrawCell = FFuturesQuotationGridDrawCell
+          ExplicitWidth = 763
+          ExplicitHeight = 275
           ColWidths = (
             70
             70
@@ -104,13 +109,38 @@ object MainWindow: TMainWindow
             70
             70)
         end
+        object DBChart1: TDBChart
+          Left = 0
+          Top = 0
+          Width = 761
+          Height = 249
+          BackImage.Inside = True
+          BackWall.Color = clBlack
+          BackWall.Pen.Style = psInsideFrame
+          Border.Style = psInsideFrame
+          Gradient.EndColor = clWindow
+          LeftWall.Color = clBlack
+          Title.Text.Strings = (
+            'TDBChart')
+          Frame.Style = psInsideFrame
+          View3DWalls = False
+          Align = alClient
+          Enabled = False
+          TabOrder = 1
+          ExplicitLeft = 1
+          ExplicitTop = 1
+          ExplicitWidth = 769
+          ExplicitHeight = 279
+          PrintMargins = (
+            15
+            34
+            15
+            34)
+        end
       end
       object TabSheet3: TTabSheet
         Caption = #26399#26435#34892#24773
         ImageIndex = 2
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
         ExplicitHeight = 177
         object FOptionQuotationGrid: TStringGrid
           Left = 0
@@ -167,9 +197,6 @@ object MainWindow: TMainWindow
       object TabSheet4: TTabSheet
         Caption = #29616#36135#34892#24773
         ImageIndex = 3
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
         ExplicitHeight = 177
         object ActualsQuotationGrid: TStringGrid
           Left = 0

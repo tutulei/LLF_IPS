@@ -111,8 +111,7 @@ begin
   index := pChart.IndexOf(string(pID));
   if (index = -1) then
   begin
-//    MessageBox(0, tick.InstrumentID, '错误ID不存在', MB_OKCANCEL);
-    Exit;
+    MessageBox(0, tick.InstrumentID, '错误', MB_OKCANCEL);
   end;
   //确定涨跌和涨跌幅
   if (pGrid.Cells[2, index + 1] = '') then
@@ -159,6 +158,8 @@ begin
 end;
 
 destructor TDataSchedule.Destroy();
+var
+  I: Integer;
 begin
   FFuturesSeatingChart.Free;
   FOptionSeatingChart.Free;

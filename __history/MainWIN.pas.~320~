@@ -5,8 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Menus, ComCtrls, uQuotationAPI, uQuotationDataStruct,
-  uQuotationThread, DB, ADODB, uContractsSchedule, StrUtils,uConstants, Grids,
-  ExtCtrls;
+  uQuotationThread, DB, ADODB, uContractsSchedule, StrUtils, uConstants, Grids,
+  ExtCtrls, TeeProcs, TeEngine, Chart, DBChart;
 
 type
   TMainWindow = class(TForm)
@@ -142,6 +142,7 @@ begin
     pgrid.Canvas.FillRect(Rect);
     if (LeftStr(str, 1) = '-') then
     begin
+
       pgrid.Canvas.Font.Color := TColor($00e500); //绿色
       pgrid.Canvas.TextRect(Rect, snewstr, format);
     end

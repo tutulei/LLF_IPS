@@ -17,7 +17,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-//    constructor Create(AOwner: TComponent);
+    destructor destory();
   end;
 
 var
@@ -29,6 +29,7 @@ implementation
 
 procedure TRemoveConteactForm.Button2Click(Sender: TObject);
 begin
+  ListBox1.Clear;
   Close;
 end;
 
@@ -39,7 +40,6 @@ var
   list: TStringList;
   I: Integer;
 begin
-  ListBox1.Clear;
   pWin := @MainWindow;
   list := pWin.FDataSchedule.FFuturesSeatingChart;
   for I := 0 to list.Count - 1 do
@@ -49,10 +49,10 @@ begin
 
 end;
 
-//constructor TRemoveConteactForm.Create(AOwner: TComponent);
-//begin
-//  inherited;
-//
-//end;
+destructor TRemoveConteactForm.destory();
+begin
+  ListBox1.Clear;
+  inherited destroy;
+end;
 
 end.

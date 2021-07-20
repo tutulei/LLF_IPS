@@ -23,10 +23,10 @@ type
 
 var
   AddConteactForm: TAddConteactForm;
+
 implementation
 
 {$R *.dfm}
-
 
 procedure TAddConteactForm.Button1Click(Sender: TObject);
 var

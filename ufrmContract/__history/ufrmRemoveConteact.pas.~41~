@@ -17,7 +17,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-//    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent);
   end;
 
 var
@@ -49,10 +49,9 @@ begin
 
 end;
 
-//constructor TRemoveConteactForm.Create(AOwner: TComponent);
-//begin
-//  inherited;
-//
-//end;
+constructor Create(AOwner: TComponent);
+begin
+  inherited;
 
+end;
 end.

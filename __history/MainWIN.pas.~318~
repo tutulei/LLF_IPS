@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Menus, ComCtrls, uQuotationAPI, uQuotationDataStruct,
   uQuotationThread, DB, ADODB, uContractsSchedule, StrUtils,uConstants, Grids,
-  ExtCtrls;
+  ExtCtrls, TeeProcs, TeEngine, Chart, DBChart;
 
 type
   TMainWindow = class(TForm)
@@ -23,6 +23,7 @@ type
     Panel1: TPanel;
     Splitter1: TSplitter;
     N3: TMenuItem;
+    DBChart1: TDBChart;
     procedure N1Click(Sender: TObject);
     procedure FFuturesQuotationGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure N2Click(Sender: TObject);
@@ -97,13 +98,14 @@ begin
   if iret = 1 then
   begin
     //删除chart中的合约列表记录
+    icount := FFuturesQuotationGrid.Selection.Bottom - FFuturesQuotationGrid.Selection.Top + 1;
     for I := FFuturesQuotationGrid.Selection.Bottom downto FFuturesQuotationGrid.Selection.Top do
     begin
-      if (FDataSchedule.FFuturesSeatingChart.Count > 0) then
+      if( FDataSchedule.FFuturesSeatingChart.Count > 0 ) then
       begin
-        FDataSchedule.FFuturesSeatingChart.Delete(I - 1);
+        FDataSchedule.FFuturesSeatingChart.Delete(I-1);
       end;
-      if (FFuturesQuotationGrid.RowCount = 2) then
+      if( FFuturesQuotationGrid.RowCount = 2)then
       begin
         FFuturesQuotationGrid.Rows[1].Clear;
         Break;
@@ -142,6 +144,7 @@ begin
     pgrid.Canvas.FillRect(Rect);
     if (LeftStr(str, 1) = '-') then
     begin
+
       pgrid.Canvas.Font.Color := TColor($00e500); //绿色
       pgrid.Canvas.TextRect(Rect, snewstr, format);
     end

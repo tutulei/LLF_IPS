@@ -26,7 +26,8 @@ var
 implementation
 
 {$R *.dfm}
-
+uses
+  ufrmRemoveConteact;  
 
 procedure TAddConteactForm.Button1Click(Sender: TObject);
 var
