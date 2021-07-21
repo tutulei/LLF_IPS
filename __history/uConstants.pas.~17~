@@ -20,7 +20,7 @@ const
   LOGIN_SUCESS = 'LoginSucess';
 
 type
-//  PTFastLineSeries = ^TFastLineSeries;
+  PTFastLineSeries = ^TFastLineSeries;
 
   TmyTStringGrid = class(TStringGrid)
   public

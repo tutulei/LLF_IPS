@@ -114,14 +114,11 @@ object MainWindow: TMainWindow
           View3D = False
           View3DWalls = False
           Align = alClient
-          PopupMenu = PopupMenu2
           TabOrder = 1
-          Visible = False
           ExplicitTop = -1
           object PriceSeries: TFastLineSeries
             Marks.Callout.Brush.Color = clBlack
             Marks.Visible = False
-            Title = #25104#20132#20215
             LinePen.Color = clRed
             XValues.Name = 'X'
             XValues.Order = loAscending
@@ -167,6 +164,7 @@ object MainWindow: TMainWindow
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
+          ExplicitTop = -1
           ColWidths = (
             70
             70
@@ -264,14 +262,6 @@ object MainWindow: TMainWindow
     object N3: TMenuItem
       Caption = #20999#25442#33267#36208#21183#22270
       OnClick = N3Click
-    end
-  end
-  object PopupMenu2: TPopupMenu
-    Left = 608
-    Top = 304
-    object N4: TMenuItem
-      Caption = #20851#38381#36208#21183#22270
-      OnClick = N4Click
     end
   end
 end

@@ -29,6 +29,7 @@
     <DelphiCompile Include="LLF_IPS.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="Chart_Manager\ChartManager.pas" />
     <DCCReference Include="MainWIN.pas">
       <Form>MainWindow</Form>
     </DCCReference>

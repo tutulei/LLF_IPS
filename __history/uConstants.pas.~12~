@@ -20,15 +20,10 @@ const
   LOGIN_SUCESS = 'LoginSucess';
 
 type
-//  PTFastLineSeries = ^TFastLineSeries;
-
   TmyTStringGrid = class(TStringGrid)
   public
     procedure DeleteRow(ARow: Longint);
   end;
-
-var
-  AvaibleChartId: string;
 
 implementation
 

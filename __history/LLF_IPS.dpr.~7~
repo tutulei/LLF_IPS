@@ -9,8 +9,7 @@ uses
   MainWIN in 'MainWIN.pas' {MainWindow},
   uConstants in 'uConstants.pas',
   ufrmAddConteact in 'ufrmContract\ufrmAddConteact.pas' {AddConteactForm},
-  ufrmRemoveConteact in 'ufrmContract\ufrmRemoveConteact.pas' {RemoveConteactForm},
-  ChartManager in 'Chart_Manager\ChartManager.pas';
+  ufrmRemoveConteact in 'ufrmContract\ufrmRemoveConteact.pas' {RemoveConteactForm};
 
 {$R *.res}
 

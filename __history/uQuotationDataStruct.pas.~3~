@@ -5,7 +5,7 @@ unit uQuotationDataStruct;
 interface
 
 uses
-  Classes,Series;
+  Classes;
 
 type
   {定义的数据类型和行情的数据结构}
@@ -124,12 +124,96 @@ type
     ActionDay: TThostFtdcDateType;
   end;
 
-  //折线图-三线
-  ThreeSeriesChart = record
-    ValueSeries1 : TFastLineSeries;
-    ValueSeries2 : TFastLineSeries;
-    ConstantSeries : TFastLineSeries;
-  end;
+//  rQuotationData = record
+//    ///交易日
+//    TradingDay: string;
+//  	///合约代码
+//    InstrumentID: string;
+//  	///交易所代码
+//    ExchangeID: string;
+//  	///合约在交易所的代码
+//    ExchangeInstID: string;
+//  	///最新价
+//    LastPrice: Double;
+//  	///上次结算价
+//    PreSettlementPrice: Double;
+//  	///昨收盘
+//    PreClosePrice: Double;
+//  	///昨持仓量
+//    PreOpenInterest: Double;
+//  	///今开盘
+//    OpenPrice: Double;
+//  	///最高价
+//    HighestPrice: Double;
+//  	///最低价
+//    LowestPrice: Double;
+//  	///数量
+//    Volume: Integer;
+//  	///成交金额
+//    Turnover: Double;
+//  	///持仓量
+//    OpenInterest: Double;
+//  	///今收盘
+//    ClosePrice: Double;
+//  	///本次结算价
+//    SettlementPrice: Double;
+//  	///涨停板价
+//    UpperLimitPrice: Double;
+//  	///跌停板价
+//    LowerLimitPrice: Double;
+//  	///昨虚实度
+//    PreDelta: Double;
+//  	///今虚实度
+//    CurrDelta: Double;
+//  	///最后修改时间
+//    UpdateTime: string;
+//  	///最后修改毫秒
+//    UpdateMillisec: Integer;
+//  	///申买价一
+//    BidPrice1: Double;
+//  	///申买量一
+//    BidVolume1: Integer;
+//  	///申卖价一
+//    AskPrice1: Double;
+//  	///申卖量一
+//    AskVolume1: Integer;
+//  	///申买价二
+//    BidPrice2: Double;
+//  	///申买量二
+//    BidVolume2: Integer;
+//  	///申卖价二
+//    AskPrice2: Double;
+//  	///申卖量二
+//    AskVolume2: Integer;
+//  	///申买价三
+//    BidPrice3: Double;
+//  	///申买量三
+//    BidVolume3: Integer;
+//  	///申卖价三
+//    AskPrice3: Double;
+//  	///申卖量三
+//    AskVolume3: Integer;
+//  	///申买价四
+//    BidPrice4: Double;
+//  	///申买量四
+//    BidVolume4: Integer;
+//  	///申卖价四
+//    AskPrice4: Double;
+//  	///申卖量四
+//    AskVolume4: Integer;
+//  	///申买价五
+//    BidPrice5: Double;
+//  	///申买量五
+//    BidVolume5: Integer;
+//  	///申卖价五
+//    AskPrice5: Double;
+//  	///申卖量五
+//    AskVolume5: Integer;
+//  	///当日均价
+//    AveragePrice: Double;
+//  	///业务日期
+//    ActionDay: string;
+//  end;
 
 implementation
 

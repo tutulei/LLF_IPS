@@ -124,11 +124,11 @@ type
     ActionDay: TThostFtdcDateType;
   end;
 
-  //’€œﬂÕº-»˝œﬂ
-  ThreeSeriesChart = record
+  ChartSeries = record
     ValueSeries1 : TFastLineSeries;
     ValueSeries2 : TFastLineSeries;
     ConstantSeries : TFastLineSeries;
+
   end;
 
 implementation

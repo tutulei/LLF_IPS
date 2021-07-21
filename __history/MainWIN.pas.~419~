@@ -28,14 +28,11 @@ type
     FutureChart: TChart;
     PriceSeries: TFastLineSeries;
     RatioSeries: TFastLineSeries;
-    PopupMenu2: TPopupMenu;
-    N4: TMenuItem;
     procedure N1Click(Sender: TObject);
     procedure FFuturesQuotationGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure N2Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure N3Click(Sender: TObject);
-    procedure N4Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -53,7 +50,7 @@ var
   MainWindow: TMainWindow;
   str: string;
   smdflowpath: string = 'D:\Projects\C++\CTPHQProject\CTPHQProject\CTPHQProject';
-  smdfornt: string = 'tcp://180.168.146.187:10211';
+  smdfornt: string = 'tcp://180.168.146.187:10131';
   pserver: Pointer;
   ilogin: Integer;
   isubscribe: Integer;
@@ -65,7 +62,7 @@ var
 implementation
 
 uses
-  ufrmAddConteact;
+  ufrmAddConteact, ufrmRemoveConteact;
 
 {$R *.dfm}
 constructor TMainWindow.Create(AOwner: TComponent);
@@ -89,11 +86,11 @@ begin
   //  FutureChart.BottomAxis.SetMinMax(0, 100);
   //  FutureChart.RightAxis.SetMinMax(0, 100);
   //FutureChart.LeftAxis.SetMinMax(-100, 100);
-//    for I := 0 to 100 do
-//    begin
-//      Value := I;
-//      PriceSeries.Add(Value, IntToStr(I));
-//    end;
+  //  for I := 0 to 100 do
+  //  begin
+  //    Value := I;
+  //    PriceSeries.Add(Value, IntToStr(I));
+  //  end;
 end;
 
 //添加合约
@@ -142,12 +139,6 @@ begin
   AvaibleChartId := FFuturesQuotationGrid.Cells[0, FFuturesQuotationGrid.Row];
   FutureChart.Visible := True;
 
-end;
-
-procedure TMainWindow.N4Click(Sender: TObject);
-begin
-  FutureChart.Visible := False;
-  FFuturesQuotationGrid.Visible := True;  
 end;
 
 procedure TMainWindow.FFuturesQuotationGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);

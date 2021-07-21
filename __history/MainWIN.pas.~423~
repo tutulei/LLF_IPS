@@ -53,7 +53,7 @@ var
   MainWindow: TMainWindow;
   str: string;
   smdflowpath: string = 'D:\Projects\C++\CTPHQProject\CTPHQProject\CTPHQProject';
-  smdfornt: string = 'tcp://180.168.146.187:10211';
+  smdfornt: string = 'tcp://180.168.146.187:10131';
   pserver: Pointer;
   ilogin: Integer;
   isubscribe: Integer;
@@ -65,7 +65,7 @@ var
 implementation
 
 uses
-  ufrmAddConteact;
+  ufrmAddConteact, ufrmRemoveConteact;
 
 {$R *.dfm}
 constructor TMainWindow.Create(AOwner: TComponent);
@@ -146,8 +146,7 @@ end;
 
 procedure TMainWindow.N4Click(Sender: TObject);
 begin
-  FutureChart.Visible := False;
-  FFuturesQuotationGrid.Visible := True;  
+  Close;
 end;
 
 procedure TMainWindow.FFuturesQuotationGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);

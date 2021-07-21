@@ -132,13 +132,14 @@ begin
     dChangeRate := RoundTo(dChange / tick.OpenPrice, -4);
     sChangeRate := FloatTostr(dChangeRate * 100) + '%';
 
-    //走势图绘制
+    //判断 显示的合约图
     if (tick.InstrumentID = AvaibleChartId) then
     begin
-//    MainWindow.FutureChart.LeftAxis.SetMinMax(tick.LowerLimitPrice, tick.UpperLimitPrice);
-//    MainWindow.FutureChart.RightAxis.SetMinMax(-0.2, 0.2);
+    MainWindow.FutureChart.LeftAxis.SetMinMax(0, 100);
+    MainWindow.FutureChart.BottomAxis.SetMinMax(0, 100);
+    MainWindow.FutureChart.RightAxis.SetMinMax(0, 100);
       DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), MainWindow.PriceSeries);
-      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, MainWindow.RatioSeries);
+//      DrawChartTimely(string(tick.UpdateTime), dChangeRate, MainWindow.RatioSeries);
     end;
 
     //添加变动信息为变色显示做信号

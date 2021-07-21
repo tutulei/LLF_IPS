@@ -5,7 +5,7 @@ unit uQuotationDataStruct;
 interface
 
 uses
-  Classes,Series;
+  Classes;
 
 type
   {定义的数据类型和行情的数据结构}
@@ -124,11 +124,8 @@ type
     ActionDay: TThostFtdcDateType;
   end;
 
-  //折线图-三线
-  ThreeSeriesChart = record
-    ValueSeries1 : TFastLineSeries;
-    ValueSeries2 : TFastLineSeries;
-    ConstantSeries : TFastLineSeries;
+  ChartSeries = record
+    PriceSeries : TFastLineSeries;
   end;
 
 implementation
