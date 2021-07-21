@@ -7,8 +7,7 @@ unit uContractsSchedule;
 interface
 
 uses
-  uQuotationDataStruct, Grids, Classes, uConstants, SysUtils, Math, Windows,
-  ChartManager;
+  uQuotationDataStruct, Grids, Classes, uConstants, SysUtils, Math, Windows,ChartManager;
 
 type
   PStringGrid = ^TStringGrid;
@@ -53,7 +52,7 @@ type
     function TypeToString(t: ContractType): string;
   end;
 
-procedure DrawChartTimely(Axvalue: string; Ayvalue: Double; AFastLineSeries: Pointer);
+procedure DrawChartTimely(Axvalue: string;Ayvalue:Double; AFastLineSeries: Pointer);
 
 function fQuotationDataTurnToTStrings(data: TQuotationData; change: string; changeRate: string): TStrings;
 
@@ -138,17 +137,18 @@ begin
     sChangeRate := FloatTostr(dChangeRate * 100) + '%';
 
     //走势图绘制
-    if (FSeriesManager.Find(tick.InstrumentID) <> -1) then
+    if(FSeriesManager.find(tick.InstrumentID) <> -1)then
     begin
-      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
-      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
+      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries1);
+      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries2);
     end;  
-//
-//    if (tick.InstrumentID = AvaibleChartId) then
-//    begin
-//      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries1);
-//      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries2);
-//    end;
+
+    if (tick.InstrumentID = AvaibleChartId) then
+    begin
+      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries1);
+      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries2);
+    end;
+
     //添加变动信息为变色显示做信号
     if (StrToFloat(pGrid.Cells[2, index + 1]) > tick.LastPrice) then
     begin
@@ -167,6 +167,10 @@ begin
   //列表数据刷新
   dataList := fQuotationDataTurnToTStrings(tick, sChange, sChangeRate);
   pGrid.Rows[index + 1] := dataList;
+
+
+
+
 
 end;
 
@@ -251,9 +255,9 @@ begin
   end;
 end;
 
-procedure DrawChartTimely(Axvalue: string; Ayvalue: Double; AFastLineSeries: Pointer);
+procedure DrawChartTimely(Axvalue: string;Ayvalue:Double; AFastLineSeries: Pointer);
 begin
-  TFastLineSeries(AFastLineSeries).Add(Ayvalue, Axvalue);
+  TFastLineSeries(AFastLineSeries).Add(Ayvalue,Axvalue);
 end;
 
 end.

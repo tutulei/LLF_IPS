@@ -110,9 +110,7 @@ object MainWindow: TMainWindow
           Width = 761
           Height = 249
           Title.Text.Strings = (
-            'TChart'
-            'Tsha'
-            'waooo')
+            'TChart')
           View3D = False
           View3DWalls = False
           Align = alClient
@@ -143,6 +141,10 @@ object MainWindow: TMainWindow
       object TabSheet3: TTabSheet
         Caption = #26399#26435#34892#24773
         ImageIndex = 2
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object FOptionQuotationGrid: TStringGrid
           Left = 0
           Top = 0
@@ -197,6 +199,10 @@ object MainWindow: TMainWindow
       object TabSheet4: TTabSheet
         Caption = #29616#36135#34892#24773
         ImageIndex = 3
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object ActualsQuotationGrid: TStringGrid
           Left = 0
           Top = 0
@@ -254,25 +260,25 @@ object MainWindow: TMainWindow
   object PopupMenu1: TPopupMenu
     Left = 712
     Top = 144
-    object PopupAddContract: TMenuItem
+    object N1: TMenuItem
       Caption = #35746#38405#21512#32422
-      OnClick = PopupAddContractClick
+      OnClick = N1Click
     end
-    object PopupDeleteContract: TMenuItem
+    object N2: TMenuItem
       Caption = #21024#38500#21512#32422
-      OnClick = PopupDeleteContractClick
+      OnClick = N2Click
     end
-    object PopupTurnToChart: TMenuItem
+    object N3: TMenuItem
       Caption = #20999#25442#33267#36208#21183#22270
-      OnClick = PopupTurnToChartClick
+      OnClick = N3Click
     end
   end
   object PopupMenu2: TPopupMenu
     Left = 672
     Top = 144
-    object PopupCloseChart: TMenuItem
+    object N4: TMenuItem
       Caption = #20851#38381#36208#21183#22270
-      OnClick = PopupCloseChartClick
+      OnClick = N4Click
     end
   end
 end

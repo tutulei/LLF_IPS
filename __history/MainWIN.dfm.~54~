@@ -53,6 +53,10 @@ object MainWindow: TMainWindow
       object TabSheet2: TTabSheet
         Caption = #26399#36135#34892#24773
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object FFuturesQuotationGrid: TStringGrid
           Left = 0
           Top = 0
@@ -110,9 +114,7 @@ object MainWindow: TMainWindow
           Width = 761
           Height = 249
           Title.Text.Strings = (
-            'TChart'
-            'Tsha'
-            'waooo')
+            'TChart')
           View3D = False
           View3DWalls = False
           Align = alClient
@@ -143,6 +145,10 @@ object MainWindow: TMainWindow
       object TabSheet3: TTabSheet
         Caption = #26399#26435#34892#24773
         ImageIndex = 2
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object FOptionQuotationGrid: TStringGrid
           Left = 0
           Top = 0
@@ -197,6 +203,10 @@ object MainWindow: TMainWindow
       object TabSheet4: TTabSheet
         Caption = #29616#36135#34892#24773
         ImageIndex = 3
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object ActualsQuotationGrid: TStringGrid
           Left = 0
           Top = 0

@@ -38,7 +38,7 @@ type
     procedure AddDataToCurrentSeries(Adata: TObject);
     function Find(const Akey: string): Integer;
     function GetObjPionter(const Akey: string): Pointer;
-    destructor Destroy(); override;
+    destructor Destroy();
   end;
 
 var
@@ -47,7 +47,7 @@ var
 //    procedure AddDataToCurrentSeries(Adata:TwoSeriesChart);
 //  end;
 
-procedure TurnToChart(const Akey: string; obj: Pointer; APChart: PChart);
+procedure TurnToChart(Akey: string; obj: Pointer; APChart: PChart);
 
 procedure CloseChart(APChart: PChart);
 
@@ -160,14 +160,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TurnToChart(const Akey: string; obj: Pointer; APChart: PChart);
+procedure TurnToChart(Akey: string; obj: Pointer; APChart: PChart);
 var
   text: TStrings;
 begin
   APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries1);
   APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries2);
-  text := TStringList.Create;
-  text.Add(Akey);
+  text := TStrings.Create();
+  text.Add(string(Akey));
   APChart.Title.Text := text;
   APChart.Visible := True;
   text.Free;

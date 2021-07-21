@@ -38,7 +38,7 @@ type
     procedure AddDataToCurrentSeries(Adata: TObject);
     function Find(const Akey: string): Integer;
     function GetObjPionter(const Akey: string): Pointer;
-    destructor Destroy(); override;
+    destructor Destroy();
   end;
 
 var
@@ -166,7 +166,7 @@ var
 begin
   APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries1);
   APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries2);
-  text := TStringList.Create;
+  text := TStrings.Create();
   text.Add(Akey);
   APChart.Title.Text := text;
   APChart.Visible := True;

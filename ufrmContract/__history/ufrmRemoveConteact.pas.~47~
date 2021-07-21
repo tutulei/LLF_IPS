@@ -41,7 +41,7 @@ var
 begin
   ListBox1.Clear;
   pWin := @MainWindow;
-  list := FDataSchedule.FFuturesSeatingList;
+  list := pWin.FDataSchedule.FFuturesSeatingList;
   for I := 0 to list.Count - 1 do
   begin
     ListBox1.Items.Add(list[I]);

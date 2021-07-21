@@ -6,7 +6,7 @@ unit uConstants;
 interface
 
 uses
-  Grids,Classes;
+  Grids;
 
 const
   //函数名常量
@@ -26,6 +26,10 @@ type
   public
     procedure DeleteRow(ARow: Longint);
   end;
+  TmyListForPop = Class(TList)
+    public
+      procedure popAll();
+  End;
 
 implementation
 

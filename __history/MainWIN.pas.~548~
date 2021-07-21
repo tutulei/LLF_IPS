@@ -110,6 +110,7 @@ procedure TMainWindow.PopupDeleteContractClick(Sender: TObject);
 var
   str: string;
   iret: Integer;
+  index:= Integer;
   I: Integer;
 begin
 //  RemoveConteactForm.Show;
@@ -123,11 +124,11 @@ begin
     for I := FFuturesQuotationGrid.Selection.Bottom downto FFuturesQuotationGrid.Selection.Top do
     begin
       //删除series
-      if (FSeriesManager.Find(FDataSchedule.FFuturesSeatingList[I - 1]) <> -1) then
+
+      if(FSeriesManager.Find(FDataSchedule.FFuturesSeatingList[I-1])<>-1)then
       begin
-        FSeriesManager.RemoveSeries(FDataSchedule.FFuturesSeatingList[I - 1]);
+        FSeriesManager.RemoveSeries(FDataSchedule.FFuturesSeatingList[I-1]);
       end;
-      
       //删除ListItem
       if (FDataSchedule.FFuturesSeatingList.Count > 0) then
       begin
@@ -160,7 +161,7 @@ begin
   //管理器切换当前数据
   FSeriesManager.SetCurrentSeries(sid);
   //显示走势图
-  TurnToChart(sid, FSeriesManager.GetCurrentSeries, @FutureChart);
+  TurnToChart(sid, FSeriesManager.GetCurrentSeries,@FutureChart);
 
 end;
 

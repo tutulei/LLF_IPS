@@ -127,7 +127,6 @@ begin
       begin
         FSeriesManager.RemoveSeries(FDataSchedule.FFuturesSeatingList[I - 1]);
       end;
-      
       //删除ListItem
       if (FDataSchedule.FFuturesSeatingList.Count > 0) then
       begin

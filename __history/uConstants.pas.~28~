@@ -26,6 +26,10 @@ type
   public
     procedure DeleteRow(ARow: Longint);
   end;
+  TmyListForPop = Class(TList)
+    public
+      procedure popAll();
+  End;
 
 implementation
 
@@ -33,6 +37,11 @@ procedure TmyTStringGrid.DeleteRow(ARow: Longint);
 begin
   inherited;
 end;
+
+procedure TmyListForPop.popAll();
+begin
+  inherited.FCount := 0;
+end;  
 
 end.
 

@@ -166,7 +166,7 @@ var
 begin
   APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries1);
   APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries2);
-  text := TStringList.Create;
+  text := TStrings.Create(nil);
   text.Add(Akey);
   APChart.Title.Text := text;
   APChart.Visible := True;

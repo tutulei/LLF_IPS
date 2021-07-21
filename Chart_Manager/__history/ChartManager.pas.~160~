@@ -1,30 +1,29 @@
 unit ChartManager;
 (*
-  ×ßÊÆÍ¼¹ÜÀíµ¥Ôª
+  èµ°åŠ¿å›¾ç®¡ç†å•å…ƒ
 *)
 
 interface
 
 uses
-  Series, Classes, Chart;
+  Series, Classes;
 
 type
-  PChart = ^TChart;
 
-  //ÕÛÏßÍ¼-ÈýÏß
+  //æŠ˜çº¿å›¾-ä¸‰çº¿
   ThreeSeriesChart = record
     ValueSeries1: TFastLineSeries;
     ValueSeries2: TFastLineSeries;
-    ValueSeries3: TFastLineSeries;
+    ConstantSeries: TFastLineSeries;
   end;
 
-  //ÕÛÏßÍ¼-Ë«Ïß
-  TwoSeriesGroup = class
+  //æŠ˜çº¿å›¾-åŒçº¿
+  TwoSeriesChart = class
     ValueSeries1: TFastLineSeries;
-    ValueSeries2: TFastLineSeries;
+    ConstantSeries: TFastLineSeries;
   end;
 
-  //Ìá¹©seriesÊý¾Ý¸üÐÂ¹¦ÄÜ£¬²¢ÇÒÎ¬»¤Ò»¸öSeries±í£¬ÀïÃæ»º´æseriesÊý¾Ý
+  //æä¾›seriesæ•°æ®æ›´æ–°åŠŸèƒ½ï¼Œå¹¶ä¸”ç»´æŠ¤ä¸€ä¸ªSeriesè¡¨ï¼Œé‡Œé¢ç¼“å­˜seriesæ•°æ®
   TSeriesManager = class
   private
     SeriesList: TStringList;
@@ -36,9 +35,9 @@ type
     function GetCurrentSeries(): Pointer;
     procedure SetCurrentSeries(const Akey: string);
     procedure AddDataToCurrentSeries(Adata: TObject);
-    function Find(const Akey: string): Integer;
-    function GetObjPionter(const Akey: string): Pointer;
-    destructor Destroy(); override;
+    function find(const Akey:string): Integer;
+    procedure addOneTick(Akey:string);
+    destructor Destroy();
   end;
 
 var
@@ -46,10 +45,6 @@ var
 //  TwoSeriesManager = Class(SeriesManager)
 //    procedure AddDataToCurrentSeries(Adata:TwoSeriesChart);
 //  end;
-
-procedure TurnToChart(const Akey: string; obj: Pointer; APChart: PChart);
-
-procedure CloseChart(APChart: PChart);
 
 implementation
 
@@ -99,22 +94,13 @@ end;
 procedure TSeriesManager.SetCurrentSeries(const Akey: string);
 var
   index: Integer;
-  SeriesGroup: TwoSeriesGroup;
 begin
   index := SeriesList.IndexOf(Akey);
-  if (index = -1) then
+  if(index >= 0)then
   begin
-    SeriesGroup := TwoSeriesGroup.Create();
-    SeriesGroup.ValueSeries1 := TFastLineSeries.Create(nil);
-    SeriesGroup.ValueSeries2 := TFastLineSeries.Create(nil);
-    SeriesGroup.ValueSeries1.Title := '³É½»¼Û';
-    SeriesGroup.ValueSeries2.Title := '¿ªÅÌ¼Û';
-    SeriesGroup.ValueSeries1.Color := $0000ff;
-    SeriesGroup.ValueSeries2.Color := $00400080;
-    AddSeries(Akey, TObject(SeriesGroup));
-    index := SeriesList.IndexOf(Akey);
+    SeriesList.Move(index, 0);
   end;
-  SeriesList.Move(index, 0);
+
 end;
 
 procedure TSeriesManager.AddDataToCurrentSeries(Adata: TObject);
@@ -122,26 +108,9 @@ begin
   SeriesList.Objects[0] := Adata;
 end;
 
-function TSeriesManager.Find(const Akey: string): Integer;
+function TSeriesManager.find(const Akey:string): Integer;
 begin
   Result := SeriesList.IndexOf(Akey);
-end;
-
-function TSeriesManager.GetObjPionter(const Akey: string): Pointer;
-var
-  index: Integer;
-  p: Pointer;
-begin
-  index := Find(Akey);
-  if (index >= 0) then
-  begin
-    p := SeriesList.Objects[index];
-  end
-  else
-  begin
-    p := nil;
-  end;
-  Result := p;
 end;
 
 destructor TSeriesManager.Destroy();
@@ -158,25 +127,6 @@ begin
   SeriesList.Free;
 
   inherited Destroy;
-end;
-
-procedure TurnToChart(const Akey: string; obj: Pointer; APChart: PChart);
-var
-  text: TStrings;
-begin
-  APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries1);
-  APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries2);
-  text := TStringList.Create;
-  text.Add(Akey);
-  APChart.Title.Text := text;
-  APChart.Visible := True;
-  text.Free;
-end;
-
-procedure CloseChart(APChart: PChart);
-begin
-  APChart.Visible := False;
-  APChart.RemoveAllSeries;
 end;
 
 end.

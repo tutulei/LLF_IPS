@@ -6,7 +6,7 @@ unit uConstants;
 interface
 
 uses
-  Grids,Classes;
+  Grids;
 
 const
   //函数名常量

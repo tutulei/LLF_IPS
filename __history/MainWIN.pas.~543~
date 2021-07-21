@@ -116,23 +116,14 @@ begin
 
   str := '确认删除' + IntToStr(FFuturesQuotationGrid.Selection.Top) + '行至' + IntToStr(FFuturesQuotationGrid.Selection.Bottom) + '行？';
   iret := MessageBox(0, Pchar(str), 'tishi', MB_OKCANCEL);
-
   if iret = 1 then
   begin
     //删除chart中的合约列表记录
     for I := FFuturesQuotationGrid.Selection.Bottom downto FFuturesQuotationGrid.Selection.Top do
     begin
-      //删除series
-      if (FSeriesManager.Find(FDataSchedule.FFuturesSeatingList[I - 1]) <> -1) then
-      begin
-        FSeriesManager.RemoveSeries(FDataSchedule.FFuturesSeatingList[I - 1]);
-      end;
-      
-      //删除ListItem
       if (FDataSchedule.FFuturesSeatingList.Count > 0) then
       begin
         FDataSchedule.FFuturesSeatingList.Delete(I - 1);
-
       end;
       if (FFuturesQuotationGrid.RowCount = 2) then
       begin
@@ -159,8 +150,7 @@ begin
   sid := FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1];
   //管理器切换当前数据
   FSeriesManager.SetCurrentSeries(sid);
-  //显示走势图
-  TurnToChart(sid, FSeriesManager.GetCurrentSeries, @FutureChart);
+  TurnToChart(sid, FSeriesManager,FutureChart);
 
 end;
 

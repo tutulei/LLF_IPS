@@ -1,4 +1,4 @@
-﻿unit MainWIN;
+unit MainWIN;
 
 interface
 
@@ -50,7 +50,7 @@ var
   MainWindow: TMainWindow;
   str: string;
   smdflowpath: string = 'D:\Projects\C++\CTPHQProject\CTPHQProject\CTPHQProject';
-  smdfornt: string = 'tcp://180.168.146.187:10131';
+  smdfornt: string = 'tcp://180.168.146.187:10211';
   pserver: Pointer;
   ilogin: Integer;
   isubscribe: Integer;
@@ -70,6 +70,8 @@ uses
 constructor TMainWindow.Create(AOwner: TComponent);
 var
   title: TStrings;
+  I: Integer;
+  VALUE: DOUBLE;
 begin
   inherited;
 //  Self.Height := Screen.WorkAreaHeight;
@@ -87,7 +89,6 @@ begin
   //走势图管理器新建
   FSeriesManager := TSeriesManager.Create();
   Connected();
-  FutureChart.SeriesList.Clear;
   //  FutureChart.LeftAxis.SetMinMax(0, 100);
   //  FutureChart.BottomAxis.SetMinMax(0, 100);
   //  FutureChart.RightAxis.SetMinMax(0, 100);
@@ -116,23 +117,14 @@ begin
 
   str := '确认删除' + IntToStr(FFuturesQuotationGrid.Selection.Top) + '行至' + IntToStr(FFuturesQuotationGrid.Selection.Bottom) + '行？';
   iret := MessageBox(0, Pchar(str), 'tishi', MB_OKCANCEL);
-
   if iret = 1 then
   begin
     //删除chart中的合约列表记录
     for I := FFuturesQuotationGrid.Selection.Bottom downto FFuturesQuotationGrid.Selection.Top do
     begin
-      //删除series
-      if (FSeriesManager.Find(FDataSchedule.FFuturesSeatingList[I - 1]) <> -1) then
-      begin
-        FSeriesManager.RemoveSeries(FDataSchedule.FFuturesSeatingList[I - 1]);
-      end;
-      
-      //删除ListItem
       if (FDataSchedule.FFuturesSeatingList.Count > 0) then
       begin
         FDataSchedule.FFuturesSeatingList.Delete(I - 1);
-
       end;
       if (FFuturesQuotationGrid.RowCount = 2) then
       begin
@@ -150,26 +142,32 @@ end;
 procedure TMainWindow.PopupTurnToChartClick(Sender: TObject);
 var
   sid: string;
-  SeriesGroup: TwoSeriesGroup;
-  p: Pointer;
+  SeriesGroup: TwoSeriesChart;
 begin
-  //隐藏Grid
+  //隐藏表图
   FFuturesQuotationGrid.Visible := false;
-  //获取选中的合约ID
-  sid := FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1];
+
   //管理器切换当前数据
+  sid := FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1];
+  if (FSeriesManager.find(sid) = -1) then
+  begin
+    SeriesGroup := TwoSeriesChart.Create();
+    SeriesGroup.ValueSeries1 := TFastLineSeries.Create(FutureChart);
+    SeriesGroup.ConstantSeries := TFastLineSeries.Create(FutureChart);
+    FSeriesManager.AddSeries(sid, TObject(SeriesGroup));
+  end;
   FSeriesManager.SetCurrentSeries(sid);
-  //显示走势图
-  TurnToChart(sid, FSeriesManager.GetCurrentSeries, @FutureChart);
+  PriceSeries := TwoSeriesChart(FSeriesManager.GetCurrentSeries()).ValueSeries1;
+  ConstantSeries := TwoSeriesChart(FSeriesManager.GetCurrentSeries()).ConstantSeries;
+  //AvaibleChartId := FFuturesGrid[FFuturesQuotationGrid.Row];
+  //AvaibleChartId :=
+  FutureChart.Visible := True;
 
 end;
 
 procedure TMainWindow.PopupCloseChartClick(Sender: TObject);
-var
-  I: Integer;
 begin
   FutureChart.Visible := False;
-  FutureChart.RemoveAllSeries;
   FFuturesQuotationGrid.Visible := True;
 end;
 

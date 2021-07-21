@@ -6,22 +6,21 @@ unit ChartManager;
 interface
 
 uses
-  Series, Classes, Chart;
+  Series, Classes;
 
 type
-  PChart = ^TChart;
 
   //折线图-三线
   ThreeSeriesChart = record
     ValueSeries1: TFastLineSeries;
     ValueSeries2: TFastLineSeries;
-    ValueSeries3: TFastLineSeries;
+    ConstantSeries: TFastLineSeries;
   end;
 
   //折线图-双线
-  TwoSeriesGroup = class
+  TwoSeriesChart = record
     ValueSeries1: TFastLineSeries;
-    ValueSeries2: TFastLineSeries;
+    ConstantSeries: TFastLineSeries;
   end;
 
   //提供series数据更新功能，并且维护一个Series表，里面缓存series数据
@@ -36,9 +35,8 @@ type
     function GetCurrentSeries(): Pointer;
     procedure SetCurrentSeries(const Akey: string);
     procedure AddDataToCurrentSeries(Adata: TObject);
-    function Find(const Akey: string): Integer;
-    function GetObjPionter(const Akey: string): Pointer;
-    destructor Destroy(); override;
+    function find(const Akey:string): Integer;
+    destructor Destroy();
   end;
 
 var
@@ -46,10 +44,6 @@ var
 //  TwoSeriesManager = Class(SeriesManager)
 //    procedure AddDataToCurrentSeries(Adata:TwoSeriesChart);
 //  end;
-
-procedure TurnToChart(const Akey: string; obj: Pointer; APChart: PChart);
-
-procedure CloseChart(APChart: PChart);
 
 implementation
 
@@ -99,21 +93,8 @@ end;
 procedure TSeriesManager.SetCurrentSeries(const Akey: string);
 var
   index: Integer;
-  SeriesGroup: TwoSeriesGroup;
 begin
   index := SeriesList.IndexOf(Akey);
-  if (index = -1) then
-  begin
-    SeriesGroup := TwoSeriesGroup.Create();
-    SeriesGroup.ValueSeries1 := TFastLineSeries.Create(nil);
-    SeriesGroup.ValueSeries2 := TFastLineSeries.Create(nil);
-    SeriesGroup.ValueSeries1.Title := '成交价';
-    SeriesGroup.ValueSeries2.Title := '开盘价';
-    SeriesGroup.ValueSeries1.Color := $0000ff;
-    SeriesGroup.ValueSeries2.Color := $00400080;
-    AddSeries(Akey, TObject(SeriesGroup));
-    index := SeriesList.IndexOf(Akey);
-  end;
   SeriesList.Move(index, 0);
 end;
 
@@ -122,26 +103,9 @@ begin
   SeriesList.Objects[0] := Adata;
 end;
 
-function TSeriesManager.Find(const Akey: string): Integer;
+function TSeriesManager.find(const Akey:string): Integer;
 begin
   Result := SeriesList.IndexOf(Akey);
-end;
-
-function TSeriesManager.GetObjPionter(const Akey: string): Pointer;
-var
-  index: Integer;
-  p: Pointer;
-begin
-  index := Find(Akey);
-  if (index >= 0) then
-  begin
-    p := SeriesList.Objects[index];
-  end
-  else
-  begin
-    p := nil;
-  end;
-  Result := p;
 end;
 
 destructor TSeriesManager.Destroy();
@@ -158,25 +122,6 @@ begin
   SeriesList.Free;
 
   inherited Destroy;
-end;
-
-procedure TurnToChart(const Akey: string; obj: Pointer; APChart: PChart);
-var
-  text: TStrings;
-begin
-  APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries1);
-  APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries2);
-  text := TStringList.Create;
-  text.Add(Akey);
-  APChart.Title.Text := text;
-  APChart.Visible := True;
-  text.Free;
-end;
-
-procedure CloseChart(APChart: PChart);
-begin
-  APChart.Visible := False;
-  APChart.RemoveAllSeries;
 end;
 
 end.

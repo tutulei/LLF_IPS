@@ -140,8 +140,8 @@ begin
     //×ßÊÆÍ¼»æÖÆ
     if (FSeriesManager.Find(tick.InstrumentID) <> -1) then
     begin
-      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
-      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
+      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
+      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
     end;  
 //
 //    if (tick.InstrumentID = AvaibleChartId) then

@@ -110,9 +110,7 @@ object MainWindow: TMainWindow
           Width = 761
           Height = 249
           Title.Text.Strings = (
-            'TChart'
-            'Tsha'
-            'waooo')
+            'TChart')
           View3D = False
           View3DWalls = False
           Align = alClient
@@ -129,7 +127,7 @@ object MainWindow: TMainWindow
             YValues.Name = 'Y'
             YValues.Order = loNone
           end
-          object ConstantSeries: TFastLineSeries
+          object ValueSeries2: TFastLineSeries
             Marks.Callout.Brush.Color = clBlack
             Marks.Visible = False
             LinePen.Color = clYellow

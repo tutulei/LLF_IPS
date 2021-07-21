@@ -39,9 +39,6 @@
     <DCCReference Include="ufrmContract\ufrmAddConteact.pas">
       <Form>AddConteactForm</Form>
     </DCCReference>
-    <DCCReference Include="ufrmContract\ufrmRemoveConteact.pas">
-      <Form>RemoveConteactForm</Form>
-    </DCCReference>
     <DCCReference Include="uQuotationAPI.pas" />
     <DCCReference Include="uQuotationDataStruct.pas" />
   </ItemGroup>
