@@ -28,12 +28,17 @@ type
     ConstantSeries: TFastLineSeries;
     PopupMenu2: TPopupMenu;
     PopupCloseChart: TMenuItem;
+    ComboBox1: TComboBox;
+    Label1: TLabel;
     procedure PopupAddContractClick(Sender: TObject);
     procedure FFuturesQuotationGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure PopupDeleteContractClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure PopupTurnToChartClick(Sender: TObject);
     procedure PopupCloseChartClick(Sender: TObject);
+    procedure ComboBox1Change(Sender: TObject);
+    procedure ComboBox1DropDown(Sender: TObject);
+    procedure ComboBox1Select(Sender: TObject);
   private
     { Private declarations }
     Owner: TComponent;
@@ -50,7 +55,7 @@ var
   MainWindow: TMainWindow;
   str: string;
   smdflowpath: string = 'D:\Projects\C++\CTPHQProject\CTPHQProject\CTPHQProject';
-  smdfornt: string = 'tcp://180.168.146.187:10131';
+  smdfornt: string = 'tcp://180.168.146.187:10211';
   pserver: Pointer;
   ilogin: Integer;
   isubscribe: Integer;
@@ -85,7 +90,7 @@ begin
   //数据调度器新建
   FDataSchedule := TDataSchedule.Create(@FFuturesQuotationGrid, @FOptionQuotationGrid, @ActualsQuotationGrid);
   //走势图管理器新建
-  FSeriesManager := TSeriesManager.Create();
+  FSeriesManager := TSeriesManager.Create(@FutureChart);
   Connected();
   FutureChart.SeriesList.Clear;
   //  FutureChart.LeftAxis.SetMinMax(0, 100);
@@ -147,6 +152,7 @@ begin
 
 end;
 
+//显示走势图
 procedure TMainWindow.PopupTurnToChartClick(Sender: TObject);
 var
   sid: string;
@@ -160,10 +166,11 @@ begin
   //管理器切换当前数据
   FSeriesManager.SetCurrentSeries(sid);
   //显示走势图
-  TurnToChart(sid, FSeriesManager.GetCurrentSeries, @FutureChart);
+  FutureChart.Visible := True;
 
 end;
 
+//关闭走势图
 procedure TMainWindow.PopupCloseChartClick(Sender: TObject);
 var
   I: Integer;
@@ -226,8 +233,33 @@ begin
 end;
 
 
+//点击下拉框下拉事件
+procedure TMainWindow.ComboBox1DropDown(Sender: TObject);
+var
+  S: TStringList;
+begin
+  TComboBox(Sender).Clear;
+  S := TStringList.Create;
+  S.Assign(FDataSchedule.FFuturesSeatingList);
+  TComboBox(Sender).Items := S;
+  S.Free;
+end;
 
-//
+//下拉框选择事件
+procedure TMainWindow.ComboBox1Select(Sender: TObject);
+var
+  index: Integer;
+  sid: string;  
+begin
+  index := TComboBox(Sender).ItemIndex;
+  if (index > -1) then
+  begin
+    sid := TComboBox(Sender).Items.Strings[index];
+    FSeriesManager.SetCurrentSeries(sid);
+  end;
+
+end;
+
 procedure TMainWindow.Connected();
 var
   tmp: Integer;

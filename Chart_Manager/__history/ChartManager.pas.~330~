@@ -31,7 +31,7 @@ type
     SeriesList: TStringList;
     CacheSize: Integer;
   public
-    constructor Create(bindChart: PChart; const ACacheSize: Integer = 3);
+    constructor Create(bindChart: ^TChart; const ACacheSize: Integer = 3);
     procedure AddSeries(const Akey: string; Aseries: TObject);
     procedure RemoveSeries(const Akey: string = '');
     function GetCurrentSeries(): Pointer;
@@ -47,6 +47,8 @@ var
 //  TwoSeriesManager = Class(SeriesManager)
 //    procedure AddDataToCurrentSeries(Adata:TwoSeriesChart);
 //  end;
+
+procedure TurnToChart(const Akey: string; obj: Pointer; APChart: PChart);
 
 procedure CloseChart(APChart: PChart);
 
@@ -170,6 +172,7 @@ begin
 
   inherited Destroy;
 end;
+
 
 procedure CloseChart(APChart: PChart);
 begin

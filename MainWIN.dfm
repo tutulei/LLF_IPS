@@ -3,8 +3,8 @@ object MainWindow: TMainWindow
   Top = 0
   BiDiMode = bdRightToLeftNoAlign
   Caption = 'MainWindow'
-  ClientHeight = 409
-  ClientWidth = 771
+  ClientHeight = 496
+  ClientWidth = 772
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -19,25 +19,27 @@ object MainWindow: TMainWindow
   object Splitter1: TSplitter
     Left = 0
     Top = 281
-    Width = 771
+    Width = 772
     Height = 3
     Cursor = crVSplit
     Align = alTop
     ExplicitLeft = -1
     ExplicitTop = 215
+    ExplicitWidth = 771
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 771
+    Width = 772
     Height = 281
     Align = alTop
     Caption = #34892#24773'Panel'
     TabOrder = 0
+    ExplicitWidth = 771
     object PageControl1: TPageControl
       Left = 1
       Top = 1
-      Width = 769
+      Width = 770
       Height = 279
       ActivePage = TabSheet2
       Align = alClient
@@ -50,13 +52,15 @@ object MainWindow: TMainWindow
       ParentBiDiMode = False
       ParentFont = False
       TabOrder = 0
+      ExplicitWidth = 769
       object TabSheet2: TTabSheet
         Caption = #26399#36135#34892#24773
         ImageIndex = 1
+        ExplicitWidth = 761
         object FFuturesQuotationGrid: TStringGrid
           Left = 0
           Top = 0
-          Width = 761
+          Width = 762
           Height = 249
           Align = alClient
           BevelInner = bvNone
@@ -80,6 +84,7 @@ object MainWindow: TMainWindow
           PopupMenu = PopupMenu1
           TabOrder = 0
           OnDrawCell = FFuturesQuotationGridDrawCell
+          ExplicitWidth = 761
           ColWidths = (
             70
             70
@@ -107,7 +112,7 @@ object MainWindow: TMainWindow
         object FutureChart: TChart
           Left = 0
           Top = 0
-          Width = 761
+          Width = 762
           Height = 249
           Title.Text.Strings = (
             'TChart'
@@ -119,6 +124,35 @@ object MainWindow: TMainWindow
           PopupMenu = PopupMenu2
           TabOrder = 1
           Visible = False
+          ExplicitWidth = 761
+          DesignSize = (
+            762
+            249)
+          object Label1: TLabel
+            Left = 664
+            Top = 168
+            Width = 48
+            Height = 15
+            Anchors = [akRight, akBottom]
+            Caption = #36873#25321#21512#32422
+          end
+          object ComboBox1: TComboBox
+            Left = 632
+            Top = 200
+            Width = 113
+            Height = 23
+            Anchors = [akRight, akBottom]
+            Ctl3D = False
+            ItemHeight = 15
+            ParentCtl3D = False
+            TabOrder = 0
+            OnDropDown = ComboBox1DropDown
+            OnSelect = ComboBox1Select
+            Items.Strings = (
+              'item'
+              'item2'
+              'item3')
+          end
           object PriceSeries: TFastLineSeries
             Marks.Callout.Brush.Color = clBlack
             Marks.Visible = False
@@ -143,10 +177,11 @@ object MainWindow: TMainWindow
       object TabSheet3: TTabSheet
         Caption = #26399#26435#34892#24773
         ImageIndex = 2
+        ExplicitWidth = 761
         object FOptionQuotationGrid: TStringGrid
           Left = 0
           Top = 0
-          Width = 761
+          Width = 762
           Height = 249
           Align = alClient
           BevelInner = bvNone
@@ -168,6 +203,7 @@ object MainWindow: TMainWindow
           ParentCtl3D = False
           ParentFont = False
           TabOrder = 0
+          ExplicitWidth = 761
           ColWidths = (
             70
             70
@@ -197,10 +233,11 @@ object MainWindow: TMainWindow
       object TabSheet4: TTabSheet
         Caption = #29616#36135#34892#24773
         ImageIndex = 3
+        ExplicitWidth = 761
         object ActualsQuotationGrid: TStringGrid
           Left = 0
           Top = 0
-          Width = 761
+          Width = 762
           Height = 249
           Align = alClient
           BevelInner = bvNone
@@ -223,6 +260,7 @@ object MainWindow: TMainWindow
           ParentFont = False
           TabOrder = 0
           Visible = False
+          ExplicitWidth = 761
           ColWidths = (
             70
             70

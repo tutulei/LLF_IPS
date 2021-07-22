@@ -27,10 +27,11 @@ type
   //提供series数据更新功能，并且维护一个Series表，里面缓存series数据
   TSeriesManager = class
   private
+    PbindChart: PChart;
     SeriesList: TStringList;
     CacheSize: Integer;
   public
-    constructor Create(const ACacheSize: Integer = 3);
+    constructor Create(bindChart: PChart; const ACacheSize: Integer = 3);
     procedure AddSeries(const Akey: string; Aseries: TObject);
     procedure RemoveSeries(const Akey: string = '');
     function GetCurrentSeries(): Pointer;
@@ -38,7 +39,7 @@ type
     procedure AddDataToCurrentSeries(Adata: TObject);
     function Find(const Akey: string): Integer;
     function GetObjPionter(const Akey: string): Pointer;
-    destructor Destroy();
+    destructor Destroy(); override;
   end;
 
 var
@@ -47,17 +48,18 @@ var
 //    procedure AddDataToCurrentSeries(Adata:TwoSeriesChart);
 //  end;
 
-procedure TurnToChart(Akey: string; obj: Pointer; APChart: PChart);
+procedure TurnToChart(const Akey: string; obj: Pointer; APChart: PChart);
 
 procedure CloseChart(APChart: PChart);
 
 implementation
 
-constructor TSeriesManager.Create(const ACacheSize: Integer = 3);
+constructor TSeriesManager.Create(bindChart: PChart; const ACacheSize: Integer = 3);
 begin
   inherited Create;
   SeriesList := TStringList.Create;
   CacheSize := ACacheSize;
+  PbindChart := bindChart;
 end;
 
 procedure TSeriesManager.AddSeries(const Akey: string; Aseries: TObject);
@@ -100,6 +102,8 @@ procedure TSeriesManager.SetCurrentSeries(const Akey: string);
 var
   index: Integer;
   SeriesGroup: TwoSeriesGroup;
+  currentSeries: Pointer;
+  text: TStrings;
 begin
   index := SeriesList.IndexOf(Akey);
   if (index = -1) then
@@ -115,6 +119,15 @@ begin
     index := SeriesList.IndexOf(Akey);
   end;
   SeriesList.Move(index, 0);
+  //以上更新CurrentsSeries，以下设置Chart绑定的Series
+  currentSeries := GetCurrentSeries();
+  PbindChart.RemoveAllSeries();
+  PbindChart.AddSeries(TwoSeriesGroup(currentSeries).ValueSeries1);
+  PbindChart.AddSeries(TwoSeriesGroup(currentSeries).ValueSeries2);
+  text := TStringList.Create;
+  text.Add(Akey);
+  PbindChart.Title.Text := text;
+  text.Free;
 end;
 
 procedure TSeriesManager.AddDataToCurrentSeries(Adata: TObject);
@@ -158,19 +171,6 @@ begin
   SeriesList.Free;
 
   inherited Destroy;
-end;
-
-procedure TurnToChart(Akey: string; obj: Pointer; APChart: PChart);
-var
-  text: TStrings;
-begin
-  APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries1);
-  APChart.AddSeries(TwoSeriesGroup(obj).ValueSeries2);
-  text := TStrings.Create();
-  text.Add(Akey);
-  APChart.Title.Text := text;
-  APChart.Visible := True;
-  text.Free;
 end;
 
 procedure CloseChart(APChart: PChart);

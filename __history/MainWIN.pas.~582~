@@ -28,12 +28,17 @@ type
     ConstantSeries: TFastLineSeries;
     PopupMenu2: TPopupMenu;
     PopupCloseChart: TMenuItem;
+    ComboBox1: TComboBox;
+    Label1: TLabel;
     procedure PopupAddContractClick(Sender: TObject);
     procedure FFuturesQuotationGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure PopupDeleteContractClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure PopupTurnToChartClick(Sender: TObject);
     procedure PopupCloseChartClick(Sender: TObject);
+    procedure ComboBox1Change(Sender: TObject);
+    procedure ComboBox1DropDown(Sender: TObject);
+    procedure ComboBox1Select(Sender: TObject);
   private
     { Private declarations }
     Owner: TComponent;
@@ -50,7 +55,7 @@ var
   MainWindow: TMainWindow;
   str: string;
   smdflowpath: string = 'D:\Projects\C++\CTPHQProject\CTPHQProject\CTPHQProject';
-  smdfornt: string = 'tcp://180.168.146.187:10131';
+  smdfornt: string = 'tcp://180.168.146.187:10211';
   pserver: Pointer;
   ilogin: Integer;
   isubscribe: Integer;
@@ -85,7 +90,7 @@ begin
   //数据调度器新建
   FDataSchedule := TDataSchedule.Create(@FFuturesQuotationGrid, @FOptionQuotationGrid, @ActualsQuotationGrid);
   //走势图管理器新建
-  FSeriesManager := TSeriesManager.Create();
+  FSeriesManager := TSeriesManager.Create(@FutureChart);
   Connected();
   FutureChart.SeriesList.Clear;
   //  FutureChart.LeftAxis.SetMinMax(0, 100);
@@ -116,14 +121,23 @@ begin
 
   str := '确认删除' + IntToStr(FFuturesQuotationGrid.Selection.Top) + '行至' + IntToStr(FFuturesQuotationGrid.Selection.Bottom) + '行？';
   iret := MessageBox(0, Pchar(str), 'tishi', MB_OKCANCEL);
+
   if iret = 1 then
   begin
     //删除chart中的合约列表记录
     for I := FFuturesQuotationGrid.Selection.Bottom downto FFuturesQuotationGrid.Selection.Top do
     begin
+      //删除series
+      if (FSeriesManager.Find(FDataSchedule.FFuturesSeatingList[I - 1]) <> -1) then
+      begin
+        FSeriesManager.RemoveSeries(FDataSchedule.FFuturesSeatingList[I - 1]);
+      end;
+      
+      //删除ListItem
       if (FDataSchedule.FFuturesSeatingList.Count > 0) then
       begin
         FDataSchedule.FFuturesSeatingList.Delete(I - 1);
+
       end;
       if (FFuturesQuotationGrid.RowCount = 2) then
       begin
@@ -138,6 +152,7 @@ begin
 
 end;
 
+//显示走势图
 procedure TMainWindow.PopupTurnToChartClick(Sender: TObject);
 var
   sid: string;
@@ -150,10 +165,12 @@ begin
   sid := FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1];
   //管理器切换当前数据
   FSeriesManager.SetCurrentSeries(sid);
-  TurnToChart(sid, FSeriesManager.GetCurrentSeries,FutureChart);
+  //显示走势图
+  FutureChart.Visible := True;
 
 end;
 
+//关闭走势图
 procedure TMainWindow.PopupCloseChartClick(Sender: TObject);
 var
   I: Integer;
@@ -217,7 +234,49 @@ end;
 
 
 
-//
+//选择下拉框时切换走势图
+procedure TMainWindow.ComboBox1Change(Sender: TObject);
+var
+  index: Integer;
+  sid: string;
+begin
+  index := TComboBox(Sender).ItemIndex;
+  if (index > -1) then
+  begin
+    sid := TComboBox(Sender).Items.Strings[index];
+    FSeriesManager.SetCurrentSeries(sid);
+  end;
+
+end;
+
+
+
+//点击下拉框下拉时更新下拉框内容
+procedure TMainWindow.ComboBox1DropDown(Sender: TObject);
+var
+S:TStringList;
+
+begin
+  TComboBox(Sender).Items.Free;
+  S:=TStringList.Create;
+  S.Assign(FDataSchedule.FFuturesSeatingList);
+  TComboBox(Sender).Items := S;
+  S.Free;
+end;
+
+procedure TMainWindow.ComboBox1Select(Sender: TObject);
+var
+  index:Integer;
+begin
+  index := TComboBox(Sender).ItemIndex;
+  if (index > -1) then
+  begin
+    sid := TComboBox(Sender).Items.Strings[index];
+    FSeriesManager.SetCurrentSeries(sid);
+  end;
+
+end;
+
 procedure TMainWindow.Connected();
 var
   tmp: Integer;
