@@ -43,11 +43,11 @@ type
     destructor Destroy(); override;
   end;
 
-  TThreeSeriesManager = class(TSeriesManager)
-  public
-    procedure SetCurrentSeries(const Akey: string); virtual;
-    procedure CreateSeries(const Akey: string); virtual;
-  end;
+//  TThreeSeriesManager = class(TSeriesManager)
+//  public
+//    procedure SetCurrentSeries(const Akey: string); virtual;
+//    procedure CreateSeries(const Akey: string); virtual;
+//  end;
 
 //var
 //  AvaibleChartId: string;

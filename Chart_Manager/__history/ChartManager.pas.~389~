@@ -35,9 +35,9 @@ type
     constructor Create(bindChart: PChart; const ACacheSize: Integer = 3);
     procedure RemoveSeries(const Akey: string = '');
     function GetCurrentSeries(): Pointer;
-    procedure SetCurrentSeries(const Akey: string); virtual;
+    procedure SetCurrentSeries(const Akey: string);virtual;
     procedure AddDataToCurrentSeries(Adata: TObject);
-    procedure CreateSeries(const Akey: string); virtual;
+    procedure CreateSeries(const Akey: string);virtual;
     function Find(const Akey: string): Integer;
     function GetObjPionter(const Akey: string): Pointer;
     destructor Destroy(); override;
@@ -45,8 +45,8 @@ type
 
   TThreeSeriesManager = class(TSeriesManager)
   public
-    procedure SetCurrentSeries(const Akey: string); virtual;
-    procedure CreateSeries(const Akey: string); virtual;
+    procedure SetCurrentSeries(const Akey: string);virtual;override;
+    procedure CreateSeries(const Akey: string); override;virtual;
   end;
 
 //var

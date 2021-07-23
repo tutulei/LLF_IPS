@@ -15,8 +15,5 @@
     <Transaction>2021/07/20 08:52:15.106.dfm,D:\Projects\LLF_IPS\ufrmRemoveConteact.dfm=</Transaction>
     <Transaction>2021/07/21 14:24:46.116.pas,D:\Projects\LLF_IPS\ufrmContract\ufrmRemoveConteact.pas=</Transaction>
     <Transaction>2021/07/21 14:24:46.116.dfm,D:\Projects\LLF_IPS\ufrmContract\ufrmRemoveConteact.dfm=</Transaction>
-    <Transaction>2021/07/22 17:06:00.966.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uMyChartManager.pas</Transaction>
-    <Transaction>2021/07/22 17:06:14.806.pas,D:\Projects\LLF_IPS\uMyChartManager.pas=D:\Projects\LLF_IPS\Chart_Manager\uMyChartManager.pas</Transaction>
-    <Transaction>2021/07/22 17:08:49.904.pas,D:\Projects\LLF_IPS\Chart_Manager\ChartManager.pas=D:\Projects\LLF_IPS\CommonUnits\ChartManager.pas</Transaction>
   </Transactions>
 </BorlandProject>

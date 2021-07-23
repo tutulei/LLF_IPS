@@ -35,7 +35,8 @@ type
     constructor Create(bindChart: PChart; const ACacheSize: Integer = 3);
     procedure RemoveSeries(const Akey: string = '');
     function GetCurrentSeries(): Pointer;
-    procedure SetCurrentSeries(const Akey: string); virtual;
+    procedure SetCurrentSeries(const Akey: string);
+    procedure CurrentSeriesBindChart();virtual;
     procedure AddDataToCurrentSeries(Adata: TObject);
     procedure CreateSeries(const Akey: string); virtual;
     function Find(const Akey: string): Integer;
@@ -43,11 +44,7 @@ type
     destructor Destroy(); override;
   end;
 
-  TThreeSeriesManager = class(TSeriesManager)
-  public
-    procedure SetCurrentSeries(const Akey: string); virtual;
-    procedure CreateSeries(const Akey: string); virtual;
-  end;
+
 
 //var
 //  AvaibleChartId: string;
@@ -102,9 +99,9 @@ end;
 
 procedure TSeriesManager.SetCurrentSeries(const Akey: string);
 var
-  index: Integer;
-  currentSeries: Pointer;
+  pCurrentSeries: Pointer;
   text: TStrings;
+  index: Integer;
 begin
   index := SeriesList.IndexOf(Akey);
   if (index = -1) then
@@ -112,11 +109,6 @@ begin
     CreateSeries(Akey);
   end;
   SeriesList.Move(SeriesList.IndexOf(Akey), 0);
-  //以上更新CurrentsSeries，以下设置Chart绑定的Series
-  currentSeries := GetCurrentSeries();
-  PbindChart.RemoveAllSeries();
-  PbindChart.AddSeries(TTwoSeriesGroup(currentSeries).ValueSeries1);
-  PbindChart.AddSeries(TTwoSeriesGroup(currentSeries).ValueSeries2);
   text := TStringList.Create;
   text.Add(Akey);
   PbindChart.Title.Text := text;
@@ -126,20 +118,6 @@ end;
 procedure TSeriesManager.AddDataToCurrentSeries(Adata: TObject);
 begin
   SeriesList.Objects[0] := Adata;
-end;
-
-procedure TSeriesManager.CreateSeries(const Akey: string);
-var
-  SeriesGroup: TTwoSeriesGroup;
-begin
-  SeriesGroup := TTwoSeriesGroup.Create();
-  SeriesGroup.ValueSeries1 := TFastLineSeries.Create(nil);
-  SeriesGroup.ValueSeries2 := TFastLineSeries.Create(nil);
-  SeriesGroup.ValueSeries1.Title := '成交价';
-  SeriesGroup.ValueSeries2.Title := '开盘价';
-  SeriesGroup.ValueSeries1.Color := $0000ff;
-  SeriesGroup.ValueSeries2.Color := $00400080;
-  AddSeries(Akey, TObject(SeriesGroup));
 end;
 
 function TSeriesManager.Find(const Akey: string): Integer;
@@ -178,32 +156,6 @@ begin
   SeriesList.Free;
 
   inherited Destroy;
-end;
-
-procedure TThreeSeriesManager.SetCurrentSeries(const Akey: string);
-var
-  currentSeries: Pointer;
-begin
-  inherited;
-  currentSeries := GetCurrentSeries();
-  PbindChart.AddSeries(TThreeSeriesGroup(currentSeries).ValueSeries3);
-end;
-
-procedure TThreeSeriesManager.CreateSeries(const Akey: string);
-var
-  SeriesGroup: TThreeSeriesGroup;
-begin
-  SeriesGroup := TThreeSeriesGroup.Create();
-  SeriesGroup.ValueSeries1 := TFastLineSeries.Create(nil);
-  SeriesGroup.ValueSeries2 := TFastLineSeries.Create(nil);
-  SeriesGroup.ValueSeries3 := TFastLineSeries.Create(nil);
-  SeriesGroup.ValueSeries1.Title := '成交价';
-  SeriesGroup.ValueSeries2.Title := '开盘价';
-  SeriesGroup.ValueSeries3.Title := '今日均价';
-  SeriesGroup.ValueSeries1.Color := $0000ff;
-  SeriesGroup.ValueSeries2.Color := $00400080;
-  SeriesGroup.ValueSeries3.Color := $FF0000;
-  AddSeries(Akey, TObject(SeriesGroup));
 end;
 
 procedure CloseChart(APChart: PChart);
