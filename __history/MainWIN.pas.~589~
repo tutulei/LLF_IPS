@@ -36,8 +36,8 @@ type
     procedure FormResize(Sender: TObject);
     procedure PopupTurnToChartClick(Sender: TObject);
     procedure PopupCloseChartClick(Sender: TObject);
-    procedure ComboBox1Change(Sender: TObject);
     procedure ComboBox1DropDown(Sender: TObject);
+    procedure ComboBox1Select(Sender: TObject);
   private
     { Private declarations }
     Owner: TComponent;
@@ -166,6 +166,7 @@ begin
   FSeriesManager.SetCurrentSeries(sid);
   //显示走势图
   FutureChart.Visible := True;
+  ComboBox1.Text := sid;
 
 end;
 
@@ -232,9 +233,20 @@ begin
 end;
 
 
+//点击下拉框下拉事件
+procedure TMainWindow.ComboBox1DropDown(Sender: TObject);
+var
+  S: TStringList;
+begin
+  TComboBox(Sender).Clear;
+  S := TStringList.Create;
+  S.Assign(FDataSchedule.FFuturesSeatingList);
+  TComboBox(Sender).Items := S;
+  S.Free;
+end;
 
-//选择下拉框时切换走势图
-procedure TMainWindow.ComboBox1Change(Sender: TObject);
+//下拉框选择事件
+procedure TMainWindow.ComboBox1Select(Sender: TObject);
 var
   index: Integer;
   sid: string;
@@ -246,18 +258,6 @@ begin
     FSeriesManager.SetCurrentSeries(sid);
   end;
 
-end;
-
-//点击下拉框下拉时更新下拉框内容
-procedure TMainWindow.ComboBox1DropDown(Sender: TObject);
-var
-S:TStringList;
-
-begin
-  TComboBox(Sender).Items.Free;
-  S:=TStringList.Create;
-  S.Assign(FDataSchedule.FFuturesSeatingList);
-  TComboBox(Sender).Items := S;
 end;
 
 procedure TMainWindow.Connected();

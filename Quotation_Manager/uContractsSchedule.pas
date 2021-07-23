@@ -66,7 +66,7 @@ procedure TDataSchedule.AddContracts(arr: array of PChar);
 var
   PID: string;
   grid: PStringGrid;
-  chart: PStringList;
+  pList: PStringList;
   ctype: ContractType;
   tmp: Integer;
 begin
@@ -75,7 +75,7 @@ begin
     //判断该合约属于何种类型（期货，期权，现货）
     ctype := AnalysisType(PID);
     grid := getGrid(ctype);
-    chart := getList(ctype);
+    pList := getList(ctype);
     //可视组件生成行
     tmp := Length(grid.Cells[0, grid.RowCount - 1]);
     if tmp > 0 then
@@ -83,7 +83,7 @@ begin
       grid.RowCount := grid.RowCount + 1;
     end;
     //添加列表中
-    chart.Add(string(PID));
+    pList.Add(string(PID));
     grid.Cells[0, grid.RowCount - 1] := PID;
   end;
 
@@ -94,6 +94,8 @@ begin
 
 end;
 
+//tick调度
+//tick数据收到之后全部会通过此方法进行数据分发调度到各个需要的地方
 procedure TDataSchedule.ScheduleTick(tick: TQuotationData);
 var
   dataList: TStrings;
@@ -121,9 +123,6 @@ begin
     Exit;
   end;
 
-
-
-
   //确定涨跌和涨跌幅
   if (pGrid.Cells[2, index + 1] = '') then
   begin
@@ -132,24 +131,25 @@ begin
   end
   else
   begin
-    dChange := tick.LastPrice - tick.OpenPrice;
+    dChange := tick.LastPrice - tick.PreSettlementPrice;
     sChange := FloatToStr(RoundTo(dChange, -2));
-    dChangeRate := RoundTo(dChange / tick.OpenPrice, -4);
+    dChangeRate := RoundTo(dChange / tick.PreSettlementPrice, -4);
     sChangeRate := FloatTostr(dChangeRate * 100) + '%';
 
     //走势图绘制
     if (FSeriesManager.Find(tick.InstrumentID) <> -1) then
     begin
-      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
-      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
-    end;  
+      DrawChartTimely(string(tick.UpdateTime), tick.LastPrice, TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
+      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
+      DrawChartTimely(string(tick.UpdateTime), FSeriesManager.GetAveragePrice(tick.InstrumentID,tick.LastPrice), TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries3);
+    end;
 //
 //    if (tick.InstrumentID = AvaibleChartId) then
 //    begin
 //      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries1);
 //      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries2);
 //    end;
-    //添加变动信息为变色显示做信号
+    //添加变动信息为变色显示提供依据，数据变小就变成负数，Grid响应事件中会对负数做处理
     if (StrToFloat(pGrid.Cells[2, index + 1]) > tick.LastPrice) then
     begin
       tick.LastPrice := -1.0 * tick.LastPrice;
@@ -164,7 +164,7 @@ begin
     end;
   end;
 
-  //列表数据刷新
+  //Grid列表数据刷新
   dataList := fQuotationDataTurnToTStrings(tick, sChange, sChangeRate);
   pGrid.Rows[index + 1] := dataList;
 

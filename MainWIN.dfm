@@ -35,7 +35,6 @@ object MainWindow: TMainWindow
     Align = alTop
     Caption = #34892#24773'Panel'
     TabOrder = 0
-    ExplicitWidth = 771
     object PageControl1: TPageControl
       Left = 1
       Top = 1
@@ -52,11 +51,9 @@ object MainWindow: TMainWindow
       ParentBiDiMode = False
       ParentFont = False
       TabOrder = 0
-      ExplicitWidth = 769
       object TabSheet2: TTabSheet
         Caption = #26399#36135#34892#24773
         ImageIndex = 1
-        ExplicitWidth = 761
         object FFuturesQuotationGrid: TStringGrid
           Left = 0
           Top = 0
@@ -84,7 +81,6 @@ object MainWindow: TMainWindow
           PopupMenu = PopupMenu1
           TabOrder = 0
           OnDrawCell = FFuturesQuotationGridDrawCell
-          ExplicitWidth = 761
           ColWidths = (
             70
             70
@@ -124,7 +120,6 @@ object MainWindow: TMainWindow
           PopupMenu = PopupMenu2
           TabOrder = 1
           Visible = False
-          ExplicitWidth = 761
           DesignSize = (
             762
             249)
@@ -177,7 +172,10 @@ object MainWindow: TMainWindow
       object TabSheet3: TTabSheet
         Caption = #26399#26435#34892#24773
         ImageIndex = 2
+        ExplicitLeft = 0
+        ExplicitTop = 0
         ExplicitWidth = 761
+        ExplicitHeight = 0
         object FOptionQuotationGrid: TStringGrid
           Left = 0
           Top = 0
@@ -233,7 +231,10 @@ object MainWindow: TMainWindow
       object TabSheet4: TTabSheet
         Caption = #29616#36135#34892#24773
         ImageIndex = 3
+        ExplicitLeft = 0
+        ExplicitTop = 0
         ExplicitWidth = 761
+        ExplicitHeight = 0
         object ActualsQuotationGrid: TStringGrid
           Left = 0
           Top = 0

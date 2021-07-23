@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Menus, ComCtrls, uQuotationAPI, uQuotationDataStruct,
   uQuotationThread, DB, ADODB, uContractsSchedule, StrUtils, uConstants, Grids,
-  ExtCtrls, TeeProcs, TeEngine, Chart, Series, TeeFunci, SyncObjs, ChartManager;
+  ExtCtrls, TeeProcs, TeEngine, Chart, Series, TeeFunci, SyncObjs, uMyChartManager;
 
 type
   TMainWindow = class(TForm)
@@ -63,7 +63,8 @@ var
   nChar: PChar = PChar('');
   myapi: TQuotationProxy;
   FDataSchedule: TDataSchedule;
-  FSeriesManager: TSeriesManager;
+  FSeriesManager: TmySeriesManager;
+  TotalValue:double;
 
 implementation
 
@@ -89,7 +90,7 @@ begin
   //数据调度器新建
   FDataSchedule := TDataSchedule.Create(@FFuturesQuotationGrid, @FOptionQuotationGrid, @ActualsQuotationGrid);
   //走势图管理器新建
-  FSeriesManager := TSeriesManager.Create(@FutureChart);
+  FSeriesManager := TmySeriesManager.Create(@FutureChart);
   Connected();
   FutureChart.SeriesList.Clear;
   //  FutureChart.LeftAxis.SetMinMax(0, 100);
@@ -155,7 +156,6 @@ end;
 procedure TMainWindow.PopupTurnToChartClick(Sender: TObject);
 var
   sid: string;
-  SeriesGroup: TwoSeriesGroup;
   p: Pointer;
 begin
   //隐藏Grid
