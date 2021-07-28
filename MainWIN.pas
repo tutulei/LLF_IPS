@@ -4,9 +4,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Menus, ComCtrls, uQuotationAPI, uQuotationDataStruct,
+  Dialogs, StdCtrls, Menus, ComCtrls, uQuotationAPI,uTradeAPI, uQuotationDataStruct,
   uQuotationThread, DB, ADODB, uContractsSchedule, StrUtils, uConstants, Grids,
-  ExtCtrls, TeeProcs, TeEngine, Chart, Series, TeeFunci, SyncObjs, uMyChartManager;
+  ExtCtrls, TeeProcs, TeEngine, Chart, Series, TeeFunci, SyncObjs,
+  uMyChartManager,uConfigUnit;
 
 type
   TMainWindow = class(TForm)
@@ -45,26 +46,23 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     procedure Connected();
+    procedure TradeConnect();
     procedure updateData();
   end;
 
 procedure AddConteact(list: TStringList);
 
+
+
 var
   MainWindow: TMainWindow;
-  str: string;
-  smdflowpath: string = 'D:\Projects\C++\CTPHQProject\CTPHQProject\CTPHQProject';
-  smdfornt: string = 'tcp://180.168.146.187:10211';
-  pserver: Pointer;
-  ilogin: Integer;
-  isubscribe: Integer;
-  iremove: Integer;
-  pget: Pointer;
+
   nChar: PChar = PChar('');
-  myapi: TQuotationProxy;
+  quotationProxy: TQuotationProxy;
+  tradeProxy:TTradeProxy;
   FDataSchedule: TDataSchedule;
   FSeriesManager: TmySeriesManager;
-  TotalValue:double;
+  TotalValue: double;
 
 implementation
 
@@ -77,6 +75,7 @@ var
   title: TStrings;
 begin
   inherited;
+  InitConfiguration();  
 //  Self.Height := Screen.WorkAreaHeight;
 //  Self.Width := Screen.WorkAreaWidth;
   Owner := AOwner;
@@ -92,6 +91,7 @@ begin
   //走势图管理器新建
   FSeriesManager := TmySeriesManager.Create(@FutureChart);
   Connected();
+  TradeConnect();
   FutureChart.SeriesList.Clear;
   //  FutureChart.LeftAxis.SetMinMax(0, 100);
   //  FutureChart.BottomAxis.SetMinMax(0, 100);
@@ -103,6 +103,8 @@ begin
 //      PriceSeries.Add(Value, IntToStr(I));
 //    end;
 end;
+
+
 
 //添加合约
 procedure TMainWindow.PopupAddContractClick(Sender: TObject);
@@ -265,29 +267,37 @@ var
   tmp: Integer;
   arr: array of PChar;
 begin
-  myapi := TQuotationProxy.Create('QuotationCTP.dll');
-  myapi.Connected(PChar(smdfornt), PChar(smdflowpath));
-  while myapi.IsConnected <> True do
+  quotationProxy := TQuotationProxy.Create(dllName);
+  quotationProxy.Connected(PChar(quotationserver), PChar(quotationflowpath));
+  while quotationProxy.IsConnected <> True do
   begin
     Sleep(1000);
 //    Writeln('[delphi]: waiting for connected ...');
   end;
-  myapi.SimpleLogin(nChar, nChar, nChar);
-  while myapi.LoginSucess <> True do
+  quotationProxy.SimpleLogin(nChar, nChar, nChar);
+  while quotationProxy.LoginSucess <> True do
   begin
     Sleep(1000);
 //    Writeln('[delphi]: waiting for login ...');
   end;
-  SetLength(arr, 2);
+  SetLength(arr, 3);
   arr[0] := Pchar('IF2108');
-  arr[1] := Pchar('c2109');
-  tmp := myapi.Subscribe(Pointer(arr), 2);
+  arr[1] := Pchar('IH2108');
+  arr[2] := Pchar('IC2108');
+  tmp := quotationProxy.Subscribe(Pointer(arr), 3);
   if tmp = 0 then
   begin
     FDataSchedule.AddContracts(arr);
   end;
   TQuotationThread.Create(updateData);
 end;
+
+procedure TMainWindow.TradeConnect();
+begin
+  tradeProxy := TTradeProxy.Create(dllName);
+  tradeProxy.Connected(PChar(tradeserver), PChar(tradeflowpath));
+  tradeProxy.AuthAndLogin(PChar(tradebrokerid),PChar(tradeaccount),PChar(tradepassword),PChar(tradeauthcode),PChar(tradeappid));
+end;  
 
 procedure TMainWindow.updateData();
 var
@@ -297,7 +307,7 @@ begin
   while true do
   begin
     Sleep(100);
-    tick := myapi.GetOneTick();
+    tick := quotationProxy.GetOneTick();
     if (tick.InstrumentID <> '') then
     begin
       FDataSchedule.ScheduleTick(tick);
@@ -318,7 +328,7 @@ begin
   begin
     arr[I] := PChar(list[I]);
   end;
-  itmp := myapi.Subscribe(Pointer(arr), list.Count);
+  itmp := quotationProxy.Subscribe(Pointer(arr), list.Count);
   if itmp = 0 then
   begin
     FDataSchedule.AddContracts(arr);

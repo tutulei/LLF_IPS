@@ -1,5 +1,7 @@
 unit uMyChartManager;
-
+(*
+  定制化的Chart图管理器，一个Chart，三条线 —— 今开盘，成交价，今均线
+*)
 interface
 
 uses

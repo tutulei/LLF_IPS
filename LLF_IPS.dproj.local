@@ -18,5 +18,17 @@
     <Transaction>2021/07/22 17:06:00.966.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uMyChartManager.pas</Transaction>
     <Transaction>2021/07/22 17:06:14.806.pas,D:\Projects\LLF_IPS\uMyChartManager.pas=D:\Projects\LLF_IPS\Chart_Manager\uMyChartManager.pas</Transaction>
     <Transaction>2021/07/22 17:08:49.904.pas,D:\Projects\LLF_IPS\Chart_Manager\ChartManager.pas=D:\Projects\LLF_IPS\CommonUnits\ChartManager.pas</Transaction>
+    <Transaction>2021/07/23 13:57:53.946.pas,D:\Projects\LLF_IPS\uQuotationAPI.pas=D:\Projects\LLF_IPS\CommonUnits\uQuotationAPI.pas</Transaction>
+    <Transaction>2021/07/23 13:58:24.909.pas,D:\Projects\LLF_IPS\uQuotationDataStruct.pas=D:\Projects\LLF_IPS\CommonUnits\uQuotationDataStruct.pas</Transaction>
+    <Transaction>2021/07/23 13:58:29.492.pas,D:\Projects\LLF_IPS\uConstants.pas=D:\Projects\LLF_IPS\CommonUnits\uConstants.pas</Transaction>
+    <Transaction>2021/07/23 13:59:15.035.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uDBManager\Unit1.pas</Transaction>
+    <Transaction>2021/07/23 14:04:13.737.pas,D:\Projects\LLF_IPS\uDBManager\Unit1.pas=D:\Projects\LLF_IPS\uDBManager\uDBManager.pas</Transaction>
+    <Transaction>2021/07/27 14:24:14.858.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uTradeAPI.pas</Transaction>
+    <Transaction>2021/07/27 16:18:37.991.pas,D:\Projects\LLF_IPS\CommonUnits\uQuotationAPI.pas=D:\Projects\LLF_IPS\CTPProxy\uQuotationAPI.pas</Transaction>
+    <Transaction>2021/07/27 16:18:49.583.pas,D:\Projects\LLF_IPS\CommonUnits\uTradeAPI.pas=D:\Projects\LLF_IPS\CTPProxy\uTradeAPI.pas</Transaction>
+    <Transaction>2021/07/27 16:19:58.236.pas,D:\Projects\LLF_IPS\CommonUnits\uQuotationDataStruct.pas=D:\Projects\LLF_IPS\CommonUnits\uDataStruct.pas</Transaction>
+    <Transaction>2021/07/27 16:58:03.085.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas</Transaction>
+    <Transaction>2021/07/27 18:27:33.996.pas,D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas=</Transaction>
+    <Transaction>2021/07/28 08:59:49.254.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas</Transaction>
   </Transactions>
 </BorlandProject>

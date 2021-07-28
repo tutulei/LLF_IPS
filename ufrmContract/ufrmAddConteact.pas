@@ -15,6 +15,7 @@ type
     Label2: TLabel;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure Edit1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -50,6 +51,17 @@ end;
 procedure TAddConteactForm.Button2Click(Sender: TObject);
 begin
     Close;
+end;
+
+procedure TAddConteactForm.Edit1KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if (Key = VK_RETURN) then SelectNext(TwinControl(Sender), True, True);
+  if (Key = vk_Tab) then SelectNext(TwinControl(Sender), not (ssShift in Shift), True);
+  If (Key = Vk_Up) Then SelectNext(TwinControl(Sender), false, true);
+  If (Key = Vk_Down) Then SelectNext(TwinControl(Sender), True, True);
+  If (Key = Vk_Up) Or (Key = Vk_Down)  Then Key := 0;
 end;
 
 end.

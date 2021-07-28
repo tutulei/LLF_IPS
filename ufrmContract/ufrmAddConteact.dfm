@@ -45,7 +45,7 @@ object AddConteactForm: TAddConteactForm
     Font.Name = 'Comic Sans MS'
     Font.Style = []
     ParentFont = False
-    TabOrder = 0
+    TabOrder = 1
     OnClick = Button1Click
   end
   object Edit1: TEdit
@@ -59,7 +59,8 @@ object AddConteactForm: TAddConteactForm
     Font.Name = 'Comic Sans MS'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 0
+    OnKeyUp = Edit1KeyUp
   end
   object Button2: TButton
     Left = 320

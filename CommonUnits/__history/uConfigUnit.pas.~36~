@@ -1,0 +1,44 @@
+unit uConfigUnit;
+
+interface
+
+uses
+  IniFiles,uConstants,SysUtils,Forms;
+
+var
+  inifile: TIniFile;
+    //ÐÐÇéµÇÂ¼ÅäÖÃ
+  quotationflowpath: string;
+  quotationserver: string;
+    //½»Ò×µÇÂ¼ÅäÖÃ
+  tradeflowpath: string;
+  tradeserver: string;
+  tradeaccount: string;
+  tradebrokerid: string;
+  tradepassword: string;
+  tradeauthcode: string;
+  tradeappid: string;
+
+procedure InitConfiguration();
+
+implementation
+
+
+procedure InitConfiguration();
+var
+  account: string;
+begin
+  dllName := 'QuotationAndTraderCTP.dll';
+  account := 'account2';
+  WorkPath := ExtractFilePath(application.exename);
+  inifile := TIniFile.Create(WorkPath + 'config.ini');
+
+  quotationflowpath := inifile.ReadString('common', 'flowpath','');
+  quotationserver := inifile.ReadString(account, 'quotation.server','');
+
+
+end;  
+
+
+end.
+
