@@ -2,6 +2,7 @@ unit uMyChartManager;
 (*
   定制化的Chart图管理器，一个Chart，三条线 —— 今开盘，成交价，今均线
 *)
+
 interface
 
 uses
@@ -60,6 +61,7 @@ begin
   SeriesGroup.ValueSeries1.Color := $0000ff;
   SeriesGroup.ValueSeries2.Color := $00400080;
   SeriesGroup.ValueSeries3.Color := $FF0000;
+  SeriesGroup.ValueSeries1.Stairs := True;
   SeriesGroup.TotalValue := 0;
   SeriesGroup.TotalCount := 0;
   AddSeries(Akey, TObject(SeriesGroup));

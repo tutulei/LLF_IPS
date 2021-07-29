@@ -19,9 +19,11 @@ type
     type
       ContractType = (FUTURES, OPTION, ACTUALS);
   private
-    FFuturesGrid: PStringGrid;
-    FOptionGrid: PStringGrid;
-    FActualsGrid: PStringGrid;
+    pwindow: Pointer;
+    pFuturesGrid: PStringGrid;
+    pOptionGrid: PStringGrid;
+    pActualsGrid: PStringGrid;
+    pPriceGrid: PStringgrid;
   public
     //用于存储以订阅的合约以及顺序信息
     FFuturesSeatingList: TStringList;
@@ -29,7 +31,8 @@ type
     FActualsSeatingList: TStringList;
         
       //输入 总，期货，期权，现货的grid指针，
-    constructor Create(QHGrid: PStringGrid = nil; QQGrid: PStringGrid = nil; XHGrid: PStringGrid = nil);
+//    constructor Create(QHGrid: PStringGrid = nil; QQGrid: PStringGrid = nil; XHGrid: PStringGrid = nil);
+    constructor Create(pwin: Pointer);
     destructor Destroy(); override;
       //添加合约记录
     procedure AddContracts(arr: array of PChar);
@@ -51,11 +54,14 @@ type
 
     //返回类型名称
     function TypeToString(t: ContractType): string;
+
+    procedure updatePriceGrid(tick:TQuotationData);    
   end;
 
 procedure DrawChartTimely(Axvalue: string; Ayvalue: Double; AFastLineSeries: Pointer);
 
 function fQuotationDataTurnToTStrings(data: TQuotationData; change: string; changeRate: string): TStrings;
+
 
 implementation
 
@@ -96,6 +102,12 @@ end;
 
 //tick调度
 //tick数据收到之后全部会通过此方法进行数据分发调度到各个需要的地方
+(*
+数据推送区：
+1.Grid行情展示 √
+2.Chart走势图展示 √
+3.下单面板买卖12345价展示 ×
+*)
 procedure TDataSchedule.ScheduleTick(tick: TQuotationData);
 var
   dataList: TStrings;
@@ -114,7 +126,6 @@ begin
   ctype := AnalysisType(strPas(pID));
   pChart := getList(ctype);
   pGrid := getGrid(ctype);
-
   //打包数据，并且推到组件上刷新
   index := pChart.IndexOf(string(pID));
   if (index = -1) then
@@ -123,11 +134,11 @@ begin
     Exit;
   end;
 
-  //确定涨跌和涨跌幅
+  //1确定涨跌和涨跌幅
   if (pGrid.Cells[2, index + 1] = '') then
   begin
     sChange := '0';
-    sChangeRate := '0%'
+    sChangeRate := '0%';
   end
   else
   begin
@@ -136,12 +147,18 @@ begin
     dChangeRate := RoundTo(dChange / tick.PreSettlementPrice, -4);
     sChangeRate := FloatTostr(dChangeRate * 100) + '%';
 
-    //走势图绘制
+    //3
+    if (FFuturesSeatingList[pGrid.Row - 1] = tick.InstrumentID) then
+    begin
+      updatePriceGrid(tick);
+    end;
+
+    //2走势图绘制
     if (FSeriesManager.Find(tick.InstrumentID) <> -1) then
     begin
       DrawChartTimely(string(tick.UpdateTime), tick.LastPrice, TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
       DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
-      DrawChartTimely(string(tick.UpdateTime), FSeriesManager.GetAveragePrice(tick.InstrumentID,tick.LastPrice), TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries3);
+      DrawChartTimely(string(tick.UpdateTime), FSeriesManager.GetAveragePrice(tick.InstrumentID, tick.LastPrice), TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries3);
     end;
 //
 //    if (tick.InstrumentID = AvaibleChartId) then
@@ -149,7 +166,7 @@ begin
 //      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries1);
 //      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries2);
 //    end;
-    //添加变动信息为变色显示提供依据，数据变小就变成负数，Grid响应事件中会对负数做处理
+    //1添加变动信息为变色显示提供依据，数据变小就变成负数，Grid响应事件中会对负数做处理
     if (StrToFloat(pGrid.Cells[2, index + 1]) > tick.LastPrice) then
     begin
       tick.LastPrice := -1.0 * tick.LastPrice;
@@ -164,17 +181,78 @@ begin
     end;
   end;
 
-  //Grid列表数据刷新
+  //1Grid列表数据刷新
   dataList := fQuotationDataTurnToTStrings(tick, sChange, sChangeRate);
   pGrid.Rows[index + 1] := dataList;
 
+
+
 end;
 
-constructor TDataSchedule.Create(QHGrid: PStringGrid; QQGrid: PStringGrid; XHGrid: PStringGrid);
+procedure TDataSchedule.updatePriceGrid(tick:TQuotationData);
 begin
-  FFuturesGrid := QHGrid;
-  FActualsGrid := XHGrid;
-  FOptionGrid := QQGrid;
+
+  pPriceGrid.Cells[1, 0] := FloatToStr(tick.AskVolume5);
+  pPriceGrid.Cells[1, 1] := FloatToStr(tick.AskVolume4);
+  pPriceGrid.Cells[1, 2] := FloatToStr(tick.AskVolume3);
+  pPriceGrid.Cells[1, 3] := FloatToStr(tick.AskVolume2);
+  pPriceGrid.Cells[1, 4] := FloatToStr(tick.AskVolume1);
+  
+  pPriceGrid.Cells[1, 5] := FloatToStr(tick.BidVolume1);
+  pPriceGrid.Cells[1, 6] := FloatToStr(tick.BidVolume2);
+  pPriceGrid.Cells[1, 7] := FloatToStr(tick.BidVolume3);
+  pPriceGrid.Cells[1, 8] := FloatToStr(tick.BidVolume4);
+  pPriceGrid.Cells[1, 9] := FloatToStr(tick.BidVolume5);
+  
+  if tick.AskVolume5 <> 0 then
+    pPriceGrid.Cells[0, 0] := FloatToStr(tick.AskPrice5)
+  else
+    pPriceGrid.Cells[0, 0] := '-';
+  if tick.AskVolume4 <> 0 then
+    pPriceGrid.Cells[0, 1] := FloatToStr(tick.AskPrice4)
+  else
+    pPriceGrid.Cells[0, 1] := '-';
+  if tick.AskVolume3 <> 0 then
+    pPriceGrid.Cells[0, 2] := FloatToStr(tick.AskPrice3)
+  else
+    pPriceGrid.Cells[0, 2] := '-';
+  if tick.AskVolume2 <> 0 then
+    pPriceGrid.Cells[0, 3] := FloatToStr(tick.AskPrice2)
+  else
+    pPriceGrid.Cells[0, 3] := '-';
+  if tick.AskVolume1 <> 0 then
+    pPriceGrid.Cells[0, 4] := FloatToStr(tick.AskPrice1)
+  else
+    pPriceGrid.Cells[0, 4] := '-';
+  if tick.BidVolume1 <> 0 then
+    pPriceGrid.Cells[0, 5] := FloatToStr(tick.BidPrice1)
+  else
+    pPriceGrid.Cells[0, 5] := '-';
+  if tick.BidVolume2 <> 0 then
+    pPriceGrid.Cells[0, 6] := FloatToStr(tick.BidPrice2)
+  else
+    pPriceGrid.Cells[0, 6] := '-';
+  if tick.BidVolume3 <> 0 then
+    pPriceGrid.Cells[0, 7] := FloatToStr(tick.BidPrice3)
+  else
+    pPriceGrid.Cells[0, 7] := '-';
+  if tick.BidVolume4 <> 0 then
+    pPriceGrid.Cells[0, 8] := FloatToStr(tick.BidPrice4)
+  else
+    pPriceGrid.Cells[0, 8] := '-';
+  if tick.BidVolume5 <> 0 then
+    pPriceGrid.Cells[0, 9] := FloatToStr(tick.BidPrice5)
+  else
+    pPriceGrid.Cells[0, 9] := '-';
+end;  
+
+constructor TDataSchedule.Create(pwin: Pointer);
+begin
+  pwindow := pwin;
+  pFuturesGrid := @(PMainWindow(pwindow).FFuturesQuotationGrid);
+  pActualsGrid := @(PMainWindow(pwindow).FOptionQuotationGrid);
+  pOptionGrid := @(PMainWindow(pwindow).ActualsQuotationGrid);
+  pPriceGrid := @(PMainWindow(pwindow).PriceGrid);  
   FFuturesSeatingList := TStringList.Create();
   FOptionSeatingList := TStringList.Create();
   FActualsSeatingList := TStringList.Create();
@@ -207,15 +285,15 @@ function TDataSchedule.getGrid(myType: ContractType): PStringGrid;
 begin
   if myType = FUTURES then
   begin
-    Result := FFuturesGrid;
+    Result := pFuturesGrid;
   end
   else if myType = OPTION then
   begin
-    Result := FOptionGrid;
+    Result := pOptionGrid;
   end
   else if myType = ACTUALS then
   begin
-    Result := FActualsGrid;
+    Result := pActualsGrid;
   end;
 end;
 

@@ -13,7 +13,7 @@ type
   TAutoAuthAndLoginTradeServer = function(server: Pointer; BrokerID: PChar; UserID: PChar; Password: PChar; AuthCode: PChar; AppID: PChar): Integer; cdecl;
 
   //报单
-  TInputLimitPriceOrder = function(server: Pointer; InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double): Integer; cdecl;
+  TInputLimitPriceOrder = function(server: Pointer; InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double;count:Integer): Integer; cdecl;
 
   //查询持仓
   TQueryPosition = function(server: Pointer): Pointer; cdecl;
@@ -49,7 +49,7 @@ type
     constructor Create(key: string);
     procedure Connected(psFrontAddress: PChar; mdflowpath: PChar);
     procedure AuthAndLogin(BrokerID: PChar; UserID: PChar; Password: PChar; AuthCode: PChar; AppID: PChar);
-    procedure AddLimitPriceOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double);
+    procedure AddLimitPriceOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double;count:Integer);
     function CheckPosition(): Pointer;
     function DeleteOrder(FrontID: Integer; SessionID: Integer; OrderRef: PChar): Integer;
     function CheckCapital(): Pointer;
@@ -82,9 +82,11 @@ begin
   autoauthandlogintradeserver(server, BrokerID, UserID, Password, AuthCode, AppID);
 end;
 
-procedure TTradeProxy.AddLimitPriceOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double);
+procedure TTradeProxy.AddLimitPriceOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double;count:Integer);
+var
+ i:Integer;
 begin
-  inputlimitpriceorder(server, InstrumentID, Direction, OffsetFlag, LimitPrice);
+  i := inputlimitpriceorder(server, InstrumentID, Direction, OffsetFlag, LimitPrice,count);
 end;
 
 function TTradeProxy.CheckPosition(): Pointer;

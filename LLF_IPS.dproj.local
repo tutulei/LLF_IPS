@@ -30,5 +30,8 @@
     <Transaction>2021/07/27 16:58:03.085.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas</Transaction>
     <Transaction>2021/07/27 18:27:33.996.pas,D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas=</Transaction>
     <Transaction>2021/07/28 08:59:49.254.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas</Transaction>
+    <Transaction>2021/07/28 11:27:27.696.pas,D:\Projects\LLF_IPS\Quotation_Manager\uQuotationThread.pas=D:\Projects\LLF_IPS\Quotation_Manager\uManagerThread.pas</Transaction>
+    <Transaction>2021/07/28 16:41:27.573.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uTradeUnit\Unit1.pas</Transaction>
+    <Transaction>2021/07/28 16:45:11.139.pas,D:\Projects\LLF_IPS\uTradeUnit\Unit1.pas=D:\Projects\LLF_IPS\uTradeUnit\uTradeUnit.pas</Transaction>
   </Transactions>
 </BorlandProject>

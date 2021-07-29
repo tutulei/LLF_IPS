@@ -1,0 +1,19 @@
+unit uTradeUnit;
+
+interface
+
+function AddOneOrder(AInstrumentID: PChar; ADirection: Char; AOffsetFlag: Char; ALimitPrice: Double):Integer;
+
+implementation
+
+uses
+  MainWIN, uManagerThread;
+
+//生成线程提交订单
+function AddOneOrder(AInstrumentID: PChar; ADirection: Char; AOffsetFlag: Char; ALimitPrice: Double):Integer;
+begin
+  TManagerThread.Create(AInstrumentID, ADirection, AOffsetFlag, ALimitPrice,tradeProxy.AddLimitPriceOrder);
+end;
+
+end.
+

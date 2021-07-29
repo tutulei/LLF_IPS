@@ -1,0 +1,9 @@
+unit uTradeUnit;
+
+interface
+
+procedure AddOneOrder();
+
+implementation
+
+end.

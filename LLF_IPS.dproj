@@ -40,11 +40,12 @@
       <Form>MainWindow</Form>
     </DCCReference>
     <DCCReference Include="Quotation_Manager\uContractsSchedule.pas" />
-    <DCCReference Include="Quotation_Manager\uQuotationThread.pas" />
+    <DCCReference Include="Quotation_Manager\uManagerThread.pas" />
     <DCCReference Include="uDBManager\uDBManager.pas" />
     <DCCReference Include="ufrmContract\ufrmAddConteact.pas">
       <Form>AddConteactForm</Form>
     </DCCReference>
+    <DCCReference Include="uTradeUnit\uTradeUnit.pas" />
     <None Include="config.ini" />
   </ItemGroup>
 </Project>

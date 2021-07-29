@@ -1,0 +1,20 @@
+unit uTradeUnit;
+
+interface
+
+procedure AddOneOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double);
+
+implementation
+
+uses
+  MainWIN,uManagerThread;
+
+//生成线程提交订单
+procedure AddOneOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double;);
+var
+begin
+  TManagerThread.Create(InstrumentID,Direction,OffsetFlag,LimitPrice);
+end;
+
+end.
+
