@@ -2,8 +2,6 @@ unit uTradeUnit;
 
 interface
 
-procedure AddOneOrder(AInstrumentID: PChar; ADirection: Char; AOffsetFlag: Char; ALimitPrice: Double);
-
 implementation
 
 uses

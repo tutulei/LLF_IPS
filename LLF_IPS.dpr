@@ -14,7 +14,10 @@ uses
   uDBManager in 'uDBManager\uDBManager.pas',
   uTradeAPI in 'CTPProxy\uTradeAPI.pas',
   uConfigUnit in 'CommonUnits\uConfigUnit.pas',
-  uTradeUnit in 'uTradeUnit\uTradeUnit.pas';
+  uTradeUnit in 'uTradeUnit\uTradeUnit.pas',
+  uDataCenter in 'uData\uDataCenter.pas',
+  uTimer in 'CommonUnits\uTimer.pas',
+  uDrawView in 'DrawView\uDrawView.pas';
 
 {$R *.res}
 

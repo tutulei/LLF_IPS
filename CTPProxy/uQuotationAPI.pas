@@ -6,7 +6,7 @@ unit uQuotationAPI;
 interface
 
 uses
-  uQuotationDataStruct, Windows, uConstants, Classes, SysUtils;
+  uDataStruct, Windows, uConstants, Classes, SysUtils;
 
 type
   PPChar = ^PChar;

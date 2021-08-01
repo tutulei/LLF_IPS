@@ -1,0 +1,17 @@
+unit uTimer;
+
+interface
+
+uses
+  ExtCtrls;
+
+implementation
+
+type
+  TTimingEvent = class
+  private
+    timer: TTimer;
+  end;
+
+end.
+

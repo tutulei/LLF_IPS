@@ -3,48 +3,56 @@ unit uConfigUnit;
 interface
 
 uses
-  IniFiles,uConstants,SysUtils,Forms;
+  XMLIntf, XMLDoc, uConstants, SysUtils, Forms;
+
+type
+  AccountStruct = record
+    sTradeServer: string;
+    sQuotationServer: string;
+    sAccount: string;
+    sPassword: string;
+    sBrokerID: string;
+    sAuthCode: string;
+    sAppid: string;
+  end;
 
 var
-  inifile: TIniFile;
-    //ÐÐÇéµÇÂ¼ÅäÖÃ
-  quotationflowpath: string;
-  quotationserver: string;
-    //½»Ò×µÇÂ¼ÅäÖÃ
-  tradeflowpath: string;
-  tradeserver: string;
-  tradeaccount: string;
-  tradebrokerid: string;
-  tradepassword: string;
-  tradeauthcode: string;
-  tradeappid: string;
-
-  dllName: string;  
+  iXMLAreaFile: IXMLDocument;
+  account: AccountStruct;
+  account1: AccountStruct;
+  account2: AccountStruct;
+  account3: AccountStruct;
+  dllName: string;
 
 procedure InitConfiguration();
 
 implementation
 
-
 procedure InitConfiguration();
 var
-  account: string;
+  RootNode: IXMLNode;
+  tempnode: IXMLNode;
 begin
-  account := 'account1';
   dllName := 'QuotationAndTraderCTP.dll';
-  WorkPath := ExtractFilePath(application.exename);
-  inifile := TIniFile.Create(WorkPath + 'config.ini');
-  quotationflowpath := inifile.ReadString('common', 'flowpath','');
-  quotationserver := inifile.ReadString(account, 'quotation.server','');
-  tradeflowpath:= inifile.ReadString('common', 'flowpath','');
-  tradeserver:= inifile.ReadString(account,'trade.server','');
-  tradeaccount:= inifile.ReadString(account,'trade.account','');
-  tradebrokerid:= inifile.ReadString(account,'trade.brokerid','');
-  tradepassword:= inifile.ReadString(account,'trade.password','');
-  tradeauthcode:= inifile.ReadString(account,'trade.authcode','');
-  tradeappid:= inifile.ReadString(account,'trade.appid','');
-end;  
 
+  iXMLAreaFile := TXMLDocument.Create(nil);
+  WorkPath := ExtractFilePath(application.exename);
+  iXMLAreaFile.FileName := WorkPath + 'config\config.xml';
+//  iXMLAreaFile.Encoding := 'UTF-8';
+  iXMLAreaFile.active := True;
+
+  RootNode := iXMLAreaFile.DocumentElement;
+  tempnode := RootNode.ChildNodes[0];
+  account1.sAccount := tempnode.ChildNodes['item'].Attributes['Account'];
+  account1.sPassword := tempnode.ChildNodes['item'].Attributes['PassWord'];
+  account1.sBrokerID := tempnode.ChildNodes['item'].Attributes['BrokerID'];
+  account1.sAuthCode := tempnode.ChildNodes['item'].Attributes['AuthCode'];
+  account1.sAppid := tempnode.ChildNodes['item'].Attributes['AppID'];
+  account1.sTradeServer := tempnode.ChildNodes['server'].ChildValues['trade'];
+  account1.sQuotationServer := tempnode.ChildNodes['server'].ChildValues['quotation'];
+
+  account := account1;
+end;
 
 end.
 

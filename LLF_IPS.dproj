@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{83555ffc-a5a0-48bb-aaec-73eda1ca8945}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -34,18 +35,20 @@
     <DCCReference Include="CommonUnits\uConfigUnit.pas" />
     <DCCReference Include="CommonUnits\uConstants.pas" />
     <DCCReference Include="CommonUnits\uDataStruct.pas" />
+    <DCCReference Include="CommonUnits\uTimer.pas" />
     <DCCReference Include="CTPProxy\uQuotationAPI.pas" />
     <DCCReference Include="CTPProxy\uTradeAPI.pas" />
+    <DCCReference Include="DrawView\uDrawView.pas" />
     <DCCReference Include="MainWIN.pas">
       <Form>MainWindow</Form>
     </DCCReference>
     <DCCReference Include="Quotation_Manager\uContractsSchedule.pas" />
     <DCCReference Include="Quotation_Manager\uManagerThread.pas" />
+    <DCCReference Include="uData\uDataCenter.pas" />
     <DCCReference Include="uDBManager\uDBManager.pas" />
     <DCCReference Include="ufrmContract\ufrmAddConteact.pas">
       <Form>AddConteactForm</Form>
     </DCCReference>
     <DCCReference Include="uTradeUnit\uTradeUnit.pas" />
-    <None Include="config.ini" />
   </ItemGroup>
 </Project>

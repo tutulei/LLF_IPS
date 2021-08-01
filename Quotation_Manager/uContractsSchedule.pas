@@ -7,8 +7,7 @@ unit uContractsSchedule;
 interface
 
 uses
-  uQuotationDataStruct, Grids, Classes, uConstants, SysUtils, Math, Windows,
-  ChartManager;
+  uDataStruct, Grids, Classes, uConstants, SysUtils, Math, Windows, ChartManager,uDrawView;
 
 type
   PStringGrid = ^TStringGrid;
@@ -54,19 +53,17 @@ type
 
     //返回类型名称
     function TypeToString(t: ContractType): string;
-
-    procedure updatePriceGrid(tick:TQuotationData);    
+    procedure updatePriceGrid(tick: TQuotationData);
   end;
 
 procedure DrawChartTimely(Axvalue: string; Ayvalue: Double; AFastLineSeries: Pointer);
 
 function fQuotationDataTurnToTStrings(data: TQuotationData; change: string; changeRate: string): TStrings;
 
-
 implementation
 
 uses
-  MainWIN, Series;
+  MainWIN, Series, uDataCenter;
 
 procedure TDataSchedule.AddContracts(arr: array of PChar);
 var
@@ -183,13 +180,13 @@ begin
 
   //1Grid列表数据刷新
   dataList := fQuotationDataTurnToTStrings(tick, sChange, sChangeRate);
-  pGrid.Rows[index + 1] := dataList;
-
-
-
+  TQuotationDataCenter.Instance.addItem(tick.InstrumentID,@dataList);
+  //界面更新
+  MySpi.instance.RunSynchronize(MySpi.instance.DrawQuotationGridView);
+//  pGrid.Rows[index + 1] := dataList;
 end;
 
-procedure TDataSchedule.updatePriceGrid(tick:TQuotationData);
+procedure TDataSchedule.updatePriceGrid(tick: TQuotationData);
 begin
 
   pPriceGrid.Cells[1, 0] := FloatToStr(tick.AskVolume5);
@@ -197,13 +194,13 @@ begin
   pPriceGrid.Cells[1, 2] := FloatToStr(tick.AskVolume3);
   pPriceGrid.Cells[1, 3] := FloatToStr(tick.AskVolume2);
   pPriceGrid.Cells[1, 4] := FloatToStr(tick.AskVolume1);
-  
+
   pPriceGrid.Cells[1, 5] := FloatToStr(tick.BidVolume1);
   pPriceGrid.Cells[1, 6] := FloatToStr(tick.BidVolume2);
   pPriceGrid.Cells[1, 7] := FloatToStr(tick.BidVolume3);
   pPriceGrid.Cells[1, 8] := FloatToStr(tick.BidVolume4);
   pPriceGrid.Cells[1, 9] := FloatToStr(tick.BidVolume5);
-  
+
   if tick.AskVolume5 <> 0 then
     pPriceGrid.Cells[0, 0] := FloatToStr(tick.AskPrice5)
   else
@@ -244,7 +241,7 @@ begin
     pPriceGrid.Cells[0, 9] := FloatToStr(tick.BidPrice5)
   else
     pPriceGrid.Cells[0, 9] := '-';
-end;  
+end;
 
 constructor TDataSchedule.Create(pwin: Pointer);
 begin
@@ -252,7 +249,7 @@ begin
   pFuturesGrid := @(PMainWindow(pwindow).FFuturesQuotationGrid);
   pActualsGrid := @(PMainWindow(pwindow).FOptionQuotationGrid);
   pOptionGrid := @(PMainWindow(pwindow).ActualsQuotationGrid);
-  pPriceGrid := @(PMainWindow(pwindow).PriceGrid);  
+  pPriceGrid := @(PMainWindow(pwindow).PriceGrid);
   FFuturesSeatingList := TStringList.Create();
   FOptionSeatingList := TStringList.Create();
   FActualsSeatingList := TStringList.Create();
@@ -271,6 +268,7 @@ begin
   Result := FUTURES;
 end;
 
+//数据格式处理
 function fQuotationDataTurnToTStrings(data: TQuotationData; change: string; changeRate: string): TStrings;
 var
   tmp: TStrings;
@@ -278,7 +276,7 @@ begin
   tmp := TStringList.Create;
   tmp.DelimitedText := data.InstrumentID + ',' + data.ExchangeInstID + ',' + FloatToStr(data.LastPrice) + ',' + change + ',' + FloatToStr(data.BidPrice1) + ',' + IntToStr(data.BidVolume1) + ',' + FloatToStr(data.AskPrice1) + ',' + IntToStr(data.AskVolume1) + ',' + '成交量' + ',' + FloatToStr(data.OpenInterest) + ',' + FloatToStr(data.UpperLimitPrice) + ',' + FloatToStr(data.LowerLimitPrice) + ',' + FloatToStr(data.OpenPrice) + ',' + FloatToStr(data.PreSettlementPrice) + ',' + FloatToStr(data.HighestPrice) + ',' + FloatToStr(data.LowestPrice) + ',' + IntToStr(data.Volume) + ',' + changeRate + ',' + FloatToStr(data.PreClosePrice) + ',' + FloatToStr(data.Turnover) + ',' + 'jys' + ',' + data.UpdateTime;
   Result := tmp;
-
+  tmp.Free;
 end;
 
 function TDataSchedule.getGrid(myType: ContractType): PStringGrid;
