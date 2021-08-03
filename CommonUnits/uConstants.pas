@@ -50,6 +50,33 @@ const
   ///改单已经被拒绝
   THOST_FTDC_OSS_ModifyRejected = '6';
 
+  ///开仓
+  THOST_FTDC_OF_Open = '0';
+  ///平仓
+  THOST_FTDC_OF_Close = '1';
+  ///强平
+  THOST_FTDC_OF_ForceClose = '2';
+  ///平今
+  THOST_FTDC_OF_CloseToday = '3';
+  ///平昨
+  THOST_FTDC_OF_CloseYesterday = '4';
+  ///强减
+  THOST_FTDC_OF_ForceOff = '5';
+  ///本地强平
+  THOST_FTDC_OF_LocalForceClose = '6';
+
+  ///买
+  THOST_FTDC_D_Buy = '0';
+  ///卖
+  THOST_FTDC_D_Sell = '1';
+
+//0买 1 卖
+function getOrderDirectionString(A: Char): string;
+
+function getOrderStatusMsg(OrderSubmitStatus: Char; statusMsg: string): string;
+
+function getOrderOffsetFlag(OffsetFlag: Char): string;
+
 type
 //  PTFastLineSeries = ^TFastLineSeries;
 
@@ -66,6 +93,72 @@ implementation
 procedure TmyTStringGrid.DeleteRow(ARow: Longint);
 begin
   inherited;
+end;
+
+function getOrderDirectionString(A: Char): string;
+begin
+  if (A = THOST_FTDC_D_Buy) then
+  begin
+    Result := '买';
+  end
+  else if (A = THOST_FTDC_D_Sell) then
+  begin
+    Result := '卖';
+  end;
+  Result := '';
+end;
+
+function getOrderStatusMsg(OrderSubmitStatus: Char; statusMsg: string): string;
+var
+  str: string;
+begin
+  case OrderSubmitStatus of
+    THOST_FTDC_OSS_InsertSubmitted:
+      str := '已提交';
+    THOST_FTDC_OSS_CancelSubmitted:
+      str := '撤单已提交';
+    THOST_FTDC_OSS_ModifySubmitted:
+      str := '修改已提交';
+    THOST_FTDC_OSS_Accepted:
+      str := '已接受';
+    THOST_FTDC_OSS_InsertRejected:
+      str := '报单已被拒绝';
+    THOST_FTDC_OSS_CancelRejected:
+      str := '撤单已被拒绝';
+    THOST_FTDC_OSS_ModifyRejected:
+      str := '改单已被拒绝';
+  end;
+  Result := str + ':' + statusMsg;
+end;
+
+function getOrderOffsetFlag(OffsetFlag: Char): string;
+var
+  str: string;
+begin
+  case OffsetFlag of
+
+    THOST_FTDC_OF_Open:
+      str := '开仓';
+
+    THOST_FTDC_OF_Close:
+      str := '平仓';
+
+    THOST_FTDC_OF_ForceClose:
+      str := '强平';
+
+    THOST_FTDC_OF_CloseToday:
+      str := '今平';
+
+    THOST_FTDC_OF_CloseYesterday:
+      str := '平昨';
+
+    THOST_FTDC_OF_ForceOff:
+      str := '强减';
+
+    THOST_FTDC_OF_LocalForceClose:
+      str := '本地强平';
+  end;
+  Result := str;
 end;
 
 end.

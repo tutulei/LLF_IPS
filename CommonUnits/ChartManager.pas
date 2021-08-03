@@ -32,7 +32,7 @@ type
     CacheSize: Integer;
     procedure AddSeries(const Akey: string; Aseries: TObject);
   public
-    constructor Create(bindChart: PChart; const ACacheSize: Integer = 3);
+    constructor Create(bindChart: PChart; const ACacheSize: Integer = 12);
     procedure RemoveSeries(const Akey: string = '');
     function GetCurrentSeries(): Pointer;
     procedure SetCurrentSeries(const Akey: string);
@@ -53,7 +53,7 @@ procedure CloseChart(APChart: PChart);
 
 implementation
 
-constructor TSeriesManager.Create(bindChart: PChart; const ACacheSize: Integer = 3);
+constructor TSeriesManager.Create(bindChart: PChart; const ACacheSize: Integer = 12);
 begin
   inherited Create;
   SeriesList := TStringList.Create;

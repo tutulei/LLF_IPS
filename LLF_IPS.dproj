@@ -14,6 +14,7 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_Define>RELEASE</DCC_Define>
+    <DCC_ExeOutput>C:\Users\think\LLF_IPS</DCC_ExeOutput>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
@@ -35,6 +36,7 @@
     <DCCReference Include="CommonUnits\uConfigUnit.pas" />
     <DCCReference Include="CommonUnits\uConstants.pas" />
     <DCCReference Include="CommonUnits\uDataStruct.pas" />
+    <DCCReference Include="CommonUnits\uManagerThread.pas" />
     <DCCReference Include="CommonUnits\uTimer.pas" />
     <DCCReference Include="CTPProxy\uQuotationAPI.pas" />
     <DCCReference Include="CTPProxy\uTradeAPI.pas" />
@@ -43,11 +45,13 @@
       <Form>MainWindow</Form>
     </DCCReference>
     <DCCReference Include="Quotation_Manager\uContractsSchedule.pas" />
-    <DCCReference Include="Quotation_Manager\uManagerThread.pas" />
     <DCCReference Include="uData\uDataCenter.pas" />
     <DCCReference Include="uDBManager\uDBManager.pas" />
-    <DCCReference Include="ufrmContract\ufrmAddConteact.pas">
+    <DCCReference Include="ufrm\ufrmAddConteact.pas">
       <Form>AddConteactForm</Form>
+    </DCCReference>
+    <DCCReference Include="ufrm\ufrmlogin.pas">
+      <Form>LoginTradeFrom</Form>
     </DCCReference>
     <DCCReference Include="uTradeUnit\uTradeUnit.pas" />
   </ItemGroup>

@@ -103,7 +103,7 @@ end;
 数据推送区：
 1.Grid行情展示 √
 2.Chart走势图展示 √
-3.下单面板买卖12345价展示 ×
+3.下单面板买卖12345价展示 √
 *)
 procedure TDataSchedule.ScheduleTick(tick: TQuotationData);
 var
@@ -130,7 +130,6 @@ begin
 //    MessageBox(0, tick.InstrumentID, '错误ID不存在', MB_OKCANCEL);
     Exit;
   end;
-
   //1确定涨跌和涨跌幅
   if (pGrid.Cells[2, index + 1] = '') then
   begin
@@ -180,9 +179,9 @@ begin
 
   //1Grid列表数据刷新
   dataList := fQuotationDataTurnToTStrings(tick, sChange, sChangeRate);
-  TQuotationDataCenter.Instance.addItem(tick.InstrumentID,@dataList);
+  TQuotationDataCenter.Instance.addItem(tick.InstrumentID,dataList);
   //界面更新
-  MySpi.instance.RunSynchronize(MySpi.instance.DrawQuotationGridView);
+  TDrawView.instance.RunSynchronize(TDrawView.instance.DrawQuotationGridView);
 //  pGrid.Rows[index + 1] := dataList;
 end;
 
@@ -272,11 +271,12 @@ end;
 function fQuotationDataTurnToTStrings(data: TQuotationData; change: string; changeRate: string): TStrings;
 var
   tmp: TStrings;
+  str:string;
 begin
   tmp := TStringList.Create;
-  tmp.DelimitedText := data.InstrumentID + ',' + data.ExchangeInstID + ',' + FloatToStr(data.LastPrice) + ',' + change + ',' + FloatToStr(data.BidPrice1) + ',' + IntToStr(data.BidVolume1) + ',' + FloatToStr(data.AskPrice1) + ',' + IntToStr(data.AskVolume1) + ',' + '成交量' + ',' + FloatToStr(data.OpenInterest) + ',' + FloatToStr(data.UpperLimitPrice) + ',' + FloatToStr(data.LowerLimitPrice) + ',' + FloatToStr(data.OpenPrice) + ',' + FloatToStr(data.PreSettlementPrice) + ',' + FloatToStr(data.HighestPrice) + ',' + FloatToStr(data.LowestPrice) + ',' + IntToStr(data.Volume) + ',' + changeRate + ',' + FloatToStr(data.PreClosePrice) + ',' + FloatToStr(data.Turnover) + ',' + 'jys' + ',' + data.UpdateTime;
+  tmp.DelimitedText := data.InstrumentID + ',' + FloatToStr(data.LastPrice) + ',' + change + ',' + FloatToStr(data.BidPrice1) + ',' + IntToStr(data.BidVolume1) + ',' + FloatToStr(data.AskPrice1) + ',' + IntToStr(data.AskVolume1) + ',' + '成交量' + ',' + FloatToStr(data.OpenInterest) + ',' + FloatToStr(data.UpperLimitPrice) + ',' + FloatToStr(data.LowerLimitPrice) + ',' + FloatToStr(data.OpenPrice) + ',' + FloatToStr(data.PreSettlementPrice) + ',' + FloatToStr(data.HighestPrice) + ',' + FloatToStr(data.LowestPrice) + ',' + IntToStr(data.Volume) + ',' + changeRate + ',' + FloatToStr(data.PreClosePrice) + ',' + FloatToStr(data.Turnover) + ',' + data.UpdateTime;
   Result := tmp;
-  tmp.Free;
+//  tmp.Free;
 end;
 
 function TDataSchedule.getGrid(myType: ContractType): PStringGrid;

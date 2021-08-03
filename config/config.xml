@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="GB2312" ?>
 <root>
 	<group Name = "Simnow[7x24]">
-		<item Account="189010" PassWord="xiangyuan@123" BrokerID="9999" AuthCode="0000000000000000" AppID="simnow_client_test"/>	
+		<item Account="189010" PassWord="1450730193@@lu" BrokerID="9999" AuthCode="0000000000000000" AppID="simnow_client_test"/>	
 		<server>
 			<trade>tcp://180.168.146.187:10130</trade>
 			<quotation>tcp://180.168.146.187:10131</quotation>
@@ -21,4 +21,12 @@
 			<quotation>tcp://218.202.237.33:10213</quotation>
 		</server>
 	</group>
+	<group Name = "界面默认账户参数">
+		<item Account="90100893" PassWord="" BrokerID="1008" AuthCode="A7KVN5MTEQ8B66EE" AppID="client_xytz_1.0.1"/>	
+		<server>
+			<trade>tcp://115.238.106.253:41217</trade>
+			<quotation>tcp://218.202.237.33:10213</quotation>
+		</server>
+	</group>
+	
 </root>

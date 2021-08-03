@@ -18,7 +18,7 @@ type
 
 var
   iXMLAreaFile: IXMLDocument;
-  account: AccountStruct;
+  defaultAccount: AccountStruct;
   account1: AccountStruct;
   account2: AccountStruct;
   account3: AccountStruct;
@@ -38,11 +38,10 @@ begin
   iXMLAreaFile := TXMLDocument.Create(nil);
   WorkPath := ExtractFilePath(application.exename);
   iXMLAreaFile.FileName := WorkPath + 'config\config.xml';
-//  iXMLAreaFile.Encoding := 'UTF-8';
   iXMLAreaFile.active := True;
 
   RootNode := iXMLAreaFile.DocumentElement;
-  tempnode := RootNode.ChildNodes[0];
+  tempnode := RootNode.ChildNodes[3];
   account1.sAccount := tempnode.ChildNodes['item'].Attributes['Account'];
   account1.sPassword := tempnode.ChildNodes['item'].Attributes['PassWord'];
   account1.sBrokerID := tempnode.ChildNodes['item'].Attributes['BrokerID'];
@@ -50,8 +49,7 @@ begin
   account1.sAppid := tempnode.ChildNodes['item'].Attributes['AppID'];
   account1.sTradeServer := tempnode.ChildNodes['server'].ChildValues['trade'];
   account1.sQuotationServer := tempnode.ChildNodes['server'].ChildValues['quotation'];
-
-  account := account1;
+  defaultAccount := account1;
 end;
 
 end.

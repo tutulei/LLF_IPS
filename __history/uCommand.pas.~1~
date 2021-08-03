@@ -1,0 +1,10 @@
+unit uCommand;
+
+interface
+
+var
+  userName : string;
+
+implementation
+
+end.

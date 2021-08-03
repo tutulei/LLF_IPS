@@ -23,7 +23,7 @@ type
   TCancelOrder = function(server: Pointer; FrontID: Integer; SessionID: Integer; OrderRef: PChar): Integer; cdecl;
 
   //查询账户资金
-  TCheckAccountField = function(server: Pointer): Pointer; cdecl;
+  TCheckAccountField = procedure(server: Pointer); cdecl;
 
   //查询已提交报单
   TQueryOrder = function(server: Pointer): Pointer; cdecl;
@@ -32,7 +32,7 @@ type
   TQueryTradeSuccess = function(server: Pointer): Pointer; cdecl;
 
   //回调函数绑定
-  TBindFunctions = procedure(server: Pointer; fun1: Pointer; fun2: Pointer); cdecl;
+  TBindFunctions = procedure(server: Pointer; fun1: Pointer; fun2: Pointer; fun3: Pointer); cdecl;
 
   //DLL封装类
   TTradeProxy = class
@@ -57,15 +57,19 @@ type
     procedure AddLimitPriceOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double; count: Integer);
     procedure RequestCheckPosition();
     function DeleteOrder(FrontID: Integer; SessionID: Integer; OrderRef: PChar): Integer;
-    function CheckCapital(): Pointer;
+    procedure CheckCapital();
     function RequestCheckOrder(): Pointer;
     function GetSucessedOrder(): Pointer;
-    procedure BindFun(fun1: Pointer; fun2: Pointer);
+    procedure BindFun(fun1: Pointer; fun2: Pointer; fun3: Pointer);
   end;
 
 procedure OnfillingPositionData(data: CThostFtdcInvestorPositionField); stdcall;
 
 procedure OnOrderChange(data: CThostFtdcOrderField); stdcall;
+
+function OrderTurnToTextString(data: CThostFtdcOrderField): TStrings;
+
+procedure OnAccountCapital(data: CThostFtdcTradingAccountField); stdcall;
 
 var
   criticalsection: TCriticalSection;
@@ -92,7 +96,7 @@ end;
 procedure TTradeProxy.Connected(psFrontAddress: PChar; mdflowpath: PChar);
 begin
   server := createtradeserver(psFrontAddress, mdflowpath);
-  BindFun(@OnfillingPositionData, @OnOrderChange);
+  BindFun(@OnfillingPositionData, @OnOrderChange, @OnAccountCapital);
 end;
 
 procedure TTradeProxy.AuthAndLogin(BrokerID: PChar; UserID: PChar; Password: PChar; AuthCode: PChar; AppID: PChar);
@@ -116,9 +120,9 @@ begin
   Result := cancelorder(server, FrontID, SessionID, OrderRef);
 end;
 
-function TTradeProxy.CheckCapital(): Pointer;
+procedure TTradeProxy.CheckCapital();
 begin
-  Result := checkaccountfield(server);
+  checkaccountfield(server);
 end;
 
 function TTradeProxy.RequestCheckOrder(): Pointer;
@@ -131,9 +135,9 @@ begin
   Result := querytradesuccess(server);
 end;
 
-procedure TTradeProxy.BindFun(fun1: Pointer; fun2: Pointer);
+procedure TTradeProxy.BindFun(fun1: Pointer; fun2: Pointer; fun3: Pointer);
 begin
-  bindfunstions(server, fun1, fun2);
+  bindfunstions(server, fun1, fun2, fun3);
 end;
 
 procedure OnUIfillingPositionData();
@@ -148,40 +152,55 @@ var
 begin
   TPositionDataCenter.Instance.addItem(data.InstrumentID + '-' + data.PosiDirection, @data);
   //界面更新
-  MySpi.instance.RunSynchronize(MySpi.instance.DrawPositionListView);
+  TDrawView.instance.RunSynchronize(TDrawView.instance.DrawPositionListView);
 //    MessageBox(0, PChar('[OnfillingPositionData] run'+string(GetCurrentProcess)), 'Waring', IDOK);
-//   TThread.Synchronize(GetCurrentProcess,DrawPositionListView);
 end;
+
+//回调函数 -资金情况
+procedure OnAccountCapital(data: CThostFtdcTradingAccountField); stdcall;
+var
+  d: double;
+begin
+  TradingAccountField := data;
+  d := TradingAccountField.Available;
+  TDrawView.instance.RunSynchronize(TDrawView.instance.DrawAccountCapital);
+end;
+
 
 //回调函数-订单变化响应
 procedure OnOrderChange(data: CThostFtdcOrderField); stdcall;
 var
   topdata: CThostFtdcTradingAccountField;
 begin
-  MessageBox(0, PChar('[Order] change'), 'Waring', IDOK);
-
+//  MessageBox(0, PChar(str), 'Waring', IDOK);
+  TCommandWindowsDataCenter.instance.addStrings(OrderTurnToTextString(data));
+  TDrawView.instance.RunSynchronize(TDrawView.instance.PushOrderToCommandWindows);
   //成交事件发生
-  if (StrToInt(data.OrderStatus) < 3) then
+  if ((data.OrderStatus = '0') or (data.OrderStatus = '1') or (data.OrderStatus = '2')) then
   begin
-    //同步初始化资金情况
-    topdata := CThostFtdcTradingAccountField(tradeProxy.CheckCapital()^);
-    MainWindow.TopGrid.Cells[0, 1] := FloatToStr(topdata.Available);
-    MainWindow.TopGrid.Cells[1, 1] := FloatToStr(topdata.WithdrawQuota);
-    MainWindow.TopGrid.Cells[2, 1] := FloatToStr(topdata.Reserve);
-    MainWindow.TopGrid.Cells[3, 1] := FloatToStr(topdata.Mortgage);
-    MainWindow.TopGrid.Cells[4, 1] := FloatToStr(topdata.Credit);
-    MainWindow.TopGrid.Cells[5, 1] := FloatToStr(topdata.PositionProfit);
-    MainWindow.TopGrid.Cells[6, 1] := FloatToStr(topdata.CloseProfit);
-    MainWindow.TopGrid.Cells[7, 1] := FloatToStr(topdata.CurrMargin);
-    MainWindow.TopGrid.Cells[8, 1] := FloatToStr(topdata.Interest);
-    MainWindow.TopGrid.Cells[9, 1] := FloatToStr(topdata.CloseProfit);
-    Sleep(1000);  
-    //更新提交界面和持仓界面
     tradeProxy.RequestCheckPosition();
     Sleep(1000);
   end;
-  
 
+//  if ((StrToInt(data.OrderStatus) < 3) then
+//  begin
+//    //同步初始化资金情况
+//    topdata := CThostFtdcTradingAccountField(tradeProxy.CheckCapital()^);
+//    MainWindow.TopGrid.Cells[0, 1] := FloatToStr(topdata.Available);
+//    MainWindow.TopGrid.Cells[1, 1] := FloatToStr(topdata.WithdrawQuota);
+//    MainWindow.TopGrid.Cells[2, 1] := FloatToStr(topdata.Reserve);
+//    MainWindow.TopGrid.Cells[3, 1] := FloatToStr(topdata.Mortgage);
+//    MainWindow.TopGrid.Cells[4, 1] := FloatToStr(topdata.Credit);
+//    MainWindow.TopGrid.Cells[5, 1] := FloatToStr(topdata.PositionProfit);
+//    MainWindow.TopGrid.Cells[6, 1] := FloatToStr(topdata.CloseProfit);
+//    MainWindow.TopGrid.Cells[7, 1] := FloatToStr(topdata.CurrMargin);
+//    MainWindow.TopGrid.Cells[8, 1] := FloatToStr(topdata.Interest);
+//    MainWindow.TopGrid.Cells[9, 1] := FloatToStr(topdata.CloseProfit);
+//    Sleep(1000);
+//    //更新提交界面和持仓界面
+//    tradeProxy.RequestCheckPosition();
+//    Sleep(1000);
+//  end;
 //
 //  //报单提交状态
 //  case data.OrderSubmitStatus of
@@ -216,6 +235,29 @@ begin
 //      end;
 //  end;
 
+end;
+
+function OrderTurnToTextString(data: CThostFtdcOrderField): TStrings;
+var
+  list: TStrings;
+begin
+  list := TStringList.Create();
+  list.Add('[订单回调响应' + FloatToStr(data.SequenceNo) + ']: ');
+  list.Add('    用户：');
+  list.Add('    代码：' + data.InstrumentID);
+  list.Add('    多空：' + getOrderDirectionString(data.Direction));
+  list.Add('    开平：' + getOrderOffsetFlag(data.CombOffsetFlag[0]));
+  list.Add('    价格：' + FloatToStr(data.LimitPrice));
+  list.Add('    数量' + FloatToStr(data.VolumeTotalOriginal));
+  list.Add('    状态：' + getOrderStatusMsg(data.OrderSubmitStatus, data.StatusMsg));
+  list.Add('    报单时间：' + data.InsertDate + ' ' + data.InsertTime);
+  list.Add('    报单价格条件：' + data.OrderPriceType);
+  list.Add('    有效期类型' + data.TimeCondition);
+  list.Add('    最小成交量' + FloatToStr(data.MinVolume));
+  list.Add('    今天成交数量：' + FloatToStr(data.VolumeTraded));
+  list.Add('    交易日：' + data.TradingDay);
+  list.Add('    报单编号：' + data.OrderSysID);
+  Result := list;
 end;
 
 end.
