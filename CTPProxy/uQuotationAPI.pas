@@ -35,7 +35,7 @@ type
   TIsConnected = function(server: Pointer): Boolean; cdecl;
 
   //判断是否登录成功
-  TLoginSucess = function(server: Pointer): Boolean; cdecl;
+  TLoginSuccess = function(server: Pointer): Boolean; cdecl;
 
 
   //调用DLL封装类
@@ -52,7 +52,7 @@ type
     got: TGetOneTick;
     dqs: TDestroyQuotationServer;
     ic: TIsConnected;
-    ls: TLoginSucess;
+    ls: TLoginSuccess;
   public
     constructor Create(key: string);
 

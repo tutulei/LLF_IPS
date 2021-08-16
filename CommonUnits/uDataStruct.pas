@@ -129,7 +129,15 @@ type
 
   TThostFtdcBizTypeType = Char;
 
+  TThostFtdcOrderActionRefType = Integer;
+
+  TThostFtdcActionFlagType = Char;
+
+  TThostFtdcErrorIDType = Integer;  
+
   //投资者持仓
+  PThostFtdcInvestorPositionField = ^CThostFtdcInvestorPositionField;
+
   CThostFtdcInvestorPositionField = record
     InstrumentID: TThostFtdcInstrumentIDType;
   	///经纪公司代码
@@ -231,6 +239,8 @@ type
   end;
 
   //成交
+  PThostFtdcTradeField = ^CThostFtdcTradeField;
+
   CThostFtdcTradeField = record
   	///经纪公司代码
     BrokerID: TThostFtdcBrokerIDType;
@@ -297,6 +307,8 @@ type
   end;
 
   //报单
+  PThostFtdcOrderField = ^CThostFtdcOrderField;
+
   CThostFtdcOrderField = record
   	///经纪公司代码
     BrokerID: TThostFtdcBrokerIDType;
@@ -427,6 +439,8 @@ type
   end;
 
   //资金账户
+  PThostFtdcTradingAccountField = ^CThostFtdcTradingAccountField;
+
   CThostFtdcTradingAccountField = record
   	///经纪公司代码
     BrokerID: TThostFtdcBrokerIDType;
@@ -620,11 +634,143 @@ type
   end;
 
 
+  //输入报单
+  PThostFtdcInputOrderField = ^CThostFtdcInputOrderField;
+
+  CThostFtdcInputOrderField = record
+  	///经纪公司代码
+    BrokerID: TThostFtdcBrokerIDType;
+  	///投资者代码
+    InvestorID: TThostFtdcInvestorIDType;
+  	///合约代码
+    InstrumentID: TThostFtdcInstrumentIDType;
+  	///报单引用
+    OrderRef: TThostFtdcOrderRefType;
+  	///用户代码
+    UserID: TThostFtdcUserIDType;
+  	///报单价格条件
+    OrderPriceType: TThostFtdcOrderPriceTypeType;
+  	///买卖方向
+    Direction: TThostFtdcDirectionType;
+  	///组合开平标志
+    CombOffsetFlag: TThostFtdcCombOffsetFlagType;
+  	///组合投机套保标志
+    CombHedgeFlag: TThostFtdcCombHedgeFlagType;
+  	///价格
+    LimitPrice: TThostFtdcPriceType;
+  	///数量
+    VolumeTotalOriginal: TThostFtdcVolumeType;
+  	///有效期类型
+    TimeCondition: TThostFtdcTimeConditionType;
+  	///GTD日期
+    GTDDate: TThostFtdcDateType;
+  	///成交量类型
+    VolumeCondition: TThostFtdcVolumeConditionType;
+  	///最小成交量
+    MinVolume: TThostFtdcVolumeType;
+  	///触发条件
+    ContingentCondition: TThostFtdcContingentConditionType;
+  	///止损价
+    StopPrice: TThostFtdcPriceType;
+  	///强平原因
+    ForceCloseReason: TThostFtdcForceCloseReasonType;
+  	///自动挂起标志
+    IsAutoSuspend: TThostFtdcBoolType;
+  	///业务单元
+    BusinessUnit: TThostFtdcBusinessUnitType;
+  	///请求编号
+    RequestID: TThostFtdcRequestIDType;
+  	///用户强评标志
+    UserForceClose: TThostFtdcBoolType;
+  	///互换单标志
+    IsSwapOrder: TThostFtdcBoolType;
+  	///交易所代码
+    ExchangeID: TThostFtdcExchangeIDType;
+  	///投资单元代码
+    InvestUnitID: TThostFtdcInvestUnitIDType;
+  	///资金账号
+    AccountID: TThostFtdcAccountIDType;
+  	///币种代码
+    CurrencyID: TThostFtdcCurrencyIDType;
+  	///交易编码
+    ClientID: TThostFtdcClientIDType;
+  	///IP地址
+    IPAddress: TThostFtdcIPAddressType;
+  	///Mac地址
+    MacAddress: TThostFtdcMacAddressType;
+  end;
+
+  PThostFtdcInputOrderActionField = ^CThostFtdcInputOrderActionField;
+
+  CThostFtdcInputOrderActionField = record
+    BrokerID: TThostFtdcBrokerIDType;
+  	///投资者代码
+    InvestorID: TThostFtdcInvestorIDType;
+  	///报单操作引用
+    OrderActionRef: TThostFtdcOrderActionRefType;
+  	///报单引用
+    OrderRef: TThostFtdcOrderRefType;
+  	///请求编号
+    RequestID: TThostFtdcRequestIDType;
+  	///前置编号
+    FrontID: TThostFtdcFrontIDType;
+  	///会话编号
+    SessionID: TThostFtdcSessionIDType;
+  	///交易所代码
+    ExchangeID: TThostFtdcExchangeIDType;
+  	///报单编号
+    OrderSysID: TThostFtdcOrderSysIDType;
+  	///操作标志
+    ActionFlag: TThostFtdcActionFlagType;
+  	///价格
+    LimitPrice: TThostFtdcPriceType;
+  	///数量变化
+    VolumeChange: TThostFtdcVolumeType;
+  	///用户代码
+    UserID: TThostFtdcUserIDType;
+  	///合约代码
+    InstrumentID: TThostFtdcInstrumentIDType;
+  	///投资单元代码
+    InvestUnitID: TThostFtdcInvestUnitIDType;
+  	///IP地址
+    IPAddress: TThostFtdcIPAddressType;
+  	///Mac地址
+    MacAddress: TThostFtdcMacAddressType;
+  end;
+
+  PThostFtdcRspInfoField = ^CThostFtdcRspInfoField;
+
+  CThostFtdcRspInfoField = record
+  	///错误代码
+    ErrorID: TThostFtdcErrorIDType;
+  	///错误信息
+    ErrorMsg: TThostFtdcErrorMsgType;
+  end;
+
+
   //折线图-三线
   ThreeSeriesChart = record
     ValueSeries1: TFastLineSeries;
     ValueSeries2: TFastLineSeries;
     ConstantSeries: TFastLineSeries;
+  end;
+
+  TQuotationServerStatus = record
+    FuturesIsLogin: Boolean;
+    FuturesServer: string;
+    OptionIsLogin: Boolean;
+    OptionServer: string;
+    SharesIsLogin: Boolean;
+    SharesServer: string;
+  end;
+
+  TTradeAccountStatus = record
+    FuturesIsLogin: Boolean;
+    FuturesAccount: string;
+    OptionIsLogin: Boolean;
+    OptionAccount: string;
+    SharesIsLogin: Boolean;
+    SharesAccount: string;
   end;
 
 implementation

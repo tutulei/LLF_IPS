@@ -11,7 +11,7 @@ uses
 type
   TmySeriesManager = class(TSeriesManager)
   public
-    constructor Create(AbindChart: PChart; const ACacheSize: Integer = 3);
+    constructor Create(AbindChart: PChart; const ACacheSize: Integer = 12);
     procedure CurrentSeriesBindChart(); override;
     procedure CreateSeries(const Akey: string); override;
     function GetAveragePrice(const Aid: string; const AcurrentPrice: Double): Double;
@@ -31,7 +31,7 @@ implementation
 uses
   Math;
 
-constructor TmySeriesManager.Create(AbindChart: PChart; const ACacheSize: Integer = 3);
+constructor TmySeriesManager.Create(AbindChart: PChart; const ACacheSize: Integer = 12);
 begin
   inherited Create(AbindChart, ACacheSize);
 end;

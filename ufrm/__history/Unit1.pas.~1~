@@ -1,0 +1,93 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, CheckLst, ComCtrls, ImgList, Grids;
+
+type
+  TForm1 = class(TForm)
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    ListView1: TListView;
+    ListView2: TListView;
+    ImageList1: TImageList;
+    QuotationAddrGrid: TStringGrid;
+    TabSheet4: TTabSheet;
+    GroupBox1: TGroupBox;
+    SaveButton: TButton;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure QuotationAddrGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure QuotationAddrGridClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormShow(Sender: TObject);
+var
+  datalist:TStrings;
+begin
+  datalist := TStringList.Create;
+  QuotationAddrGrid.DefaultColWidth := (PageControl1.Width div 2) - 40;
+  QuotationAddrGrid.ColWidths[0] := 50;
+  datalist.DelimitedText := ' ,Simnow[电信],tcp://180.168.146.187:10211';
+  QuotationAddrGrid.Rows[0] := datalist;
+  datalist.DelimitedText := ' ,Simnow[7x24],tcp://180.168.146.187:10131';
+  QuotationAddrGrid.Rows[1] := datalist;
+  datalist.DelimitedText := ' ,南华期货仿真,tcp://218.202.237.33:10213';
+  QuotationAddrGrid.Rows[2] := datalist;
+
+end;
+
+procedure TForm1.QuotationAddrGridClick(Sender: TObject);
+begin
+//  TStringGrid(Sender).Cells[0,TStringGrid(Sender).Row] := '#selected#';
+end;
+
+procedure TForm1.QuotationAddrGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+var
+  Bitmap: TBitmap;
+  r: TRect;
+  width4: Integer;
+  heigth4: Integer;
+  format:Graphics.TTextFormat;
+  text:string;  
+begin
+//  if (TStringGrid(Sender).Cells[ACol,ARow] = '#selected#') then
+  if (gdSelected in State) then
+  begin
+    format := [tfSingleLine, tfVerticalCenter];
+    text := TStringGrid(Sender).Cells[ACol, ARow];
+    TStringGrid(Sender).Canvas.Brush.Color := clWindow;
+    TStringGrid(Sender).Canvas.FillRect(Rect);
+    TStringGrid(Sender).Canvas.Font.Color := clBlack;
+    TStringGrid(Sender).Canvas.TextRect(Rect, text, format);
+    if (ACol = 0) then
+    begin
+      Bitmap := TBitmap.Create;
+      ImageList1.GetBitmap(0, Bitmap);
+      r := Classes.Rect(-10, 0, Bitmap.Width + 10, Bitmap.Height);
+      TStringGrid(Sender).Canvas.CopyRect(Rect, Bitmap.Canvas, r);
+      Bitmap.Free;
+    end;
+  end;
+
+end;
+
+end.
+

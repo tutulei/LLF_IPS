@@ -45,5 +45,17 @@
     <Transaction>2021/08/03 10:59:23.567.pas,D:\Projects\LLF_IPS\ufrmContract\ufrmAddConteact.pas=D:\Projects\LLF_IPS\ufrm\ufrmAddConteact.pas</Transaction>
     <Transaction>2021/08/03 10:59:23.567.dfm,D:\Projects\LLF_IPS\ufrmContract\ufrmAddConteact.dfm=D:\Projects\LLF_IPS\ufrm\ufrmAddConteact.dfm</Transaction>
     <Transaction>2021/08/03 11:25:39.127.pas,D:\Projects\LLF_IPS\Quotation_Manager\uManagerThread.pas=D:\Projects\LLF_IPS\CommonUnits\uManagerThread.pas</Transaction>
+    <Transaction>2021/08/04 14:04:08.582.pas,D:\Projects\LLF_IPS\Unit3.pas=D:\Projects\LLF_IPS\CommonUnits\Unit3.pas</Transaction>
+    <Transaction>2021/08/04 14:04:26.259.pas,D:\Projects\LLF_IPS\CommonUnits\Unit3.pas=D:\Projects\LLF_IPS\CommonUnits\Glass.pas</Transaction>
+    <Transaction>2021/08/07 15:06:44.112.pas,D:\Projects\LLF_IPS\Unit3.pas=</Transaction>
+    <Transaction>2021/08/07 15:06:44.112.dfm,D:\Projects\LLF_IPS\Unit3.dfm=</Transaction>
+    <Transaction>2021/08/07 15:10:56.499.pas,D:\Projects\LLF_IPS\ufrm\Unit5.pas=D:\Projects\LLF_IPS\ufrm\LoginForm.pas</Transaction>
+    <Transaction>2021/08/07 15:10:56.499.dfm,D:\Projects\LLF_IPS\ufrm\Unit5.dfm=D:\Projects\LLF_IPS\ufrm\LoginForm.dfm</Transaction>
+    <Transaction>2021/08/07 15:12:18.506.pas,D:\Projects\LLF_IPS\ufrm\LoginForm.pas=D:\Projects\LLF_IPS\ufrm\ufrmLoginForm.pas</Transaction>
+    <Transaction>2021/08/07 15:12:18.506.dfm,D:\Projects\LLF_IPS\ufrm\LoginForm.dfm=D:\Projects\LLF_IPS\ufrm\ufrmLoginForm.dfm</Transaction>
+    <Transaction>2021/08/07 15:12:30.886.pas,D:\Projects\LLF_IPS\ufrm\Unit1.pas=D:\Projects\LLF_IPS\ufrm\ufrmConfigForm.pas</Transaction>
+    <Transaction>2021/08/07 15:12:30.886.dfm,D:\Projects\LLF_IPS\ufrm\Unit1.dfm=D:\Projects\LLF_IPS\ufrm\ufrmConfigForm.dfm</Transaction>
+    <Transaction>2021/08/07 20:17:09.538.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uGlobalInstance.pas</Transaction>
+    <Transaction>2021/08/09 13:58:44.396.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CTPProxy\uTradeResponse.pas</Transaction>
   </Transactions>
 </BorlandProject>

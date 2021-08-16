@@ -18,13 +18,20 @@ uses
   uDataCenter in 'uData\uDataCenter.pas',
   uTimer in 'CommonUnits\uTimer.pas',
   uDrawView in 'DrawView\uDrawView.pas',
-  ufrmlogin in 'ufrm\ufrmlogin.pas' {LoginTradeFrom};
+  ufrmlogin in 'ufrm\ufrmlogin.pas' {LoginTradeFrom},
+  Glass in 'CommonUnits\Glass.pas',
+  ufrmConfigForm in 'ufrm\ufrmConfigForm.pas' {ConfigForm},
+  ufrmLoginForm in 'ufrm\ufrmLoginForm.pas' {LoginForm},
+  uGlobalInstance in 'CommonUnits\uGlobalInstance.pas',
+  uTradeResponse in 'CTPProxy\uTradeResponse.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TLoginForm, LoginForm);
+  Application.CreateForm(TConfigForm, ConfigForm);
   Application.CreateForm(TMainWindow, MainWindow);
   Application.CreateForm(TAddConteactForm, AddConteactForm);
   Application.CreateForm(TLoginTradeFrom, LoginTradeFrom);

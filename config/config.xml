@@ -1,32 +1,41 @@
-<?xml version="1.0" encoding="GB2312" ?>
+<?xml version="1.0" encoding="GB2312"?>
 <root>
-	<group Name = "Simnow[7x24]">
-		<item Account="189010" PassWord="1450730193@@lu" BrokerID="9999" AuthCode="0000000000000000" AppID="simnow_client_test"/>	
-		<server>
-			<trade>tcp://180.168.146.187:10130</trade>
-			<quotation>tcp://180.168.146.187:10131</quotation>
-		</server>
-	</group>
-	<group Name = "Simnow[电信]">
-		<item Account="189010" PassWord="xiangyuan@123" BrokerID="9999" AuthCode="0000000000000000" AppID="simnow_client_test"/>	
-		<server>
-			<trade>tcp://180.168.146.187:10201</trade>
-			<quotation>tcp://180.168.146.187:10211</quotation>
-		</server>
-	</group>
-	<group Name = "南华期货仿真">
-		<item Account="90100893" PassWord="xx147258" BrokerID="1008" AuthCode="A7KVN5MTEQ8B66EE" AppID="client_xytz_1.0.1"/>	
-		<server>
-			<trade>tcp://115.238.106.253:41217</trade>
-			<quotation>tcp://218.202.237.33:10213</quotation>
-		</server>
-	</group>
-	<group Name = "界面默认账户参数">
-		<item Account="90100893" PassWord="" BrokerID="1008" AuthCode="A7KVN5MTEQ8B66EE" AppID="client_xytz_1.0.1"/>	
-		<server>
-			<trade>tcp://115.238.106.253:41217</trade>
-			<quotation>tcp://218.202.237.33:10213</quotation>
-		</server>
-	</group>
-	
+	<trade>
+		<FuturesServer name="默认交易服务" Default="2">
+			<item Name="南华期货仿真" Server="tcp://115.238.106.253:41217" BrokerID="1008"/>
+			<item Name="Simnow[电信]" Server="tcp://180.168.146.187:10201" BrokerID="9999"/>
+			<item Name="Simnow[7x24]" Server="tcp://180.168.146.187:10130" BrokerID="9999"/>
+		</FuturesServer>
+	</trade>
+	<quotation>
+		<FuturesServer name="默认行情服务" Default="2">
+			<item Name="南华期货仿真" Server="tcp://218.202.237.33:10213"/>
+			<item Name="Simnow[电信]" Server="tcp://180.168.146.187:10211"/>
+			<item Name="Simnow[7x24]" Server="tcp://180.168.146.187:10131"/>
+		</FuturesServer>
+	</quotation>
+	<account>
+		<FuturesAccount Default="1">
+			<item Name="华南期货账户" Account="90100893" PassWord="xx147258" AuthCode="A7KVN5MTEQ8B66EE" AppID="client_xytz_1.0.1"/>
+			<item Name="Simnow账户" Account="189010" PassWord="xiangyuan@123" AuthCode="0000000000000000" AppID="simnow_client_test"/>
+		</FuturesAccount>
+	</account>
 </root>
+<!-- 
+		<group Name = "默认账户">
+		
+			<item Account="90100893" PassWord=""AuthCode="A7KVN5MTEQ8B66EE" AppID="client_xytz_1.0.1"/>	
+		</group>
+		<group Name = "Simnow[7x24]">
+			<item Account="189010" PassWord="1450730193@@lu" BrokerID="9999" AuthCode="0000000000000000" AppID="simnow_client_test"/>	
+			<server>tcp://180.168.146.187:10131</server>
+		</group>
+		<group Name = "Simnow[电信]">
+			<item Account="189010" PassWord="xiangyuan@123" BrokerID="9999" AuthCode="0000000000000000" AppID="simnow_client_test"/>	
+			<server>tcp://180.168.146.187:10211</server>
+		</group>
+		<group Name = "南华期货仿真">
+			<item Account="90100893" PassWord="xx147258" BrokerID="1008" AuthCode="A7KVN5MTEQ8B66EE" AppID="client_xytz_1.0.1"/>	
+			<server>tcp://218.202.237.33:10213</server>
+		</group> 
+-->

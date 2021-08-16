@@ -3,7 +3,8 @@ unit uTradeAPI;
 interface
 
 uses
-  uDataStruct, Windows, uConstants, Classes, SysUtils, SyncObjs, uDrawView;
+  uDataStruct, Windows, uConstants, Classes, SysUtils, SyncObjs, uDrawView,
+  Forms;
 
 type
 
@@ -17,29 +18,32 @@ type
   TInputLimitPriceOrder = function(server: Pointer; InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double; count: Integer): Integer; cdecl;
 
   //查询持仓
-  TQueryPosition = procedure(server: Pointer); cdecl;
+  TQueryPosition = function(server: Pointer): Integer; cdecl;
 
   //撤单
-  TCancelOrder = function(server: Pointer; FrontID: Integer; SessionID: Integer; OrderRef: PChar): Integer; cdecl;
+  TCancelOrder = function(server: Pointer; InstrumentID: PChar; ExchangeID: PChar; OrderSysID: PChar): Integer; cdecl;
 
   //查询账户资金
-  TCheckAccountField = procedure(server: Pointer); cdecl;
+  TCheckAccountField = function(server: Pointer): Integer; cdecl;
 
   //查询已提交报单
-  TQueryOrder = function(server: Pointer): Pointer; cdecl;
+  TQueryOrder = function(server: Pointer): Integer; cdecl;
 
   //查询以成交
-  TQueryTradeSuccess = function(server: Pointer): Pointer; cdecl;
+  TQueryTradeSuccess = function(server: Pointer): Integer; cdecl;
 
   //回调函数绑定
-  TBindFunctions = procedure(server: Pointer; fun1: Pointer; fun2: Pointer; fun3: Pointer); cdecl;
+  TBindFunctions = procedure(server: Pointer; fun: Pointer); cdecl;
 
   //DLL封装类
-  TTradeProxy = class
+  TTradeProxy = class(TThread)
   private
     handle: Integer;
     //通信服务
     server: Pointer;
+    //线程安全锁
+    CriticalSection: TCriticalSection;
+    myMutex: HWND;
     {函数指针声明}
     createtradeserver: TCreateTradeServer;
     autoauthandlogintradeserver: TAutoAuthAndLoginTradeServer;
@@ -51,37 +55,54 @@ type
     querytradesuccess: TQueryTradeSuccess;
     bindfunstions: TBindFunctions;
   public
+    free: Boolean;
+    function isLogin(): Boolean;
     constructor Create(key: string);
     procedure Connected(psFrontAddress: PChar; mdflowpath: PChar);
     procedure AuthAndLogin(BrokerID: PChar; UserID: PChar; Password: PChar; AuthCode: PChar; AppID: PChar);
     procedure AddLimitPriceOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double; count: Integer);
-    procedure RequestCheckPosition();
-    function DeleteOrder(FrontID: Integer; SessionID: Integer; OrderRef: PChar): Integer;
-    procedure CheckCapital();
-    function RequestCheckOrder(): Pointer;
-    function GetSucessedOrder(): Pointer;
-    procedure BindFun(fun1: Pointer; fun2: Pointer; fun3: Pointer);
+    function RequestCheckPosition(): Integer;
+    function DeleteOrder(InstrumentID: PChar; ExchangeID: PChar; OrderSysID: PChar): Integer;
+    function CheckCapital(): Integer;
+    function RequestCheckOrder(): Integer;
+    function RequestSucessedOrder(): Integer;
+    procedure BindFun(fun: Pointer);
+    procedure waitFree(dwMilliseconds: DWORD);
+    procedure Execute(); override;
   end;
 
-procedure OnfillingPositionData(data: CThostFtdcInvestorPositionField); stdcall;
+//procedure OnfillingPositionData(Adata: CThostFtdcInvestorPositionField); stdcall;
+//
+//procedure OnOrderChange(Adata: CThostFtdcOrderField); stdcall;
+//
+//
+//procedure OnAccountCapital(Adata: CThostFtdcTradingAccountField); stdcall;
 
-procedure OnOrderChange(data: CThostFtdcOrderField); stdcall;
-
-function OrderTurnToTextString(data: CThostFtdcOrderField): TStrings;
-
-procedure OnAccountCapital(data: CThostFtdcTradingAccountField); stdcall;
-
-var
-  criticalsection: TCriticalSection;
+//var
+//  criticalsection: TCriticalSection;
 
 implementation
 
 uses
-  MainWIN, ComCtrls, uDataCenter;
+  MainWIN, ComCtrls, uDataCenter, uGlobalInstance, uTradeResponse;
+
+procedure TTradeProxy.waitFree(dwMilliseconds: DWORD);//Longint
+var
+  iStart, iStop: DWORD;
+begin
+  iStart := GetTickCount;
+  repeat
+    iStop := GetTickCount;
+    Application.ProcessMessages;
+  until free or ((iStop - iStart) >= dwMilliseconds);
+end;
 
 constructor TTradeProxy.Create(key: string);
 begin
+  inherited Create(False);
   handle := LoadLibrary(PChar(key));
+  free := True;
+  CriticalSection := TCriticalSection.Create();
   createtradeserver := GetProcAddress(Self.handle, PChar(CREATE_TRADE_SERVER));
   autoauthandlogintradeserver := GetProcAddress(Self.handle, PChar(AUTO_AUTH_AND_LOGINTRADE_SERVER));
   inputlimitpriceorder := GetProcAddress(Self.handle, PChar(INPUT_LIMIT_PRICE_ORDER));
@@ -96,12 +117,13 @@ end;
 procedure TTradeProxy.Connected(psFrontAddress: PChar; mdflowpath: PChar);
 begin
   server := createtradeserver(psFrontAddress, mdflowpath);
-  BindFun(@OnfillingPositionData, @OnOrderChange, @OnAccountCapital);
+  BindFun(@OnResponseFunction);
 end;
 
 procedure TTradeProxy.AuthAndLogin(BrokerID: PChar; UserID: PChar; Password: PChar; AuthCode: PChar; AppID: PChar);
 begin
   autoauthandlogintradeserver(server, BrokerID, UserID, Password, AuthCode, AppID);
+  Delay(1000);
 end;
 
 procedure TTradeProxy.AddLimitPriceOrder(InstrumentID: PChar; Direction: Char; OffsetFlag: Char; LimitPrice: Double; count: Integer);
@@ -109,155 +131,78 @@ begin
   inputlimitpriceorder(server, InstrumentID, Direction, OffsetFlag, LimitPrice, count);
 end;
 
-procedure TTradeProxy.RequestCheckPosition();
+function TTradeProxy.DeleteOrder(InstrumentID: PChar; ExchangeID: PChar; OrderSysID: PChar): Integer;
 begin
-  queryposition(server);
+  Result := cancelorder(server, InstrumentID, ExchangeID, OrderSysID);
+  TDrawView.instance.log('DeleteOrder:Return' + IntToStr(Result), $001AFF00, '[DEBUG]');
+end;
+
+function TTradeProxy.RequestCheckPosition(): Integer;
+begin
+  waitFree(5000);
+  free := False;
+  Result := queryposition(server);
+//  TDrawView.instance.log('RequestCheckPosition:Return' + IntToStr(Result), $001AFF00, '[DEBUG]');
 
 end;
 
-function TTradeProxy.DeleteOrder(FrontID: Integer; SessionID: Integer; OrderRef: PChar): Integer;
+function TTradeProxy.CheckCapital(): Integer;
 begin
-  Result := cancelorder(server, FrontID, SessionID, OrderRef);
+
+//  TDrawView.instance.log('CheckCapital:' + ':waitBefor', MainWindow.Richedit1);
+  waitFree(5000);
+//  TDrawView.instance.log('CheckCapital:' + ':waitAfter', MainWindow.Richedit1);
+
+  free := False;
+  Result := checkaccountfield(server);
+//  TDrawView.instance.log('CheckCapital:Return' + IntToStr(Result));
+
 end;
 
-procedure TTradeProxy.CheckCapital();
+function TTradeProxy.RequestCheckOrder(): Integer;
 begin
-  checkaccountfield(server);
-end;
-
-function TTradeProxy.RequestCheckOrder(): Pointer;
-begin
+  waitFree(5000);
+  free := False;
   Result := queryorder(server);
+//  TDrawView.instance.log('RequestCheckOrder:Return' + IntToStr(Result));
+
 end;
 
-function TTradeProxy.GetSucessedOrder(): Pointer;
+function TTradeProxy.RequestSucessedOrder(): Integer;
 begin
+  waitFree(5000);
+  free := False;
   Result := querytradesuccess(server);
+//  TDrawView.instance.log('RequestSucessedOrder:Return' + IntToStr(Result));
 end;
 
-procedure TTradeProxy.BindFun(fun1: Pointer; fun2: Pointer; fun3: Pointer);
+function TTradeProxy.isLogin: Boolean;
 begin
-  bindfunstions(server, fun1, fun2, fun3);
+  Result := False;
+  if (server <> nil) then
+    Result := True;
 end;
 
-procedure OnUIfillingPositionData();
+procedure TTradeProxy.BindFun(fun: Pointer);
 begin
-  Writeln('OnUIfillingPositionData');
+  bindfunstions(server, fun);
 end;
 
-//回调函数-持仓数据更新
-procedure OnfillingPositionData(data: CThostFtdcInvestorPositionField);
-var
-  hdle: Integer;
+//线程运行
+procedure TTradeProxy.Execute;
 begin
-  TPositionDataCenter.Instance.addItem(data.InstrumentID + '-' + data.PosiDirection, @data);
-  //界面更新
-  TDrawView.instance.RunSynchronize(TDrawView.instance.DrawPositionListView);
-//    MessageBox(0, PChar('[OnfillingPositionData] run'+string(GetCurrentProcess)), 'Waring', IDOK);
-end;
+  inherited;
+  repeat
+    Sleep(5000);
+//    TDrawView.instance.log('reflash:' + ':before', nil);
+    Self.CheckCapital;
+//    Self.RequestCheckPosition;
+//    Self.RequestCheckOrder;
+//    Self.RequestSucessedOrder;
+//    TDrawView.instance.log('reflash:' + ':after', nil);
+//    TDrawView.instance.log('交易数据同步', InfoColor, 'PAT');
+  until Terminated;
 
-//回调函数 -资金情况
-procedure OnAccountCapital(data: CThostFtdcTradingAccountField); stdcall;
-var
-  d: double;
-begin
-  TradingAccountField := data;
-  d := TradingAccountField.Available;
-  TDrawView.instance.RunSynchronize(TDrawView.instance.DrawAccountCapital);
-end;
-
-
-//回调函数-订单变化响应
-procedure OnOrderChange(data: CThostFtdcOrderField); stdcall;
-var
-  topdata: CThostFtdcTradingAccountField;
-begin
-//  MessageBox(0, PChar(str), 'Waring', IDOK);
-  TCommandWindowsDataCenter.instance.addStrings(OrderTurnToTextString(data));
-  TDrawView.instance.RunSynchronize(TDrawView.instance.PushOrderToCommandWindows);
-  //成交事件发生
-  if ((data.OrderStatus = '0') or (data.OrderStatus = '1') or (data.OrderStatus = '2')) then
-  begin
-    tradeProxy.RequestCheckPosition();
-    Sleep(1000);
-  end;
-
-//  if ((StrToInt(data.OrderStatus) < 3) then
-//  begin
-//    //同步初始化资金情况
-//    topdata := CThostFtdcTradingAccountField(tradeProxy.CheckCapital()^);
-//    MainWindow.TopGrid.Cells[0, 1] := FloatToStr(topdata.Available);
-//    MainWindow.TopGrid.Cells[1, 1] := FloatToStr(topdata.WithdrawQuota);
-//    MainWindow.TopGrid.Cells[2, 1] := FloatToStr(topdata.Reserve);
-//    MainWindow.TopGrid.Cells[3, 1] := FloatToStr(topdata.Mortgage);
-//    MainWindow.TopGrid.Cells[4, 1] := FloatToStr(topdata.Credit);
-//    MainWindow.TopGrid.Cells[5, 1] := FloatToStr(topdata.PositionProfit);
-//    MainWindow.TopGrid.Cells[6, 1] := FloatToStr(topdata.CloseProfit);
-//    MainWindow.TopGrid.Cells[7, 1] := FloatToStr(topdata.CurrMargin);
-//    MainWindow.TopGrid.Cells[8, 1] := FloatToStr(topdata.Interest);
-//    MainWindow.TopGrid.Cells[9, 1] := FloatToStr(topdata.CloseProfit);
-//    Sleep(1000);
-//    //更新提交界面和持仓界面
-//    tradeProxy.RequestCheckPosition();
-//    Sleep(1000);
-//  end;
-//
-//  //报单提交状态
-//  case data.OrderSubmitStatus of
-//    THOST_FTDC_OSS_InsertSubmitted:
-//      begin
-//      //更新已提交表的界面
-//
-//      end;
-//    THOST_FTDC_OSS_CancelSubmitted:
-//      begin
-//
-//      end;
-//    THOST_FTDC_OSS_ModifySubmitted:
-//      begin
-//
-//      end;
-//    THOST_FTDC_OSS_Accepted:
-//      begin
-//
-//      end;
-//    THOST_FTDC_OSS_InsertRejected:
-//      begin
-//
-//      end;
-//    THOST_FTDC_OSS_CancelRejected:
-//      begin
-//
-//      end;
-//    THOST_FTDC_OSS_ModifyRejected:
-//      begin
-//
-//      end;
-//  end;
-
-end;
-
-function OrderTurnToTextString(data: CThostFtdcOrderField): TStrings;
-var
-  list: TStrings;
-begin
-  list := TStringList.Create();
-  list.Add('[订单回调响应' + FloatToStr(data.SequenceNo) + ']: ');
-  list.Add('    用户：');
-  list.Add('    代码：' + data.InstrumentID);
-  list.Add('    多空：' + getOrderDirectionString(data.Direction));
-  list.Add('    开平：' + getOrderOffsetFlag(data.CombOffsetFlag[0]));
-  list.Add('    价格：' + FloatToStr(data.LimitPrice));
-  list.Add('    数量' + FloatToStr(data.VolumeTotalOriginal));
-  list.Add('    状态：' + getOrderStatusMsg(data.OrderSubmitStatus, data.StatusMsg));
-  list.Add('    报单时间：' + data.InsertDate + ' ' + data.InsertTime);
-  list.Add('    报单价格条件：' + data.OrderPriceType);
-  list.Add('    有效期类型' + data.TimeCondition);
-  list.Add('    最小成交量' + FloatToStr(data.MinVolume));
-  list.Add('    今天成交数量：' + FloatToStr(data.VolumeTraded));
-  list.Add('    交易日：' + data.TradingDay);
-  list.Add('    报单编号：' + data.OrderSysID);
-  Result := list;
 end;
 
 end.

@@ -20,7 +20,7 @@ type
     procedure SetItem(const item: Pointer);
   public
     constructor Create();
-    procedure addItem(key: string; Apdata: Pointer);
+    procedure addItem(key: string; Apdata: Pointer); virtual;
     function getList(): TStringList;
     property Item: Pointer read GetItem write SetItem;
   end;
@@ -58,14 +58,52 @@ type
     class function instance(): TCommandWindowsDataCenter;
 //    procedure addString(Astr:string);
     procedure addStrings(Astrs: TStrings; color: Integer = clBlack);
+//    procedure addItem(key: string; Apdata: Pointer); override;
   end;
 
+  //日志数据
+  TOrderLogDataCenter = class(TDataList)
+  private
+    class var
+      ins: TOrderLogDataCenter;
+  public
+    logData: string;
+    logColor: Integer;
+    logView: TComponent;
+    class function instance(): TOrderLogDataCenter;
+    procedure addLog(Adata: Pointer);
+  end;
+
+  //已提交订单数据类
+  TOrderDataCenter = class(TDataList)
+  private
+    class var
+      ins: TOrderDataCenter;
+      nodealList: TStringList;
+  public
+    ideleteIndex: Integer;
+    class function instance(): TOrderDataCenter;
+    function getNoDealList(): TStringList;
+    procedure addItem(key: string; Apdata: Pointer); override;
+  end;
+
+  //已成交订单数据类
+  TSuccessOrderDataCenter = class(TDataList)
+  private
+    class var
+      ins: TSuccessOrderDataCenter;
+  public
+    class function instance(): TSuccessOrderDataCenter;
+  end;
 
 var
-  TradingAccountField:CThostFtdcTradingAccountField;
-
+  //交易账户持仓数据
+  TradingAccountField: CThostFtdcTradingAccountField;
 
 implementation
+
+uses
+  DateUtils, SysUtils, MainWIN, uConstants;
 
 constructor TDataList.Create();
 begin
@@ -92,6 +130,7 @@ begin
   end
   else
   begin
+    Dispose(Pointer(list.Objects[I]));
     list.Objects[I] := Apdata;
   end;
   lastItem := Apdata;
@@ -127,6 +166,14 @@ begin
   CriticalSection.Leave;
 end;
 
+procedure TOrderLogDataCenter.addLog(Adata: Pointer);
+begin
+  CriticalSection.Enter;
+  list.AddObject(timetostr(now), Adata);
+  lastItem := list.Objects[list.Count - 1];
+  CriticalSection.Leave;
+end;
+
 class function TPositionDataCenter.Instance(): TPositionDataCenter;
 begin
   if (ins = nil) then
@@ -150,6 +197,70 @@ begin
   if (ins = nil) then
   begin
     ins := TCommandWindowsDataCenter.Create();
+  end;
+  Result := ins;
+end;
+
+procedure TOrderDataCenter.addItem(key: string; Apdata: Pointer);
+var
+  p: PThostFtdcOrderField;
+  index: Integer;
+begin
+  inherited;
+  p := Apdata;
+  index := nodealList.IndexOf(IntToStr(p.BrokerOrderSeq));
+  //添加未成交记录
+  if ((p.OrderStatus = THOST_FTDC_OST_PartTradedQueueing) or (p.OrderStatus = THOST_FTDC_OST_PartTradedNotQueueing) or (p.OrderStatus = THOST_FTDC_OST_NoTradeQueueing) or (p.OrderStatus = THOST_FTDC_OST_NoTradeNotQueueing)) then
+  begin
+    //数据没记录，添加记录
+    if (index = -1) then
+    begin
+      //添加订单表中的序号记录，刷新界面时，取该记录的值
+      nodealList.InsertObject(0, IntToStr(p.BrokerOrderSeq), TObject(list.indexof(key)));
+    end;
+  end
+  else
+  begin
+    //记录需要删除，删除记录
+    if (index <> -1) then
+    begin
+      nodealList.Delete(index);
+      ideleteIndex := index;
+    end;
+  end;
+
+end;
+
+function TOrderDataCenter.getNoDealList(): TStringList;
+begin
+  Result := nodealList;
+end;
+
+class function TOrderDataCenter.instance(): TOrderDataCenter;
+begin
+  if (ins = nil) then
+  begin
+    ins := TOrderDataCenter.Create();
+    nodealList := TStringList.Create;
+  end;
+  Result := ins;
+end;
+
+class function TSuccessOrderDataCenter.instance(): TSuccessOrderDataCenter;
+begin
+  if (ins = nil) then
+  begin
+    ins := TSuccessOrderDataCenter.Create();
+  end;
+  Result := ins;
+end;
+
+class function TOrderLogDataCenter.instance(): TOrderLogDataCenter;
+begin
+  if (ins = nil) then
+  begin
+    ins := TOrderLogDataCenter.Create();
+    TOrderLogDataCenter.instance.logView := MainWindow.RichEdit2;
   end;
   Result := ins;
 end;
