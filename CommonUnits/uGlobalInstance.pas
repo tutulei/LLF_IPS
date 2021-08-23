@@ -3,18 +3,23 @@ unit uGlobalInstance;
 interface
 
 uses
-  uQuotationAPI, uTradeAPI, Classes, uContractsSchedule, uDataStruct;
+  uQuotationAPI, uTradeAPI, Classes, uContractsSchedule, uDataStruct,
+  uManagerThread;
 
 var
   //存活界面
   WindowList: TList;
-  FQuotationProxy: TQuotationProxy;
-  FTradeProxy: TTradeProxy;
+  {期货行情交易接口实例}
+  FFuturesQuotationProxy: TFuturesQuotationProxy;
+  FFuturesTradeProxy: TTradeProxy;
+  {期权行情交易接口实例}
+  FOptionQuotationProxy: TOptionQuotationProxy;
   FQuotationThread: TThread;
   FDataSchedule: TDataSchedule;
   QuotationServerStatus: TQuotationServerStatus;
   TradeServerStatus: TTradeAccountStatus;
   nChar: PChar = PChar('');
+
 implementation
 
 end.

@@ -23,6 +23,9 @@ type
   FQuotationServerStruct = record
     sName: string;
     sServer: string;
+    iPort: string;
+    sAccount: string;
+    sPassword: string;
   end;
 
   PAccountStruct = ^FAccountStruct;
@@ -37,15 +40,18 @@ var
 
   //期货交易服务
   FutureTradeServerList: TStringList;
-  DefaultFutureTradeServerIndex:Integer;
+  DefaultFutureTradeServerIndex: Integer;
   //期货行情服务
   FutureQuotationServerList: TStringList;
-  DefaultFutureQuotationServerIndex:Integer;
+  DefaultFutureQuotationServerIndex: Integer;
+  //期权行情服务
+  OptionQuotationServerList: TStringLIst;
+  DefaultOptionQuotationServerIndex: Integer;
   //交易账户
   AccountList: TStringList;
-  DefaultAccountIndex:Integer;
-
-  dllName: string;
+  DefaultAccountIndex: Integer;
+  FuturesdllName: string;
+  OptiondllName: string;
 
 procedure InitConfiguration();
 
@@ -61,10 +67,11 @@ var
   I: Integer;
   count: Integer;
   tempaccount: PAccountStruct;
-  tempfuturequotationserver: PQuotationServerStruct;
+  pQuotationserverData: PQuotationServerStruct;
   tempfuturetradeserver: PTradeServerStruct;
 begin
-  dllName := 'QuotationAndTraderCTP.dll';
+  FuturesdllName := 'QuotationAndTraderCTP.dll';
+  OptiondllName := 'libdfapi.dll';
   iXMLAreaFile := TXMLDocument.Create(nil);
   WorkPath := ExtractFilePath(application.exename);
   iXMLAreaFile.FileName := WorkPath + 'config\config.xml';
@@ -74,7 +81,8 @@ begin
   AccountList := TStringList.Create;
   FutureQuotationServerList := TStringList.Create;
   FutureTradeServerList := TStringList.Create;
-
+  OptionQuotationServerList := TStringList.Create;
+  
   //{Trade}导入交易服务列表
   TradeNode := RootNode.ChildNodes['trade'];
   //期货交易服务
@@ -90,6 +98,10 @@ begin
 
     FutureTradeServerList.AddObject(tempfuturetradeserver.sName, Pointer(tempfuturetradeserver));
   end;
+  //期权交易
+  count := TradeNode.ChildNodes['OptionServer'].ChildNodes.Count;
+  DefaultOptionQuotationServerIndex := TradeNode.ChildNodes['OptionServer'].Attributes['Default'];
+  //。。。
   //{Quotation}导入行情服务列表
   QuotationNode := RootNode.ChildNodes['quotation'];
   //期货行情服务
@@ -98,11 +110,24 @@ begin
   for I := 0 to count - 1 do
   begin
     tempnode := QuotationNode.ChildNodes['FuturesServer'].ChildNodes[I];
-    New(tempfuturequotationserver);
-    tempfuturequotationserver.sName := tempnode.Attributes['Name'];
-    tempfuturequotationserver.sServer := tempnode.Attributes['Server'];
-
-    FutureQuotationServerList.AddObject(tempfuturequotationserver.sName, Pointer(tempfuturequotationserver));
+    New(pQuotationserverData);
+    pQuotationserverData.sName := tempnode.Attributes['Name'];
+    pQuotationserverData.sServer := tempnode.Attributes['Server'];
+    FutureQuotationServerList.AddObject(pQuotationserverData.sName, Pointer(pQuotationserverData));
+  end;
+  //期权行情服务
+  count := QuotationNode.ChildNodes['OptionServer'].ChildNodes.Count;
+  DefaultOptionQuotationServerIndex := QuotationNode.ChildNodes['OptionServer'].Attributes['Default'];
+  for I := 0 to count - 1 do
+  begin
+    tempnode := QuotationNode.ChildNodes['OptionServer'].ChildNodes[I];
+    New(pQuotationserverData);
+    pQuotationserverData.sName := tempnode.Attributes['Name'];
+    pQuotationserverData.sServer := tempnode.Attributes['Server'];
+    pQuotationserverData.iPort := tempnode.Attributes['Port'];
+    pQuotationserverData.sAccount := tempnode.Attributes['Account'];
+    pQuotationserverData.sPassword := tempnode.Attributes['Password'];
+    OptionQuotationServerList.AddObject(pQuotationserverData.sName, Pointer(pQuotationserverData));
   end;
   //{Account}导入账户列表
   AccountNode := RootNode.ChildNodes['account'];
@@ -122,7 +147,7 @@ begin
     AccountList.AddObject(tempaccount.sName, Pointer(tempaccount));
   end;
 
-  iXMLAreaFile.Active := False;  
+  iXMLAreaFile.Active := False;
 end;
 
 end.

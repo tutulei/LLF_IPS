@@ -102,7 +102,7 @@ type
     procedure N2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ContractIdComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure ContractIdComboBoxClick(Sender: TObject);
+//    procedure ContractIdComboBoxClick(Sender: TObject);
     procedure RichEdit2Change(Sender: TObject);
     procedure RecallButtonClick(Sender: TObject);
     procedure RecallAllButtonClick(Sender: TObject);
@@ -117,6 +117,7 @@ type
     procedure N7Click(Sender: TObject);
     procedure N8Click(Sender: TObject);
     procedure N9Click(Sender: TObject);
+    procedure N3Click(Sender: TObject);
   private
     { Private declarations }
     Glass: TGlass;
@@ -127,8 +128,7 @@ type
 
     { Public declarations }
     procedure InitWidgets();
-    procedure Connected();
-    procedure updateData();
+//    procedure Connected();
 //    procedure DrawPositionListView();
     procedure InitTradeData();
     procedure PushOneOrder(Adir: Char; Aoffset: Char);
@@ -148,20 +148,22 @@ var
 //  FDataSchedule: TDataSchedule;
   FSeriesManager: TmySeriesManager;
   TotalValue: double;
-  QuotationThread: TThread;
   m_bSort: boolean = false;
 
 implementation
 
 uses
   ufrmAddConteact, uTradeUnit, Math, uGlobalInstance, ufrmLoginForm,
-  uTradeResponse, uDataCenter;
+  uTradeResponse, uDataCenter, ufrmChangeForm;
 
 {$R *.dfm}
 procedure TMainWindow.InitMainFrom(var msg: TMessage);
 var
   arr: array of PChar;
   tmp: Integer;
+  pSubscriptionCode: PDF_SubscriptionCode;
+  pTmp: Pointer;
+  ret: Integer;
 begin
   Glass := TGlass.Create(nil);
 
@@ -191,21 +193,45 @@ begin
   begin
      //行情初始化订阅
     SetLength(arr, 3);
-    arr[0] := Pchar('IF2108');
-    arr[1] := Pchar('IH2108');
-    arr[2] := Pchar('IC2108');
-    tmp := FQuotationProxy.Subscribe(Pointer(arr), 3);
+    arr[0] := Pchar('IF2109');
+    arr[1] := Pchar('IH2109');
+    arr[2] := Pchar('IC2109');
+    tmp := FFuturesQuotationProxy.Subscribe(Pointer(arr), 3);
     if (tmp = 0) then
     begin
-      TDrawView.Instance().initQuotationView(arr);
+      TDrawView.Instance().initQuotationView(arr, FUTURES);
     end;
   end;
-  QuotationThread := TManagerThread.Create(updateData);
-
+  FQuotationThread := TManagerThread.Create(updateData);
+  TManagerThread.ThreadList.Add(FQuotationThread);
   if (TradeServerStatus.FuturesIsLogin) then
   begin
     InitTradeData();
   end;
+
+  //期权行情初始化订阅
+  pTmp := GetMemory(SizeOf(TDF_SubscriptionCode) * 2);
+  pSubscriptionCode := pTmp;
+  strpcopy(pSubscriptionCode.szMarketFlag, g_szMarketFlag[DF_MARKET_TYPE_SHOPT]);
+  strpcopy(pSubscriptionCode.szSymbol, '10003511');
+  Inc(pSubscriptionCode);
+  strpcopy(pSubscriptionCode.szMarketFlag, g_szMarketFlag[DF_MARKET_TYPE_SZOPT]);
+  strpcopy(pSubscriptionCode.szSymbol, '90000583');
+//  Inc(pSubscriptionCode);
+//  strpcopy(pSubscriptionCode.szMarketFlag, g_szMarketFlag[DF_MARKET_TYPE_SHOPT]);
+//  strpcopy(pSubscriptionCode.szSymbol, '10003503');
+
+  ret := FOptionQuotationProxy.SubscribeCode(pTmp, 2);
+  if (ret <> 0) then
+  begin
+    MessageBox(0, '期权行情订阅错误', '错误', MB_OK);
+    exit;
+  end;
+
+
+//  Inc(pSubscriptionCode);
+//  strpcopy(pSubscriptionCode.szMarketFlag, g_szMarketFlag[DF_MARKET_TYPE_SHOPT]);
+//  strpcopy(pSubscriptionCode.szSymbol, '10003503');
 
 end;
 
@@ -213,16 +239,20 @@ procedure TMainWindow.InitWidgets();
 var
   title: TStrings;
 begin
-  Glass := TGlass.Create(Owner);
+//  Glass := TGlass.Create(Owner);
   title := TStringList.Create;
   if (QuotationServerStatus.FuturesIsLogin) then
   begin
     FuturesLoginInit();
   end;
+  //期货行情
   title.DelimitedText := '合约,最新价,涨跌,买价,买量,卖价,卖量,成交量,持仓量,涨停价,跌停价,今开盘,昨结算,最高价,最低价,现量,涨跌幅,昨收盘,成交额,行情更新时间';
   FFuturesQuotationGrid.Rows[0] := title;
-  FOptionQuotationGrid.Rows[0] := title;
   ActualsQuotationGrid.Rows[0] := title;
+  //期权行情
+  title.DelimitedText := '合约,最新价,涨跌,买价,买量,卖量,卖价,昨结算,今开盘,涨停价,跌停价,总成交量,成交金额,行情时间';
+  FOptionQuotationGrid.Rows[0] := title;
+  //期货资金情况
   title.DelimitedText := '可用资金,持仓盈亏,平仓盈亏';
   TopGrid.Rows[0] := title;
   TopGrid.ColCount := 3;
@@ -273,15 +303,15 @@ begin
     for I := FFuturesQuotationGrid.Selection.Bottom downto FFuturesQuotationGrid.Selection.Top do
     begin
       //删除series
-      if (FSeriesManager.Find(FDataSchedule.FFuturesSeatingList[I - 1]) <> -1) then
+      if (FSeriesManager.Find(TQuotationDataCenter.Instance.FFuturesSeatingList[I - 1]) <> -1) then
       begin
-        FSeriesManager.RemoveSeries(FDataSchedule.FFuturesSeatingList[I - 1]);
+        FSeriesManager.RemoveSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[I - 1]);
       end;
       
       //删除ListItem
-      if (FDataSchedule.FFuturesSeatingList.Count > 0) then
+      if (TQuotationDataCenter.Instance.FFuturesSeatingList.Count > 0) then
       begin
-        FDataSchedule.FFuturesSeatingList.Delete(I - 1);
+        TQuotationDataCenter.Instance.FFuturesSeatingList.Delete(I - 1);
 
       end;
       if (FFuturesQuotationGrid.RowCount = 2) then
@@ -291,7 +321,7 @@ begin
       end;
       TmyTStringGrid(FFuturesQuotationGrid).DeleteRow(I);
     end;
-    MainWindow.ContractIdComboBox.Items := FDataSchedule.FFuturesSeatingList;
+    MainWindow.ContractIdComboBox.Items := TQuotationDataCenter.Instance.FFuturesSeatingList;
     MainWindow.ContractIdComboBox.ItemIndex := FFuturesQuotationGrid.Row - 1;
   end;
 
@@ -350,23 +380,23 @@ begin
   end;
   if (QuotationServerStatus.OptionIsLogin) then
   begin
-    N7.Caption := '期权(' + QuotationServerStatus.OptionServer + ')';
+    N8.Caption := '期权(' + QuotationServerStatus.OptionServer + ')';
   end;
   if (QuotationServerStatus.SharesIsLogin) then
   begin
-    N7.Caption := '现货(' + QuotationServerStatus.SharesServer + ')';
+    N9.Caption := '现货(' + QuotationServerStatus.SharesServer + ')';
   end;
   if (TradeServerStatus.FuturesIsLogin) then
   begin
-    N7.Caption := '期货(' + TradeServerStatus.FuturesAccount + ')';
+    N4.Caption := '期货(' + TradeServerStatus.FuturesAccount + ')';
   end;
   if (TradeServerStatus.OptionIsLogin) then
   begin
-    N7.Caption := '期权(' + TradeServerStatus.OptionAccount + ')';
+    N5.Caption := '期权(' + TradeServerStatus.OptionAccount + ')';
   end;
-  if (TradeServerStatus.FuturesIsLogin) then
+  if (TradeServerStatus.SharesIsLogin) then
   begin
-    N7.Caption := '现货(' + TradeServerStatus.SharesAccount + ')';
+    N6.Caption := '现货(' + TradeServerStatus.SharesAccount + ')';
   end;
 
 end;
@@ -381,6 +411,11 @@ begin
   LoginTradeFrom.passwordedit.Text := '';
 end;
 
+procedure TMainWindow.N3Click(Sender: TObject);
+begin
+
+end;
+
 {交易期货}
 procedure TMainWindow.N4Click(Sender: TObject);
 begin
@@ -391,7 +426,9 @@ begin
   else
   begin
     //登录界面
+    LoginTradeFrom.mytype := FUTURES;
     LoginTradeFrom.Show;
+
   end;
 end;
 
@@ -405,6 +442,7 @@ begin
   else
   begin
     //登录界面
+    LoginTradeFrom.mytype := OPTION;
     LoginTradeFrom.Show;
   end;
 end;
@@ -419,6 +457,7 @@ begin
   else
   begin
     //登录界面
+    LoginTradeFrom.mytype := ACTUALS;
     LoginTradeFrom.Show;
   end;
 end;
@@ -429,6 +468,7 @@ begin
   if (QuotationServerStatus.FuturesIsLogin) then
   begin
     //切换界面
+    QuotationChangeForm.Show;
   end
   else
   begin
@@ -564,10 +604,10 @@ procedure TMainWindow.FFuturesQuotationGridClick(Sender: TObject);
 var
   sid: string;
 begin
-  if (FDataSchedule.FFuturesSeatingList.Count > 0) then
+  if (TQuotationDataCenter.Instance.FFuturesSeatingList.Count > 0) then
   begin
     //获取选中的合约ID
-    sid := FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1];
+    sid := TQuotationDataCenter.Instance.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1];
     //管理器切换当前数据
     FSeriesManager.SetCurrentSeries(sid);
     //下拉框选择当前合约
@@ -644,10 +684,15 @@ end;
 
 procedure TMainWindow.FormResize(Sender: TObject);
 begin
+  //期货grid
   FFuturesQuotationGrid.DefaultColWidth := width div 20;
   FFuturesQuotationGrid.ColWidths[4] := 50;
   FFuturesQuotationGrid.ColWidths[6] := 50;
   FFuturesQuotationGrid.ColWidths[18] := FFuturesQuotationGrid.ColWidths[18] + 30;
+  //期权grid
+  FOptionQuotationGrid.DefaultColWidth := Width div 15;
+
+
   //各个panel的比例
   GridPanel.Height := Trunc(Self.Height * 0.2);
   middlePanel.Height := Trunc(Self.Height * 0.4);
@@ -779,7 +824,7 @@ begin
   end
   else
   begin
-    stemp := FFuturesQuotationGrid.Cells[index, FDataSchedule.FFuturesSeatingList.IndexOf(sid) + 1];
+    stemp := FFuturesQuotationGrid.Cells[index, TQuotationDataCenter.Instance.FFuturesSeatingList.IndexOf(sid) + 1];
     if ((stemp = '') or (not TryStrToFloat(stemp, dprice))) then
     begin
       MessageBox(0, '暂无对手价', '下单失败', MB_OK);
@@ -790,7 +835,7 @@ begin
       dprice := StrToFloat(stemp);
     end;
   end;
-  FTradeProxy.AddLimitPriceOrder(PChar(sid), Adir, Aoffset, dprice, icount);
+  FFuturesTradeProxy.AddLimitPriceOrder(PChar(sid), Adir, Aoffset, dprice, icount);
 
 end;
 
@@ -813,7 +858,7 @@ begin
     end;
     for pdata in tempList do
     begin
-      FTradeProxy.DeleteOrder(pdata.InstrumentID, pdata.ExchangeID, pdata.OrderSysID);
+      FFuturesTradeProxy.DeleteOrder(pdata.InstrumentID, pdata.ExchangeID, pdata.OrderSysID);
     end;
     tempList.Destroy;
     tempList := nil;
@@ -839,7 +884,7 @@ begin
     begin
       index := Integer(TOrderDataCenter.instance.getNoDealList.Objects[noDealListView.ItemIndex]);
       pdata := PThostFtdcOrderField(TOrderDataCenter.instance.getList.Objects[index]);
-      FTradeProxy.DeleteOrder(pdata.InstrumentID, pdata.ExchangeID, pdata.OrderSysID);
+      FFuturesTradeProxy.DeleteOrder(pdata.InstrumentID, pdata.ExchangeID, pdata.OrderSysID);
     end;
   end;
 end;
@@ -916,66 +961,66 @@ begin
     priceEdit.Text := SellPriceLabel.Caption;
   end;
 end;
-
-procedure TMainWindow.Connected();
-var
-  tmp: Integer;
-  arr: array of PChar;
-  times: Integer;
-  pQuotationServer: PQuotationServerStruct;
-begin
-  FQuotationProxy := TQuotationProxy.Create(dllName);
-  pQuotationServer := PQuotationServerStruct(FutureQuotationServerList.Objects[DefaultFutureQuotationServerIndex]);
-  FQuotationProxy.Connected(PChar(pQuotationServer.sServer), Pchar(''));
-  tmp := 0;
-  while FQuotationProxy.IsConnected <> True do
-  begin
-    Sleep(1000);
-    tmp := tmp + 1;
-    if (tmp > 10) then
-    begin
-      MessageBox(0, '行情自动登录失败', '提示', MB_OK);
-      Exit;
-    end;
-//    Writeln('[delphi]: waiting for connected ...');
-  end;
-  FQuotationProxy.SimpleLogin(nChar, nChar, nChar);
-  while FQuotationProxy.LoginSucess <> True do
-  begin
-
-    Sleep(1000);
-//    Writeln('[delphi]: waiting for login ...');
-  end;
-  SetLength(arr, 3);
-  arr[0] := Pchar('IF2108');
-  arr[1] := Pchar('IH2108');
-  arr[2] := Pchar('IC2108');
-  tmp := FQuotationProxy.Subscribe(Pointer(arr), 3);
-  if tmp = 0 then
-  begin
-    FDataSchedule.AddContracts(arr);
-    ContractIdComboBox.Items := FDataSchedule.FFuturesSeatingList;
-    ContractIdComboBox.ItemIndex := 0;
-    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[2]);
-    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[1]);
-    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[0]);
-  end;
-//  QuotationThread := TManagerThread.Create(updateData);
-end;
-
-procedure TMainWindow.ContractIdComboBoxClick(Sender: TObject);
-var
-  index: Integer;
-begin
-  index := MainWindow.ContractIdComboBox.ItemIndex;
-  if (index >= 0) then
-  begin
-    FFuturesQuotationGrid.Row := index + 1;
-    //管理器切换当前数据
-    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1]);
-  end;
-
-end;
+//
+//procedure TMainWindow.Connected();
+//var
+//  tmp: Integer;
+//  arr: array of PChar;
+//  times: Integer;
+//  pQuotationServer: PQuotationServerStruct;
+//begin
+//  FFuturesQuotationProxy := TFuturesQuotationProxy.Create(FuturesdllName);
+//  pQuotationServer := PQuotationServerStruct(FutureQuotationServerList.Objects[DefaultFutureQuotationServerIndex]);
+//  FFuturesQuotationProxy.Connected(PChar(pQuotationServer.sServer), Pchar(''));
+//  tmp := 0;
+//  while FFuturesQuotationProxy.IsConnected <> True do
+//  begin
+//    Sleep(1000);
+//    tmp := tmp + 1;
+//    if (tmp > 10) then
+//    begin
+//      MessageBox(0, '行情自动登录失败', '提示', MB_OK);
+//      Exit;
+//    end;
+////    Writeln('[delphi]: waiting for connected ...');
+//  end;
+//  FFuturesQuotationProxy.SimpleLogin(nChar, nChar, nChar);
+//  while FFuturesQuotationProxy.LoginSucess <> True do
+//  begin
+//
+//    Sleep(1000);
+////    Writeln('[delphi]: waiting for login ...');
+//  end;
+//  SetLength(arr, 3);
+//  arr[0] := Pchar('IF2108');
+//  arr[1] := Pchar('IH2108');
+//  arr[2] := Pchar('IC2108');
+//  tmp := FFuturesQuotationProxy.Subscribe(Pointer(arr), 3);
+//  if tmp = 0 then
+//  begin
+//    FDataSchedule.AddContracts(arr);
+//    ContractIdComboBox.Items := FDataSchedule.FFuturesSeatingList;
+//    ContractIdComboBox.ItemIndex := 0;
+//    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[2]);
+//    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[1]);
+//    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[0]);
+//  end;
+////  QuotationThread := TManagerThread.Create(updateData);
+//end;
+//
+//procedure TMainWindow.ContractIdComboBoxClick(Sender: TObject);
+//var
+//  index: Integer;
+//begin
+//  index := MainWindow.ContractIdComboBox.ItemIndex;
+//  if (index >= 0) then
+//  begin
+//    FFuturesQuotationGrid.Row := index + 1;
+//    //管理器切换当前数据
+//    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1]);
+//  end;
+//
+//end;
 
 procedure TMainWindow.ContractIdComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
@@ -993,11 +1038,11 @@ begin
     //如果输入的合约ID不存在。
     if (index = -1) then
     begin
-      itmp := FQuotationProxy.Subscribe(Pointer(arr), 1);
+      itmp := FFuturesQuotationProxy.Subscribe(Pointer(arr), 1);
       if itmp = 0 then
       begin
-        FDataSchedule.AddContracts(arr);
-        MainWindow.ContractIdComboBox.Items := FDataSchedule.FFuturesSeatingList;
+        FDataSchedule.AddContracts(arr, FUTURES);
+        MainWindow.ContractIdComboBox.Items := TQuotationDataCenter.Instance.FFuturesSeatingList;
       end
       else
       begin
@@ -1008,7 +1053,7 @@ begin
     ContractIdComboBox.ItemIndex := index;
     FFuturesQuotationGrid.Row := index + 1;
     //管理器切换当前数据
-    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1]);
+    FSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1]);
 
   end;
 
@@ -1036,15 +1081,15 @@ procedure TMainWindow.InitTradeData();
 begin
 ////
   //资金情况初始化
-  FTradeProxy.CheckCapital();
+  FFuturesTradeProxy.CheckCapital();
   //持仓初始化
-  FTradeProxy.RequestCheckPosition();
+  FFuturesTradeProxy.RequestCheckPosition();
 
   //订单初始化
-  FTradeProxy.RequestCheckOrder();
+  FFuturesTradeProxy.RequestCheckOrder();
 //  TRequestMessenger.instance.Request(TRequestMessenger.instance.Order);
   //已成交订单初始化
-  FTradeProxy.RequestSucessedOrder();
+  FFuturesTradeProxy.RequestSucessedOrder();
 ////  TopGrid.Cells[0, 1] := FloatToStr(RoundTo(data.Available, 2));
 ////  TopGrid.Cells[1, 1] := FloatToStr(RoundTo(data.WithdrawQuota, 2));
 ////  TopGrid.Cells[2, 1] := FloatToStr(data.Reserve);
@@ -1055,28 +1100,10 @@ begin
 ////  TopGrid.Cells[7, 1] := FloatToStr(RoundTo(data.CurrMargin, 2));
 ////  TopGrid.Cells[8, 1] := FloatToStr(data.Interest);
 ////  TopGrid.Cells[9, 1] := FloatToStr(data.CloseProfit);
-  if (FtradeProxy.isLogin) then
+  if (FFuturesTradeProxy.isLogin) then
   begin
     GroupBox.Enabled := True;
   end;
-end;
-
-procedure TMainWindow.updateData();
-var
-  tick: TQuotationData;
-  id: string;
-  icount: integer;
-begin
-  icount := FDataSchedule.FFuturesSeatingList.Count;
-  if icount <= 0 then
-    icount := 1;
-  Sleep(500 div icount);
-  tick := FQuotationProxy.GetOneTick();
-  if (tick.InstrumentID <> '') then
-  begin
-    FDataSchedule.ScheduleTick(tick);
-  end;
-//    Total_Quotation.Rows[1] := fQuotationView(tick);
 end;
 
 procedure AddConteact(list: TStringList);
@@ -1090,10 +1117,10 @@ begin
   begin
     arr[I] := PChar(list[I]);
   end;
-  itmp := FquotationProxy.Subscribe(Pointer(arr), list.Count);
+  itmp := FFuturesQuotationProxy.Subscribe(Pointer(arr), list.Count);
   if itmp = 0 then
   begin
-    FDataSchedule.AddContracts(arr);
+    FDataSchedule.AddContracts(arr, FUTURES);
   end
   else
   begin

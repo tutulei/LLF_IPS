@@ -19,6 +19,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_Optimize>False</DCC_Optimize>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
@@ -40,18 +41,21 @@
     <DCCReference Include="CommonUnits\uGlobalInstance.pas" />
     <DCCReference Include="CommonUnits\uManagerThread.pas" />
     <DCCReference Include="CommonUnits\uTimer.pas" />
-    <DCCReference Include="CTPProxy\uQuotationAPI.pas" />
-    <DCCReference Include="CTPProxy\uTradeAPI.pas" />
-    <DCCReference Include="CTPProxy\uTradeResponse.pas" />
     <DCCReference Include="DrawView\uDrawView.pas" />
     <DCCReference Include="MainWIN.pas">
       <Form>MainWindow</Form>
     </DCCReference>
+    <DCCReference Include="Proxy\Futures\uQuotationAPI.pas" />
+    <DCCReference Include="Proxy\Futures\uTradeAPI.pas" />
+    <DCCReference Include="Proxy\Futures\uTradeResponse.pas" />
     <DCCReference Include="Quotation_Manager\uContractsSchedule.pas" />
     <DCCReference Include="uData\uDataCenter.pas" />
     <DCCReference Include="uDBManager\uDBManager.pas" />
     <DCCReference Include="ufrm\ufrmAddConteact.pas">
       <Form>AddConteactForm</Form>
+    </DCCReference>
+    <DCCReference Include="ufrm\ufrmChangeForm.pas">
+      <Form>QuotationChangeForm</Form>
     </DCCReference>
     <DCCReference Include="ufrm\ufrmConfigForm.pas">
       <Form>ConfigForm</Form>

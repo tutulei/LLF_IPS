@@ -1,0 +1,21 @@
+unit uGlobalInstance;
+
+interface
+
+uses
+  uQuotationAPI, uTradeAPI, Classes, uContractsSchedule, uDataStruct,uManagerThread;
+
+var
+  //¥ÊªÓΩÁ√Ê
+  WindowList: TList;
+  FQuotationProxy: TQuotationProxy;
+  FTradeProxy: TTradeProxy;
+  FQuotationThread: TManagerThread;
+  FDataSchedule: TDataSchedule;
+  QuotationServerStatus: TQuotationServerStatus;
+  TradeServerStatus: TTradeAccountStatus;
+  nChar: PChar = PChar('');
+implementation
+
+end.
+

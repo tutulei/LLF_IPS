@@ -28,6 +28,7 @@ type
     procedure QuotationAddrGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure QuotationAddrGridClick(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
+    procedure ComboBox2Change(Sender: TObject);
   private
     { Private declarations }
   public
@@ -40,8 +41,69 @@ var
 implementation
 
 uses
-  ufrmLoginForm, XMLIntf;
+  ufrmLoginForm, XMLIntf, ufrmChangeForm;
 {$R *.dfm}
+
+procedure TConfigForm.ComboBox2Change(Sender: TObject);
+var
+  I: Integer;
+  tmp: Pointer;
+  datalist: Tstrings;
+begin
+  QuotationAddrGrid.DefaultColWidth := 40;
+  datalist := TStringList.Create;
+  case TComboBox(Sender).ItemIndex of
+    0:      //期货
+      begin
+      //行情
+        QuotationAddrGrid.RowCount := FutureQuotationServerList.Count;
+        for I := 0 to FutureQuotationServerList.Count - 1 do
+        begin
+          QuotationAddrGrid.Rows[I].Clear;
+          tmp := PQuotationServerStruct(FutureQuotationServerList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PQuotationServerStruct(tmp).sName + ',' + PQuotationServerStruct(tmp).sServer;
+          QuotationAddrGrid.Rows[I] := datalist;
+        end;
+        QuotationAddrGrid.Row := DefaultFutureQuotationServerIndex;
+        //交易
+        TradeGrid.RowCount := FutureTradeServerList.Count;
+        for I := 0 to FutureTradeServerList.Count - 1 do
+        begin
+          TradeGrid.Rows[I].Clear;
+          tmp := PTradeServerStruct(FutureTradeServerList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PTradeServerStruct(tmp).sName + ',' + PTradeServerStruct(tmp).sServer + ',' + PTradeServerStruct(tmp).sBrokerID;
+          TradeGrid.Rows[I] := datalist;
+        end;
+        TradeGrid.Row := DefaultFutureTradeServerIndex;
+        //账户
+        AccountGrid.RowCount := AccountList.Count;
+        for I := 0 to AccountList.Count - 1 do
+        begin
+          AccountGrid.Rows[I].Clear;
+          tmp := PAccountStruct(AccountList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PAccountStruct(tmp).sName + ',' + PAccountStruct(tmp).sAccount + ',' + PAccountStruct(tmp).sAuthCode + ',' + PAccountStruct(tmp).sAppid;
+          AccountGrid.Rows[I] := datalist;
+        end;
+        AccountGrid.Row := DefaultAccountIndex;
+      end;
+    1:      //期权
+      begin
+        //行情
+        QuotationAddrGrid.RowCount := OptionQuotationServerList.Count;
+        for I := 0 to OptionQuotationServerList.Count - 1 do
+        begin
+          tmp := PQuotationServerStruct(OptionQuotationServerList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PQuotationServerStruct(tmp).sName + ',' + PQuotationServerStruct(tmp).sServer + ',' + PQuotationServerStruct(tmp).iPort + ',' + PQuotationServerStruct(tmp).sAccount + ',' + PQuotationServerStruct(tmp).sPassword;
+          QuotationAddrGrid.Rows[I] := datalist;
+        end;
+        QuotationAddrGrid.Row := DefaultFutureQuotationServerIndex;
+      end;
+    2:      //现货
+      begin
+
+      end;
+  end;
+end;
 
 procedure TConfigForm.FormShow(Sender: TObject);
 var
@@ -50,10 +112,11 @@ var
   tmp: Pointer;
 begin
   datalist := TStringList.Create;
-  //行情期货表格初始化
+  //行情表格初始化
   QuotationAddrGrid.RowCount := FutureQuotationServerList.Count;
-  QuotationAddrGrid.DefaultColWidth := (PageControl1.Width div 2) - 40;
+//  QuotationAddrGrid.DefaultColWidth := (PageControl1.Width div 2) - 40;
   QuotationAddrGrid.ColWidths[0] := 50;
+
   //期货行情配置导入
   for I := 0 to FutureQuotationServerList.Count - 1 do
   begin
@@ -64,7 +127,7 @@ begin
   QuotationAddrGrid.Row := DefaultFutureQuotationServerIndex;
   //交易期货表格初始化
   TradeGrid.RowCount := FutureTradeServerList.Count;
-  TradeGrid.DefaultColWidth := (PageControl1.Width div 3) - 30;
+//  TradeGrid.DefaultColWidth := (PageControl1.Width div 3) - 30;
   TradeGrid.ColWidths[0] := 50;
   //期货交易配置导入
   for I := 0 to FutureTradeServerList.Count - 1 do
@@ -77,7 +140,7 @@ begin
 
   //账户（期货）表格初始化
   AccountGrid.RowCount := AccountList.Count;
-  AccountGrid.DefaultColWidth := (PageControl1.Width div 4) - 30;
+//  AccountGrid.DefaultColWidth := (PageControl1.Width div 4) - 30;
   AccountGrid.ColWidths[0] := 50;
   //账户（期货）配置导入
   for I := 0 to AccountList.Count - 1 do
@@ -97,6 +160,8 @@ begin
 //  datalist.DelimitedText := ' ,南华期货仿真,tcp://218.202.237.33:10213';
 //  QuotationAddrGrid.Rows[2] := datalist;
 
+  ShowWindow(handle, sw_ShowNormal);
+  SetWindowPos(Self.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
 end;
 
 procedure TConfigForm.QuotationAddrGridClick(Sender: TObject);
@@ -114,9 +179,11 @@ var
   text: string;
 begin
 //  if (TStringGrid(Sender).Cells[ACol,ARow] = '#selected#') then
+  TStringGrid(Sender).Canvas.FillRect(Rect);
+  DrawText(TStringGrid(Sender).Canvas.Handle, PChar(TStringGrid(Sender).Cells[ACol, ARow]), Length(TStringGrid(Sender).Cells[ACol, ARow]), Rect, DT_CENTER or DT_SINGLELINE or DT_VCENTER);
   if (gdSelected in State) then
   begin
-    format := [tfSingleLine, tfVerticalCenter];
+    format := [tfSingleLine, tfVerticalCenter, tfCenter];
     text := TStringGrid(Sender).Cells[ACol, ARow];
     TStringGrid(Sender).Canvas.Brush.Color := clWindow;
     TStringGrid(Sender).Canvas.FillRect(Rect);
@@ -131,7 +198,10 @@ begin
       Bitmap.Free;
     end;
   end;
-
+  if (Length(TStringGrid(Sender).Cells[ACol, ARow]) * (TStringGrid(Sender).Font.SIZE) > TStringGrid(Sender).ColWidths[ACol]) then
+  begin
+    TStringGrid(Sender).ColWidths[ACol] := Length(TStringGrid(Sender).Cells[ACol, ARow]) * (TStringGrid(Sender).Font.SIZE)
+  end;
 end;
 
 procedure TConfigForm.SaveButtonClick(Sender: TObject);
@@ -142,6 +212,7 @@ begin
   DefaultFutureTradeServerIndex := TradeGrid.Row;
   DefaultAccountIndex := AccountGrid.Row;
   LoginForm.RefreshView();
+  QuotationChangeForm.RefreshView();
   ConfigForm.Visible := False;
 
   iXMLAreaFile.active := True;

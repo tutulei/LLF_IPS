@@ -16,8 +16,6 @@ type
   PStringList = ^TStringList;
 
   TDataSchedule = class(TObject)
-    type
-      ContractType = (FUTURES, OPTION, ACTUALS);
   private
     pwindow: Pointer;
     pFuturesGrid: PStringGrid;
@@ -25,17 +23,17 @@ type
     pActualsGrid: PStringGrid;
     pPriceGrid: PStringgrid;
   public
-    //用于存储以订阅的合约以及顺序信息
-    FFuturesSeatingList: TStringList;
-    FOptionSeatingList: TStringList;
-    FActualsSeatingList: TStringList;
+    //用于存储已订阅的合约以及顺序信息
+//    FFuturesSeatingList: TStringList;
+//    FOptionSeatingList: TStringList;
+//    FActualsSeatingList: TStringList;
         
       //输入 总，期货，期权，现货的grid指针，
 //    constructor Create(QHGrid: PStringGrid = nil; QQGrid: PStringGrid = nil; XHGrid: PStringGrid = nil);
     constructor Create(pwin: Pointer);
     destructor Destroy(); override;
       //添加合约记录
-    procedure AddContracts(arr: array of PChar);
+    procedure AddContracts(arr: array of PChar; Atype: ContractType);
       //删除合约记录
     procedure RemoveContracts(arr: array of PChar);
 
@@ -65,20 +63,18 @@ implementation
 uses
   MainWIN, Series, uDataCenter;
 
-procedure TDataSchedule.AddContracts(arr: array of PChar);
+procedure TDataSchedule.AddContracts(arr: array of PChar; Atype: ContractType);
 var
   PID: string;
   grid: PStringGrid;
   pList: PStringList;
-  ctype: ContractType;
   tmp: Integer;
 begin
   for PID in arr do
   begin
     //判断该合约属于何种类型（期货，期权，现货）
-    ctype := AnalysisType(PID);
-    grid := getGrid(ctype);
-    pList := getList(ctype);
+    grid := getGrid(Atype);
+    pList := getList(Atype);
     //可视组件生成行
     tmp := Length(grid.Cells[0, grid.RowCount - 1]);
     if tmp > 0 then
@@ -87,7 +83,7 @@ begin
     end;
     //添加列表中
     pList.Add(string(PID));
-    MainWindow.ContractIdComboBox.Items := FFuturesSeatingList;
+    MainWindow.ContractIdComboBox.Items := pList^;
     grid.Cells[0, grid.RowCount - 1] := PID;
   end;
 
@@ -145,7 +141,7 @@ begin
     sChangeRate := FloatTostr(dChangeRate * 100) + '%';
 
     //3
-    if (FFuturesSeatingList[pGrid.Row - 1] = tick.InstrumentID) then
+    if (TQuotationDataCenter.Instance.FFuturesSeatingList[pGrid.Row - 1] = tick.InstrumentID) then
     begin
       updatePriceGrid(tick);
     end;
@@ -180,7 +176,7 @@ begin
 
   //1Grid列表数据刷新
   dataList := fQuotationDataTurnToTStrings(tick, sChange, sChangeRate);
-  TQuotationDataCenter.Instance.addItem(tick.InstrumentID, dataList);
+  TQuotationDataCenter.Instance.addItem(tick.InstrumentID, dataList, FUTURES);
   //界面更新
   TDrawView.instance.RunSynchronize(TDrawView.instance.DrawQuotationGridView);
 //  pGrid.Rows[index + 1] := dataList;
@@ -247,19 +243,13 @@ constructor TDataSchedule.Create(pwin: Pointer);
 begin
   pwindow := pwin;
   pFuturesGrid := @(PMainWindow(pwindow).FFuturesQuotationGrid);
-  pActualsGrid := @(PMainWindow(pwindow).FOptionQuotationGrid);
-  pOptionGrid := @(PMainWindow(pwindow).ActualsQuotationGrid);
+  pOptionGrid := @(PMainWindow(pwindow).FOptionQuotationGrid);
+  pActualsGrid := @(PMainWindow(pwindow).ActualsQuotationGrid);
   pPriceGrid := @(PMainWindow(pwindow).PriceGrid);
-  FFuturesSeatingList := TStringList.Create();
-  FOptionSeatingList := TStringList.Create();
-  FActualsSeatingList := TStringList.Create();
 end;
 
 destructor TDataSchedule.Destroy();
 begin
-  FFuturesSeatingList.Free;
-  FOptionSeatingList.Free;
-  FActualsSeatingList.Free;
   inherited;
 end;
 
@@ -300,15 +290,15 @@ function TDataSchedule.getList(myType: ContractType): PStringList;
 begin
   if myType = FUTURES then
   begin
-    Result := @FFuturesSeatingList;
+    Result := @TQuotationDataCenter.Instance.FFuturesSeatingList;
   end
   else if myType = OPTION then
   begin
-    Result := @FOptionSeatingList;
+    Result := @TQuotationDataCenter.Instance.FOptionSeatingList;
   end
   else if myType = ACTUALS then
   begin
-    Result := @FActualsSeatingList;
+    Result := @TQuotationDataCenter.Instance.FActualsSeatingList;
   end;
 end;
 

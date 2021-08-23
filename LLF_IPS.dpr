@@ -2,7 +2,6 @@ program LLF_IPS;
 
 uses
   Forms,
-  uQuotationAPI in 'CTPProxy\uQuotationAPI.pas',
   uDataStruct in 'CommonUnits\uDataStruct.pas',
   uManagerThread in 'CommonUnits\uManagerThread.pas',
   uContractsSchedule in 'Quotation_Manager\uContractsSchedule.pas',
@@ -12,7 +11,6 @@ uses
   ChartManager in 'CommonUnits\ChartManager.pas',
   uMyChartManager in 'Chart_Manager\uMyChartManager.pas',
   uDBManager in 'uDBManager\uDBManager.pas',
-  uTradeAPI in 'CTPProxy\uTradeAPI.pas',
   uConfigUnit in 'CommonUnits\uConfigUnit.pas',
   uTradeUnit in 'uTradeUnit\uTradeUnit.pas',
   uDataCenter in 'uData\uDataCenter.pas',
@@ -23,7 +21,10 @@ uses
   ufrmConfigForm in 'ufrm\ufrmConfigForm.pas' {ConfigForm},
   ufrmLoginForm in 'ufrm\ufrmLoginForm.pas' {LoginForm},
   uGlobalInstance in 'CommonUnits\uGlobalInstance.pas',
-  uTradeResponse in 'CTPProxy\uTradeResponse.pas';
+  ufrmChangeForm in 'ufrm\ufrmChangeForm.pas' {QuotationChangeForm},
+  uQuotationAPI in 'Proxy\Futures\uQuotationAPI.pas',
+  uTradeAPI in 'Proxy\Futures\uTradeAPI.pas',
+  uTradeResponse in 'Proxy\Futures\uTradeResponse.pas';
 
 {$R *.res}
 
@@ -35,6 +36,7 @@ begin
   Application.CreateForm(TMainWindow, MainWindow);
   Application.CreateForm(TAddConteactForm, AddConteactForm);
   Application.CreateForm(TLoginTradeFrom, LoginTradeFrom);
+  Application.CreateForm(TQuotationChangeForm, QuotationChangeForm);
   Application.Run;
 
 end.

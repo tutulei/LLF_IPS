@@ -8,6 +8,16 @@ interface
 uses
   Grids, Classes, SysUtils, Forms, Windows, Graphics;
 
+type
+//  PTFastLineSeries = ^TFastLineSeries;
+
+  TmyTStringGrid = class(TStringGrid)
+  public
+    procedure DeleteRow(ARow: Longint); override;
+  end;
+
+  ContractType = (FUTURES, OPTION, ACTUALS);
+
 const
   {color}
   DebugColor = $001AFF00;
@@ -15,7 +25,10 @@ const
   ErrorColor = clRed;
 
 const
-  //函数名常量
+
+
+  {函数名常量}
+  {期货行情&交易}
   CREATE_QUOTATION_SERVER = 'CreateQuotationServer';
   SIMPLE_LOGIN_QUOTATION_SERVER = 'SimpleLoginQuotationServer';
   SUBSCRIBE_CONTRACTS = 'SubscribeContracts';
@@ -33,7 +46,21 @@ const
   QUERY_ORDER = 'QueryOrder';
   QUERY_TRADE_SUCCESS = 'QueryTradeSuccess';
   BIND_FUNCTIONS = 'BindFunctions';
+  {期权行情&交易}
+  DF_CREATE = 'DF_Create';
+  DF_ADDSERVER = 'DF_AddServer';
+  DF_SETRECVDATAFUNC = 'DF_SetRecvDataFunc';
+  DF_SETNOTICEFUNC = 'DF_SetNoticeFunc';
+  DF_BEGIN = 'DF_Begin';
+  DF_SETREQUESTMARKETS = 'DF_SetRequestMarkets';
+  DF_SETHEARTBEAT = 'DF_SetHeartBeat';
+  DF_SUBSCRIBEBYCODES = 'DF_SubscribeByCodes';
+//  DF_CREATE = 'DF_Create';
+//  DF_CREATE = 'DF_Create';
+//  DF_CREATE = 'DF_Create';
+//  DF_CREATE = 'DF_Create';
 
+  {期货相关常量}
   //净
   THOST_FTDC_PD_Net = '1';
   ///多头
@@ -95,7 +122,54 @@ const
   ///卖
   THOST_FTDC_D_Sell = '1';
 
+  {期权行情相关常量}
+  MAX_MARKET_NUM = 32;
+  g_szMarketFlag: array[0..7, 0..3] of Char = ('SZS', 'SHS', 'CFF', 'SCE', 'ZCE', 'DCE', 'SHO', 'SZO');
+  MARKET_FLAGS_PRESENT = $00000001;
+  DF_MARKET_TYPE_SZSTK = 0;				///< 深交所股票（带指数）.
+  DF_MARKET_TYPE_SHSTK = 1;				///< 上交所股票（带指数）.
+  DF_MARKET_TYPE_CFFEX = 2;				///< 金融期货.
+  DF_MARKET_TYPE_SHOPT = 6;				///< 上交所期权.
+  DF_MARKET_TYPE_SZOPT = 7; 			///< 深交所期权.
+  
+  ///回调通知消息类型类型.
+  DF_NOTICE_RUNINFO = 0;			///< 普通运行信息.
+  DF_NOTICE_CONNECT = 100;		///< 网络已连接.
+  DF_NOTICE_DISCONNECT = 101;		///< 网络断开.
+  DF_NOTICE_BEATOUTTIME = 102;		///< 心跳应答超时.
+  DF_NOTICE_CODETABLE = 103;	    ///< 代码列表返回通知.
+  
+  ///数据类型列表.
+  DF_HEARTBEAT = 2;			///> 心跳.
+  DF_OPTIONDATA = 20;				///> 期权行情快照数据.
+  DF_STOCKDATA = 21;				///> 现货行情快照数据.
+  DF_INDEXDATA = 22;			///> 指数行情快照数据.
+  DF_FUTUREDATA = 23;				///> 期货行情快照数据.
+  DF_TRANSACTDATA = 24;				///> 现货逐笔成交数据.
+  DF_LOGIN = 2000;			///> 登录.
+  DF_LOGINANSWER = 2001;				///> 登录应答.
+  DF_LOGOUT = 2002;			///> 登出.
+  DF_LOGOUTANSWER = 2003;				///> 登出应答.
+  DF_REQMARKETS = 2100;				///> 设置市场.
+  DF_CODETABLE = 2101;				///> 代码表.
+  DF_OPTIONBASIC = 2102;			///> 期权基本信息.
+  DF_ETFCODETABLE = 2103;			///> ETF证券代码清单.
+  DF_ETFCOMPONT = 2104;				///> ETF清单成分股.
+  DF_ETFLIST_BATCH = 2105;				///> 批量请求ETF清单.
+  DF_SUBSCRIBE = 2200;				///> 数据订阅.
+  DF_MARKETCLOSE = 2300;				///> 收市.
+  DF_QUOTATIONDATE_CHANGE = 2301;		///> 日期变更.
+  DF_SVRCLOSE = 2302;				///> 服务关闭.
+
+  DF_SUB_TYPE_SET = 0;						///< 订阅设置.
+  DF_SUB_TYPE_ADD = 1;						///< 订阅增加.
+  DF_SUB_TYPE_DEL = 2;						///< 订阅删除.
+  DF_SUB_TYPE_ALLDEL = 3;					///< 取消所有订阅.
+
+
+
 //0买 1 卖
+
 function getOrderDirectionString(A: Char): string;
 
 function getOrderStatusMsg(OrderSubmitStatus: Char; statusMsg: string): string;
@@ -104,15 +178,7 @@ function getOrderOffsetFlag(OffsetFlag: Char): string;
 
 procedure Delay(dwMilliseconds: DWORD);
 
-type
-//  PTFastLineSeries = ^TFastLineSeries;
-
-  TmyTStringGrid = class(TStringGrid)
-  public
-    procedure DeleteRow(ARow: Longint); override;
-  end;
-
-  ContractType = (FUTURES, OPTION, ACTUALS);
+function TypeStr(typeName: ContractType): string;
 
 var
   WorkPath: string;
@@ -199,6 +265,22 @@ begin
       str := '本地强平';
   end;
   Result := str;
+end;
+
+function TypeStr(typeName: ContractType): string;
+begin
+  if typeName = FUTURES then
+  begin
+    Result := '期货';
+  end
+  else if typeName = OPTION then
+  begin
+    Result := '期权';
+  end
+  else if typeName = ACTUALS then
+  begin
+    Result := '现货';
+  end;
 end;
 
 end.

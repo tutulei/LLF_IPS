@@ -60,6 +60,9 @@ var
 
 implementation
 
+uses
+  uConstants, uDataCenter;
+
 {$R *.dfm}
 
 procedure TLoginForm.ExitButtonClick(Sender: TObject);
@@ -153,7 +156,7 @@ begin
       TradeServerStatus.FuturesIsLogin := true;
       TradeServerStatus.FuturesAccount := FuturesAccountEdit.Text;
     end;
-    
+
     MainWindow.Show;
 //  SetWindowLong(Self.Handle,GWL_EXSTYLE,WS_EX_TOOLWINDOW);
     ShowWindow(Application.Handle, SW_HIDE);
@@ -165,7 +168,7 @@ begin
   Edit4.Enabled := True;
   Edit5.Enabled := True;
   Edit6.Enabled := True;
-  Button1.Enabled := True;  
+  Button1.Enabled := True;
 
 end;
 
@@ -197,30 +200,61 @@ var
   arr: array of PChar;
   times: Integer;
   pQuotationServer: PQuotationServerStruct;
+  ret: Integer;
+  pSubscriptionCode: PDF_SubscriptionCode;
+  pTmp: Pointer;
 begin
-  FQuotationProxy := TQuotationProxy.Create(dllName);
+  //期货行情
+  FFuturesQuotationProxy := TFuturesQuotationProxy.Create(FuturesdllName);
   pQuotationServer := PQuotationServerStruct(FutureQuotationServerList.Objects[DefaultFutureQuotationServerIndex]);
-  FQuotationProxy.Connected(PChar(pQuotationServer.sServer), Pchar(''));
+  FFuturesQuotationProxy.Connected(PChar(pQuotationServer.sServer), Pchar(''));
   tmp := 0;
-  while FQuotationProxy.IsConnected <> True do
+  while FFuturesQuotationProxy.IsConnected <> True do
   begin
     Sleep(1000);
     tmp := tmp + 1;
     if (tmp > 5) then
     begin
+      FFuturesQuotationProxy.Destroy;
       MessageBox(0, '行情自动登录失败', '提示', MB_OK);
       Exit;
     end;
 //    Writeln('[delphi]: waiting for connected ...');
   end;
-  FQuotationProxy.SimpleLogin(nChar, nChar, nChar);
-  while FQuotationProxy.LoginSucess <> True do
+  FFuturesQuotationProxy.SimpleLogin(nChar, nChar, nChar);
+  while FFuturesQuotationProxy.LoginSucess <> True do
   begin
     Sleep(500);
 //    Writeln('[delphi]: waiting for login ...');
   end;
   QuotationServerStatus.FuturesIsLogin := True;
   QuotationServerStatus.FuturesServer := pQuotationServer.sServer;
+
+
+  //期权行情
+  FOptionQuotationProxy := TOptionQuotationProxy.Create(OptiondllName);
+  pQuotationServer := PQuotationServerStruct(OptionQuotationServerList.Objects[DefaultOptionQuotationServerIndex]);
+  ret := FOptionQuotationProxy.Connected();
+  if (ret <> 0) then
+  begin
+    MessageBox(0, '期权连接错误', '错误', MB_OK);
+  end;
+  ret := FOptionQuotationProxy.AddServer(pQuotationServer.sServer, StrToInt(pQuotationServer.iPort), pQuotationServer.sAccount, pQuotationServer.sPassword);
+  if (ret <> 0) then
+  begin
+    MessageBox(0, '期权地址配置误', '错误', MB_OK);
+  end;
+  ret := FOptionQuotationProxy.SetResponseFunc(@OnDfRecvdata, @OnDfNotice);
+  if (ret <> 0) then
+  begin
+    MessageBox(0, '期权绑定回调错误', '错误', MB_OK);
+  end;
+  ret := FOptionQuotationProxy.ServerBegin();
+  if (ret <> 0) then
+  begin
+    MessageBox(0, '期权行情连接请求', '错误', MB_OK);
+  end;
+
 
 //  //行情初始化订阅
 //  SetLength(arr, 3);
@@ -244,12 +278,12 @@ var
   pTradeFuturesServer: PTradeServerStruct;
   pAccount: PAccountStruct;
 begin
-  FTradeProxy := TTradeProxy.Create(dllName);
+  FFuturesTradeProxy := TTradeProxy.Create(FuturesdllName);
   pTradeFuturesServer := PTradeServerStruct(FutureTradeServerList.Objects[DefaultFutureTradeServerIndex]);
   pAccount := PAccountStruct(AccountList.Objects[DefaultAccountIndex]);
-  FTradeProxy.Connected(PChar(pTradeFuturesServer.sServer), PChar(''));
+  FFuturesTradeProxy.Connected(PChar(pTradeFuturesServer.sServer), PChar(''));
 
-  FTradeProxy.AuthAndLogin(PChar(pTradeFuturesServer.sBrokerID), PChar(LoginForm.FuturesAccountEdit.Text), PChar(LoginForm.FuturesPwdEdit.text), PChar(pAccount.sAuthCode), PChar(pAccount.sAppid));
+  FFuturesTradeProxy.AuthAndLogin(PChar(pTradeFuturesServer.sBrokerID), PChar(LoginForm.FuturesAccountEdit.Text), PChar(LoginForm.FuturesPwdEdit.text), PChar(pAccount.sAuthCode), PChar(pAccount.sAppid));
 
   pAccount.sAccount := LoginForm.FuturesAccountEdit.Text;
   //  pAccount.sPassword := LoginTradeFrom.passwordedit.Text;
@@ -263,11 +297,11 @@ var
   id: string;
   icount: integer;
 begin
-  icount := FDataSchedule.FFuturesSeatingList.Count;
+  icount := TQuotationDataCenter.instance.FFuturesSeatingList.Count;
   if icount <= 0 then
     icount := 1;
   Sleep(500 div icount);
-  tick := FQuotationProxy.GetOneTick();
+  tick := FFuturesQuotationProxy.GetOneTick();
   if (tick.InstrumentID <> '') then
   begin
     FDataSchedule.ScheduleTick(tick);

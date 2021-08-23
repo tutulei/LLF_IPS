@@ -2,6 +2,7 @@ object ConfigForm: TConfigForm
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
+  BorderStyle = bsSizeToolWin
   Caption = #37197#32622#30028#38754
   ClientHeight = 267
   ClientWidth = 419
@@ -489,27 +490,25 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 419
     Height = 209
-    ActivePage = TabSheet5
+    ActivePage = TabSheet1
     Align = alTop
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = #26399#36135#34892#24773#22320#22336
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object QuotationAddrGrid: TStringGrid
         Left = 0
         Top = 0
         Width = 411
         Height = 181
         Align = alClient
-        ColCount = 3
+        ColCount = 6
         Ctl3D = False
+        DefaultColWidth = 40
         FixedCols = 0
         FixedRows = 0
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
         ParentCtl3D = False
+        ScrollBars = ssHorizontal
         TabOrder = 0
         OnClick = QuotationAddrGridClick
         OnDrawCell = QuotationAddrGridDrawCell
@@ -542,6 +541,10 @@ object ConfigForm: TConfigForm
     object TabSheet5: TTabSheet
       Caption = #36134#25143#36873#25321
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object AccountGrid: TStringGrid
         Left = 0
         Top = 0
@@ -618,10 +621,15 @@ object ConfigForm: TConfigForm
       Top = 21
       Width = 66
       Height = 21
+      AutoComplete = False
+      Style = csDropDownList
+      Ctl3D = False
       ItemHeight = 13
       ItemIndex = 0
+      ParentCtl3D = False
       TabOrder = 4
       Text = #26399#36135
+      OnChange = ComboBox2Change
       Items.Strings = (
         #26399#36135
         #26399#26435
@@ -633,7 +641,7 @@ object ConfigForm: TConfigForm
     Left = 560
     Top = 32
     Bitmap = {
-      494C010101000800280010001000FFFFFFFF2000FFFFFFFFFFFFFFFF424D3600
+      494C0101010008003C0010001000FFFFFFFF2000FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       00FF000000FF00A4FFFF00A4FFFF00A4FFFF00A4FFFF00A4FFFF00A4FFFF0000

@@ -1,0 +1,69 @@
+object QuotationChangeForm: TQuotationChangeForm
+  Left = 0
+  Top = 0
+  Caption = 'QuotationChangeForm'
+  ClientHeight = 168
+  ClientWidth = 271
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 56
+    Top = 32
+    Width = 72
+    Height = 13
+    Caption = #24403#21069#34892#24773#22320#22336
+  end
+  object QuotationAddrLabel: TLabel
+    Left = 40
+    Top = 64
+    Width = 104
+    Height = 15
+    Caption = 'QuotationAddrLabel'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Comic Sans MS'
+    Font.Style = []
+    ParentFont = False
+    Layout = tlCenter
+  end
+  object Label2: TLabel
+    Left = 80
+    Top = 96
+    Width = 14
+    Height = 26
+    Caption = ' || '#13#10' \/'
+  end
+  object NewQuotationAddrLabel: TLabel
+    Left = 80
+    Top = 136
+    Width = 12
+    Height = 13
+    Caption = '---'
+  end
+  object ChangeButton: TButton
+    Left = 166
+    Top = 103
+    Width = 91
+    Height = 46
+    Caption = #20999#25442
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 183
+    Top = 25
+    Width = 58
+    Height = 29
+    Caption = #36890#35759#37197#32622
+    TabOrder = 1
+    OnClick = Button1Click
+  end
+end

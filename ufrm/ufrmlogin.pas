@@ -1,4 +1,4 @@
-unit ufrmlogin;
+﻿unit ufrmlogin;
 
 interface
 
@@ -15,10 +15,14 @@ type
     Button1: TButton;
     ComboBox1: TComboBox;
     Label1: TLabel;
+    Button2: TButton;
+    AddrLabel: TLabel;
+    Label2: TLabel;
     procedure KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Button1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ComboBox1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -34,7 +38,8 @@ implementation
 {$R *.dfm}
 
 uses
-  ComCtrls, MainWIN, uTradeAPI, uConfigUnit, uDrawView, uGlobalInstance;
+  ComCtrls, MainWIN, uTradeAPI, uConfigUnit, uDrawView, uGlobalInstance,
+  ufrmConfigForm;
 
 procedure TLoginTradeFrom.Button1Click(Sender: TObject);
 var
@@ -42,21 +47,35 @@ var
   pTradeFuturesServer: PTradeServerStruct;
   pAccount: PAccountStruct;
 begin
-  FtradeProxy := TTradeProxy.Create(dllName);
-//  defaultAccount.sAccount := LoginTradeFrom.accountedit.Text;
-//  defaultAccount.sPassword := LoginTradeFrom.passwordedit.Text;
-//  defaultAccount.sAuthCode := LoginTradeFrom.authcodeedit.Text;
-//  defaultAccount.sBrokerID := LoginTradeFrom.brokeridedit.Text;
-//  defaultAccount.sAppid := LoginTradeFrom.appidedit.Text;
-  pTradeFuturesServer := PTradeServerStruct(FutureTradeServerList.Objects[DefaultFutureTradeServerIndex]);
-  pAccount := PAccountStruct(AccountList.Objects[DefaultAccountIndex]);
-  FtradeProxy.Connected(PChar(pTradeFuturesServer.sServer), PChar(''));
-  FtradeProxy.AuthAndLogin(PChar(pTradeFuturesServer.sBrokerID), PChar(LoginTradeFrom.accountedit.Text), PChar(LoginTradeFrom.passwordedit.Text), PChar(pAccount.sAuthCode), PChar(pAccount.sAppid));
-  pAccount.sAccount := LoginTradeFrom.accountedit.Text;
-//  pAccount.sPassword := LoginTradeFrom.passwordedit.Text;
-  LoginTradeFrom.Close;
-  MainWindow.InitTradeData;
+  if ((accountedit.Text <> '') and (passwordedit.Text <> '')) then
+  begin
+    FFuturesTradeProxy := TTradeProxy.Create(FuturesdllName);
+  //  defaultAccount.sAccount := LoginTradeFrom.accountedit.Text;
+  //  defaultAccount.sPassword := LoginTradeFrom.passwordedit.Text;
+  //  defaultAccount.sAuthCode := LoginTradeFrom.authcodeedit.Text;
+  //  defaultAccount.sBrokerID := LoginTradeFrom.brokeridedit.Text;
+  //  defaultAccount.sAppid := LoginTradeFrom.appidedit.Text;
+    pTradeFuturesServer := PTradeServerStruct(FutureTradeServerList.Objects[DefaultFutureTradeServerIndex]);
+    pAccount := PAccountStruct(AccountList.Objects[DefaultAccountIndex]);
+    FFuturesTradeProxy.Connected(PChar(pTradeFuturesServer.sServer), PChar(''));
+    FFuturesTradeProxy.AuthAndLogin(PChar(pTradeFuturesServer.sBrokerID), PChar(LoginTradeFrom.accountedit.Text), PChar(LoginTradeFrom.passwordedit.Text), PChar(pAccount.sAuthCode), PChar(pAccount.sAppid));
+    pAccount.sAccount := LoginTradeFrom.accountedit.Text;
+  //  pAccount.sPassword := LoginTradeFrom.passwordedit.Text;
+    LoginTradeFrom.Close;
+    MainWindow.InitTradeData;
 
+  end
+  else
+  begin
+    MessageBox(Handle, '请输入账户和密码', '无法登录', MB_OK);
+  end;
+
+end;
+
+procedure TLoginTradeFrom.Button2Click(Sender: TObject);
+begin
+  ConfigForm.PageControl1.ActivePageIndex := 1;
+  ConfigForm.Show;
 end;
 
 procedure TLoginTradeFrom.ComboBox1Click(Sender: TObject);
@@ -73,6 +92,13 @@ procedure TLoginTradeFrom.FormShow(Sender: TObject);
 var
   I: Integer;
 begin
+  //界面数据更新
+  Self.Caption := TypeStr(mytype) + '登录';
+  if (mytype = FUTURES) then
+  begin
+    Self.AddrLabel.Caption := FutureTradeServerList[DefaultFutureTradeServerIndex] + ':' + PTradeServerStruct(FutureTradeServerList.Objects[DefaultFutureTradeServerIndex]).sServer;
+  end;
+
   for I := 0 to ComboBox1.Items.Count do
   begin
     ComboBox1.Items.Delete(0);
@@ -83,6 +109,9 @@ begin
     ComboBox1.AddItem(accountList[I], accountList.Objects[I]);
   end;
   ComboBox1.ItemIndex := 0;
+  accountedit.Text := PAccountStruct(AccountList.Objects[0]).sAccount;
+  ShowWindow(handle, sw_ShowNormal);
+  SetWindowPos(Self.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
 end;
 
 procedure TLoginTradeFrom.KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

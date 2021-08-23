@@ -3,7 +3,7 @@ unit uDrawView;
 interface
 
 uses
-  uDataCenter, Classes, uDataStruct, IdGlobal, Graphics, ComCtrls;
+  uDataCenter, Classes, uDataStruct, IdGlobal, Graphics, ComCtrls, uConstants;
 
 type
   TDrawView = class(TThread)
@@ -23,6 +23,8 @@ type
     procedure DrawPositionListView();
     //行情界面刷新
     procedure DrawQuotationGridView();
+    procedure DrawOptionQuotationGridView();
+//    procedure DrawFuturesQuotationGridView();
     //订单响应更新至文本窗口
     procedure PushOrderToCommandWindows();
     //资金状况刷新
@@ -33,7 +35,7 @@ type
     procedure DrawSuccessOrderView();
     //日志更新
     procedure DrawLogView();
-    procedure initQuotationView(arr: array of PChar);
+    procedure initQuotationView(arr: array of PChar; Atype: ContractType);
     //打印debug日志
     procedure log(log: string; color: Integer; logType: string);
   end;
@@ -43,8 +45,8 @@ procedure addRichText(edit: TRichEdit; text: TStrings; color: Integer);
 implementation
 
 uses
-  MainWIN, SysUtils, uConstants, uContractsSchedule, MATH, StrUtils, Windows,
-  Messages, RichEdit, uGlobalInstance;
+  MainWIN, SysUtils, uContractsSchedule, MATH, StrUtils, Windows, Messages,
+  RichEdit, uGlobalInstance;
 
 constructor TDrawView.Create(CreateSuspended: Boolean = False);
 begin
@@ -141,14 +143,30 @@ var
 begin
 //  MessageBox(0, PChar(GetCurrentThreadId()), '提示', MB_OK);
   //将数据中心的当前数据推到界面
-  sid := TStrings(TQuotationDataCenter.Instance.Item).Strings[0];
-  index := FDataSchedule.FFuturesSeatingList.IndexOf(sid);
-  MainWindow.FFuturesQuotationGrid.Rows[index + 1] := TStrings(TQuotationDataCenter.Instance.Item);
+  sid := TQuotationDataCenter.Instance.GetLastItemKey(FUTURES);
+  index := TQuotationDataCenter.Instance.FFuturesSeatingList.IndexOf(sid);
+  MainWindow.FFuturesQuotationGrid.Rows[index + 1] := TStrings(TQuotationDataCenter.Instance.GetItem(sid, FUTURES));
   if (sid = MainWindow.ContractIdComboBox.Text) then
   begin
-    MainWindow.SellPriceLabel.Caption := TStrings(TQuotationDataCenter.Instance.Item)[5];
-    MainWindow.BuyPriceLabel.Caption := TStrings(TQuotationDataCenter.Instance.Item)[3];
+    MainWindow.SellPriceLabel.Caption := TStrings(TQuotationDataCenter.Instance.GetItem(sid, FUTURES))[5];
+    MainWindow.BuyPriceLabel.Caption := TStrings(TQuotationDataCenter.Instance.GetItem(sid, FUTURES))[3];
   end;
+
+end;
+
+procedure TDrawView.DrawOptionQuotationGridView;
+var
+  sid: string;
+  index: Integer;
+  item: TStrings;
+begin
+  sid := TQuotationDataCenter.Instance.GetLastItemKey(OPTION);
+  index := TQuotationDataCenter.Instance.FOptionSeatingList.IndexOf(sid);
+  if (index = -1) then
+  begin
+    raise Exception.Create('期权Grid绘图取空');
+  end;
+  MainWindow.FOptionQuotationGrid.Rows[index + 1] := TStrings(TQuotationDataCenter.Instance.GetItem(sid, OPTION));
 end;
 
 procedure TDrawView.PushOrderToCommandWindows();
@@ -187,14 +205,14 @@ begin
 //  text.Free;
 end;
 
-procedure TDrawView.initQuotationView(arr: array of PChar);
+procedure TDrawView.initQuotationView(arr: array of PChar; Atype: ContractType);
 begin
-  FDataSchedule.AddContracts(arr);
-  MainWindow.ContractIdComboBox.Items := FDataSchedule.FFuturesSeatingList;
+  FDataSchedule.AddContracts(arr, Atype);
+  MainWindow.ContractIdComboBox.Items := TQuotationDataCenter.Instance.FFuturesSeatingList;
   MainWindow.ContractIdComboBox.ItemIndex := 0;
-  FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[2]);
-  FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[1]);
-  FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[0]);
+  FSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[2]);
+  FSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[1]);
+  FSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[0]);
 end;
 
 procedure TDrawView.DrawOrderView();

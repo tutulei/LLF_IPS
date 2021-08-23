@@ -3,28 +3,28 @@ unit uDataCenter;
 interface
 
 uses
-  Classes, uDataStruct, IdGlobal, Graphics;
+  Classes, uDataStruct, IdGlobal, Graphics, uConstants;
 
 type
   PCThostFtdcInvestorPositionField = ^CThostFtdcInvestorPositionField;
 
   PStringList = ^TStringList;  
-  //数据类基类
 
+  //数据类基类
   TDataList = class
   private
     CriticalSection: TCriticalSection;
     list: TStringList;
     lastItem: Pointer;
-    function GetItem(): Pointer;
-    procedure SetItem(const item: Pointer);
+    function GetLastItem(): Pointer; virtual;
+    procedure SetItem(const item: Pointer); virtual;
   public
-    constructor Create();
+    constructor Create(); virtual;
     procedure addItem(key: string; Apdata: Pointer); virtual;
     function getList(): TStringList;
-    property Item: Pointer read GetItem write SetItem;
+    property Item: Pointer read GetLastItem write SetItem;
   end;
-  
+
   //持仓数据类 key = id-dir
   TPositionDataCenter = class(TDataList)
   private
@@ -35,9 +35,15 @@ type
     class function Instance(): TPositionDataCenter;
   end;
 
-  //行情数据类 key = id
+  {行情数据类 key = id}
   TQuotationDataCenter = class(TDataList)
   private
+    FuturesLastItem: string;
+    OptionLastItem: string;
+    ActualsLastItem: string;
+    FuturesList: TStringList;
+    OptionList: TStringList;
+    ActualsList: TStringList;
     class var
       ins: TQuotationDataCenter;
   public
@@ -45,10 +51,18 @@ type
     FFuturesSeatingList: TStringList;
     FOptionSeatingList: TStringList;
     FActualsSeatingList: TStringList;
+    //行情代码信息列表
+    OptionQuotationCodeList: TStringList;
     class function Instance(): TQuotationDataCenter;
+    constructor Create(); override;
+    procedure addItem(key: string; Apdata: Pointer; Atype: ContractType);
+    function GetLastItemKey(Atype: ContractType): string;
+    procedure SetItem(const item: Pointer; Atype: ContractType); overload;
+    function GetItem(Akey: string; Atype: ContractType): Pointer;
+//    property Item: Pointer read GetItem write SetItem;
   end;
 
-  //命令窗口数据推送
+  {命令窗口数据推送}
   TCommandWindowsDataCenter = class(TDataList)
   private
     class var
@@ -61,7 +75,7 @@ type
 //    procedure addItem(key: string; Apdata: Pointer); override;
   end;
 
-  //日志数据
+  {日志数据}
   TOrderLogDataCenter = class(TDataList)
   private
     class var
@@ -74,7 +88,7 @@ type
     procedure addLog(Adata: Pointer);
   end;
 
-  //已提交订单数据类
+  {已提交订单数据类}
   TOrderDataCenter = class(TDataList)
   private
     class var
@@ -87,7 +101,7 @@ type
     procedure addItem(key: string; Apdata: Pointer); override;
   end;
 
-  //已成交订单数据类
+  {已成交订单数据类}
   TSuccessOrderDataCenter = class(TDataList)
   private
     class var
@@ -97,13 +111,13 @@ type
   end;
 
 var
-  //交易账户持仓数据
+  {交易账户持仓数据}
   TradingAccountField: CThostFtdcTradingAccountField;
 
 implementation
 
 uses
-  DateUtils, SysUtils, MainWIN, uConstants;
+  DateUtils, SysUtils, MainWIN;
 
 constructor TDataList.Create();
 begin
@@ -137,7 +151,7 @@ begin
   CriticalSection.Leave;
 end;
 
-function TDataList.GetItem(): Pointer;
+function TDataList.GetLastItem(): Pointer;
 begin
   Result := lastItem;
 end;
@@ -183,6 +197,87 @@ begin
   Result := ins;
 end;
 
+procedure TQuotationDataCenter.addItem(key: string; Apdata: Pointer; Atype: ContractType);
+var
+  I: Integer;
+  tmplist: TStringList;
+begin
+  CriticalSection.Enter;
+  case Atype of
+    FUTURES:
+      begin
+        FuturesLastItem := key;
+        tmplist := FuturesList;
+      end;
+    OPTION:
+      begin
+        OptionLastItem := key;
+        tmplist := OptionList;
+      end;
+
+    ACTUALS:
+      begin
+        ActualsLastItem := key;
+        tmplist := ActualsList;
+      end;
+
+  end;
+
+  I := tmplist.IndexOf(key);
+  if (I = -1) then
+  begin
+    tmplist.AddObject(key, Apdata);
+  end
+  else
+  begin
+    Dispose(Pointer(tmplist.Objects[I]));
+    tmplist.Objects[I] := Apdata;
+  end;
+  CriticalSection.Leave;
+end;
+
+constructor TQuotationDataCenter.Create();
+begin
+  inherited;
+  FuturesList := TStringList.Create();
+  OptionList := TStringList.Create();
+  ActualsList := TStringList.Create();
+  FFuturesSeatingList := TStringList.Create();
+  FOptionSeatingList := TStringList.Create();
+  FActualsSeatingList := TStringList.Create();
+end;
+
+function TQuotationDataCenter.GetItem(Akey: string; Atype: ContractType): Pointer;
+var
+  tmpList: TStringList;
+  I: Integer;
+begin
+  case Atype of
+    FUTURES:
+      tmpList := FuturesList;
+    OPTION:
+      tmpList := OptionList;
+    ACTUALS:
+      tmpList := ActualsList;
+  end;
+  I := tmpList.IndexOf(Akey);
+  if (I = -1) then
+    raise Exception.Create('行情数据getItem取空');
+  Result := tmpList.Objects[I];
+end;
+
+function TQuotationDataCenter.GetLastItemKey(Atype: ContractType): string;
+begin
+  case Atype of
+    FUTURES:
+      Result := FuturesLastItem;
+    OPTION:
+      Result := OptionLastItem;
+    ACTUALS:
+      Result := ActualsLastItem;
+  end;
+end;
+
 class function TQuotationDataCenter.Instance(): TQuotationDataCenter;
 begin
   if (ins = nil) then
@@ -190,6 +285,11 @@ begin
     ins := TQuotationDataCenter.Create();
   end;
   Result := ins;
+end;
+
+procedure TQuotationDataCenter.SetItem(const item: Pointer; Atype: ContractType);
+begin
+
 end;
 
 class function TCommandWindowsDataCenter.instance(): TCommandWindowsDataCenter;
