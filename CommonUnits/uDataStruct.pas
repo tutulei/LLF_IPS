@@ -959,8 +959,8 @@ type
     FuturesServer: string;
     OptionIsLogin: Boolean;
     OptionServer: string;
-    SharesIsLogin: Boolean;
-    SharesServer: string;
+    ActualsIsLogin: Boolean;
+    ActualsServer: string;
   end;
 
   TTradeAccountStatus = record

@@ -320,6 +320,7 @@ var
   sSellPrice: string;
   sBuyCount: string;
   sSellCount: string;
+  tmpData: PDF_OptionMarketData;
 begin
   if (TQuotationDataCenter.Instance.OptionQuotationCodeList = nil) then
   begin
@@ -396,34 +397,11 @@ begin
         begin
           nMarketID := pOptionMarketData.nIdnum mod 100;
           nCodeID := pOptionMarketData.nIdnum div 100;
-
+          New(tmpData);
+          Move(pOptionMarketData^, tmpData^, SizeOf(TDF_OptionMarketData));
           str := string(IntToStr(nMarketID) + ',' + IntToStr(nCodeID));
-//          Writeln('[' + IntToStr(I) + ']=====>ID:' + PDF_CodeInfo(OptionQuotationCodeList.Objects[codeList.IndexOf(str)]).szID + '未平数:' + IntToStr(pOptionMarketData.iTotalLongPosition) + '总成交数：' + IntToStr(pOptionMarketData.iTradeVolume) + '成交金额：' + FloatToStr(pOptionMarketData.dTotalValueTraded) + '昨结算:' + FloatToStr(pOptionMarketData.unPreSettlPrice) + '涨跌：' + FloatToStr(pOptionMarketData.unSD1));
-          TDrawView.instance.log('=====>ID' + PDF_CodeInfo(TQuotationDataCenter.Instance.OptionQuotationCodeList.Objects[TQuotationDataCenter.Instance.OptionQuotationCodeList.IndexOf(str)]).szID + '未平数:' + IntToStr(pOptionMarketData.iTotalLongPosition) + '总成交数：' + IntToStr(pOptionMarketData.iTradeVolume) + '成交金额：' + FloatToStr(pOptionMarketData.dTotalValueTraded) + '昨结算:' + FloatToStr(pOptionMarketData.unPreSettlPrice) + '涨跌：' + FloatToStr(pOptionMarketData.unSD1), $00004080, IntToStr(I));
-          dataList := TStringList.Create;
-          sBuyPrice := '';
-          for J := 0 to 4 do
-          begin
-            sBuyPrice := sBuyPrice + '|' + IntToStr(pOptionMarketData.arrunBuyPrice_5[J]);
-          end;
-          sSellPrice := '';
-          for J := 0 to 4 do
-          begin
-            sSellPrice := sSellPrice + '|' + IntToStr(pOptionMarketData.arrunSellPrice_5[J]);
-          end;
-          sSellCount := '';
-          for J := 0 to 4 do
-          begin
-            sSellCount := sSellCount + '|' + IntToStr(pOptionMarketData.arriSellVolume_5[J]);
-          end;
-          sBuyCount := '';
-          for J := 0 to 4 do
-          begin
-            sBuyCount := sBuyCount + '|' + IntToStr(pOptionMarketData.arriBuyVolume_5[J]);
-          end;
-
-          dataList.DelimitedText := PDF_CodeInfo(TQuotationDataCenter.Instance.OptionQuotationCodeList.Objects[TQuotationDataCenter.Instance.OptionQuotationCodeList.IndexOf(str)]).szID + ',' + IntToStr(pOptionMarketData.unTradePrice) + ',' + IntToStr(pOptionMarketData.unSD1) + ',' + sBuyPrice + ',' + sBuyCount + ',' + sSellPrice + ',' + sSellCount + ',' + IntToStr(pOptionMarketData.unPreSettlPrice) + ',' + IntToStr(pOptionMarketData.unOpenPrice) + ',' + IntToStr(pOptionMarketData.unHighPrice) + ',' + IntToStr(pOptionMarketData.unLowPrice) + ',' + IntToStr(pOptionMarketData.iTradeVolume) + ',' + FloatToStr(pOptionMarketData.dTotalValueTraded) + ',' + IntToStr(pOptionMarketData.nTime);
-          TQuotationDataCenter.Instance.addItem(PDF_CodeInfo(TQuotationDataCenter.Instance.OptionQuotationCodeList.Objects[TQuotationDataCenter.Instance.OptionQuotationCodeList.IndexOf(str)]).szID, dataList, OPTION);
+          TQuotationDataCenter.Instance.addItem(PDF_CodeInfo(TQuotationDataCenter.Instance.OptionQuotationCodeList.Objects[TQuotationDataCenter.Instance.OptionQuotationCodeList.IndexOf(str)]).szID, tmpData, OPTION);
+//          TDrawView.instance.log('=====>[' + IntToStr(nMarketID) + ',' + IntToStr(nCodeID) + ']最新价：' + IntToStr(pOptionMarketData.unTradePrice) + '未平数:' + IntToStr(pOptionMarketData.iTotalLongPosition) + '总成交数：' + IntToStr(pOptionMarketData.iTradeVolume) + '成交金额：' + FloatToStr(pOptionMarketData.dTotalValueTraded) + '昨结算:' + FloatToStr(pOptionMarketData.unPreSettlPrice) + '涨跌：' + FloatToStr(pOptionMarketData.unSD1), $00004080, 'DEBUG');
           //界面更新
           TDrawView.instance.RunSynchronize(TDrawView.instance.DrawOptionQuotationGridView);
 

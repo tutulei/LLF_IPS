@@ -1,0 +1,4 @@
+2021-08-30 11:04:55.866 LOG_INFO  -----------------  JGLog thread started!   ---------------------------- 
+2021-08-30 11:04:55.866 LOG_INFO  logger id=0 key=Main name=LLF_IPS path=./log/ level=1 display=1 
+2021-08-30 11:04:57.535 LOG_INFO  启动实例ID[1]. (ConnectObject.cpp):65 
+2021-08-30 11:04:57.601 LOG_INFO  实例ID[1],请求连接服务器[124.74.252.82:8901]. (ConnectObject.cpp):245 

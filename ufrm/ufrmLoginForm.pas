@@ -51,6 +51,12 @@ type
 
 procedure ConnectedQuotation();
 
+procedure ConnectedFutures();
+
+procedure ConnectedOption();
+
+procedure ConnectedActuals();
+
 procedure updateData();
 
 procedure ConnectedTrade();
@@ -131,7 +137,7 @@ begin
   WindowList := TList.Create;
   moveFlag := False;
   RefreshView();
-  FuturesPwdEdit.Text := 'xiangyuan@123';
+  FuturesPwdEdit.Text := 'xy@12345';
 end;
 
 procedure TLoginForm.LoginButtonClick(Sender: TObject);
@@ -147,7 +153,7 @@ begin
   //登录行情
   FDataSchedule := TDataSchedule.Create(MainWindow);
   ConnectedQuotation();
-  if (QuotationServerStatus.FuturesIsLogin or QuotationServerStatus.OptionIsLogin or QuotationServerStatus.SharesIsLogin) then
+  if (QuotationServerStatus.FuturesIsLogin or QuotationServerStatus.OptionIsLogin or QuotationServerStatus.ActualsIsLogin) then
   begin
   //检查有效可登录账户有多少
     if ((FuturesAccountEdit.Text <> '') and (FuturesPwdEdit.Text <> '')) then
@@ -204,7 +210,34 @@ var
   pSubscriptionCode: PDF_SubscriptionCode;
   pTmp: Pointer;
 begin
-  //期货行情
+  ConnectedFutures();
+  ConnectedOption();
+  //空
+  ConnectedActuals();
+
+
+//  //行情初始化订阅
+//  SetLength(arr, 3);
+//  arr[0] := Pchar('IF2108');
+//  arr[1] := Pchar('IH2108');
+//  arr[2] := Pchar('IC2108');
+//  tmp := FQuotationProxy.Subscribe(Pointer(arr), 3);
+//
+//  //订阅成功界面初始化
+//  if tmp = 0 then
+//  begin
+//    TDrawView.Instance().initQuotationView(arr);
+//
+//  end;
+//  FQuotationThread := TManagerThread.Create(updateData);
+end;
+
+procedure ConnectedFutures();
+var
+  tmp: Integer;
+  pQuotationServer: PQuotationServerStruct;
+begin
+   //期货行情
   FFuturesQuotationProxy := TFuturesQuotationProxy.Create(FuturesdllName);
   pQuotationServer := PQuotationServerStruct(FutureQuotationServerList.Objects[DefaultFutureQuotationServerIndex]);
   FFuturesQuotationProxy.Connected(PChar(pQuotationServer.sServer), Pchar(''));
@@ -229,8 +262,13 @@ begin
   end;
   QuotationServerStatus.FuturesIsLogin := True;
   QuotationServerStatus.FuturesServer := pQuotationServer.sServer;
+end;
 
-
+procedure ConnectedOption();
+var
+  pQuotationServer: PQuotationServerStruct;
+  ret: Integer;
+begin
   //期权行情
   FOptionQuotationProxy := TOptionQuotationProxy.Create(OptiondllName);
   pQuotationServer := PQuotationServerStruct(OptionQuotationServerList.Objects[DefaultOptionQuotationServerIndex]);
@@ -238,38 +276,33 @@ begin
   if (ret <> 0) then
   begin
     MessageBox(0, '期权连接错误', '错误', MB_OK);
+    exit;
   end;
   ret := FOptionQuotationProxy.AddServer(pQuotationServer.sServer, StrToInt(pQuotationServer.iPort), pQuotationServer.sAccount, pQuotationServer.sPassword);
   if (ret <> 0) then
   begin
     MessageBox(0, '期权地址配置误', '错误', MB_OK);
+    exit;
   end;
   ret := FOptionQuotationProxy.SetResponseFunc(@OnDfRecvdata, @OnDfNotice);
   if (ret <> 0) then
   begin
     MessageBox(0, '期权绑定回调错误', '错误', MB_OK);
+    exit;
   end;
   ret := FOptionQuotationProxy.ServerBegin();
   if (ret <> 0) then
   begin
     MessageBox(0, '期权行情连接请求', '错误', MB_OK);
+    exit;
   end;
+  QuotationServerStatus.OptionIsLogin := True;
+  QuotationServerStatus.OptionServer := pQuotationServer.sServer;
+end;
 
+procedure ConnectedActuals();
+begin
 
-//  //行情初始化订阅
-//  SetLength(arr, 3);
-//  arr[0] := Pchar('IF2108');
-//  arr[1] := Pchar('IH2108');
-//  arr[2] := Pchar('IC2108');
-//  tmp := FQuotationProxy.Subscribe(Pointer(arr), 3);
-//
-//  //订阅成功界面初始化
-//  if tmp = 0 then
-//  begin
-//    TDrawView.Instance().initQuotationView(arr);
-//
-//  end;
-//  FQuotationThread := TManagerThread.Create(updateData);
 end;
 
 procedure ConnectedTrade();
@@ -296,15 +329,24 @@ var
   tick: TQuotationData;
   id: string;
   icount: integer;
+  pdata: PQuotationData;
+  skey: string;
 begin
   icount := TQuotationDataCenter.instance.FFuturesSeatingList.Count;
   if icount <= 0 then
     icount := 1;
   Sleep(500 div icount);
   tick := FFuturesQuotationProxy.GetOneTick();
-  if (tick.InstrumentID <> '') then
+  skey := tick.InstrumentID;
+  if (skey <> '') then
   begin
-    FDataSchedule.ScheduleTick(tick);
+    New(pdata);
+    Move(tick, pdata^, SizeOf(TQuotationdata));
+    TQuotationDataCenter.Instance.addItem(pdata.InstrumentID, pdata, FUTURES);
+
+    //界面更新
+    TDrawView.instance.RunSynchronize(TDrawView.instance.DrawQuotationGridView);
+    //    FDataSchedule.ScheduleTick(tick);
   end;
 //    Total_Quotation.Rows[1] := fQuotationView(tick);
 end;

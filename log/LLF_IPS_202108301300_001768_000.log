@@ -1,0 +1,22 @@
+2021-08-30 13:00:35.797 LOG_INFO  -----------------  JGLog thread started!   ---------------------------- 
+2021-08-30 13:00:35.797 LOG_INFO  logger id=0 key=Main name=LLF_IPS path=./log/ level=1 display=1 
+2021-08-30 13:00:37.483 LOG_INFO  启动实例ID[1]. (ConnectObject.cpp):65 
+2021-08-30 13:00:37.547 LOG_INFO  实例ID[1],请求连接服务器[124.74.252.82:8901]. (ConnectObject.cpp):245 
+2021-08-30 13:00:37.613 LOG_DEBUG 实例ID[1],接收到SOCKET_ID[1][124.74.252.82:8901]的OnConnect消息. (ConnectObject.cpp):118 
+2021-08-30 13:00:41.050 LOG_INFO  启动实例ID[2]. (ConnectObject.cpp):65 
+2021-08-30 13:00:41.050 LOG_INFO  实例ID[2],请求连接服务器[124.74.252.82:8901]. (ConnectObject.cpp):245 
+2021-08-30 13:00:41.273 LOG_DEBUG 实例ID[2],接收到SOCKET_ID[2][124.74.252.82:8901]的OnConnect消息. (ConnectObject.cpp):118 
+2021-08-30 13:01:37.655 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[032F41D0]. (ConnectObject.cpp):1011 
+2021-08-30 13:01:41.084 LOG_INFO  实例ID[2],请求[沪市][深市]代码表obj=[091B0E40]. (ConnectObject.cpp):1011 
+2021-08-30 13:02:37.702 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[032F41D0]. (ConnectObject.cpp):1011 
+2021-08-30 13:02:41.137 LOG_INFO  实例ID[2],请求[沪市][深市]代码表obj=[091B0E40]. (ConnectObject.cpp):1011 
+2021-08-30 13:03:37.762 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[032F41D0]. (ConnectObject.cpp):1011 
+2021-08-30 13:03:41.202 LOG_INFO  实例ID[2],请求[沪市][深市]代码表obj=[091B0E40]. (ConnectObject.cpp):1011 
+2021-08-30 13:04:37.807 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[032F41D0]. (ConnectObject.cpp):1011 
+2021-08-30 13:04:41.226 LOG_INFO  实例ID[2],请求[沪市][深市]代码表obj=[091B0E40]. (ConnectObject.cpp):1011 
+2021-08-30 13:05:37.879 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[032F41D0]. (ConnectObject.cpp):1011 
+2021-08-30 13:05:41.309 LOG_INFO  实例ID[2],请求[沪市][深市]代码表obj=[091B0E40]. (ConnectObject.cpp):1011 
+2021-08-30 13:06:37.884 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[032F41D0]. (ConnectObject.cpp):1011 
+2021-08-30 13:06:41.389 LOG_INFO  实例ID[2],请求[沪市][深市]代码表obj=[091B0E40]. (ConnectObject.cpp):1011 
+2021-08-30 13:07:37.987 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[032F41D0]. (ConnectObject.cpp):1011 
+2021-08-30 13:07:41.495 LOG_INFO  实例ID[2],请求[沪市][深市]代码表obj=[091B0E40]. (ConnectObject.cpp):1011 

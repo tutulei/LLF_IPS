@@ -35,9 +35,10 @@ type
     procedure DrawSuccessOrderView();
     //日志更新
     procedure DrawLogView();
-    procedure initQuotationView(arr: array of PChar; Atype: ContractType);
     //打印debug日志
     procedure log(log: string; color: Integer; logType: string);
+    //买5~卖5界面更新
+    procedure DrawPriceGrid(ABuyPriceArray: array of Cardinal; ABuyVolumeArray: array of Int64; ASellPriceArray: array of Cardinal; ASellVolumeArray: array of Int64);
   end;
 
 procedure addRichText(edit: TRichEdit; text: TStrings; color: Integer);
@@ -46,7 +47,7 @@ implementation
 
 uses
   MainWIN, SysUtils, uContractsSchedule, MATH, StrUtils, Windows, Messages,
-  RichEdit, uGlobalInstance;
+  RichEdit, uGlobalInstance, Grids, ChartManager;
 
 constructor TDrawView.Create(CreateSuspended: Boolean = False);
 begin
@@ -135,38 +136,304 @@ begin
 //  list := tradeProxy.CheckPosition();
 end;
 
+procedure TDrawView.DrawPriceGrid(ABuyPriceArray: array of Cardinal; ABuyVolumeArray: array of Int64; ASellPriceArray: array of Cardinal; ASellVolumeArray: array of Int64);
+var
+  pPriceGrid: PStringGrid;
+  iCountIndex: Integer;
+  iPriceIndex: Integer;
+begin
+  pPriceGrid := @MainWindow.PriceGrid;
+  iCountIndex := 2;
+  iPriceIndex := 1;
+  pPriceGrid.Cells[0, 0] := '⑤';
+  pPriceGrid.Cells[0, 1] := '④';
+  pPriceGrid.Cells[0, 2] := '③';
+  pPriceGrid.Cells[0, 3] := '②';
+  pPriceGrid.Cells[0, 4] := '①';
+//  pPriceGrid.Cells[0, 5] := '--------';
+  pPriceGrid.Cells[0, 5] := '①';
+  pPriceGrid.Cells[0, 6] := '②';
+  pPriceGrid.Cells[0, 7] := '③';
+  pPriceGrid.Cells[0, 8] := '④';
+  pPriceGrid.Cells[0, 9] := '⑤';
+
+  pPriceGrid.Cells[iCountIndex, 0] := FloatToStr(ASellVolumeArray[4]);
+  pPriceGrid.Cells[iCountIndex, 1] := FloatToStr(ASellVolumeArray[3]);
+  pPriceGrid.Cells[iCountIndex, 2] := FloatToStr(ASellVolumeArray[2]);
+  pPriceGrid.Cells[iCountIndex, 3] := FloatToStr(ASellVolumeArray[1]);
+  pPriceGrid.Cells[iCountIndex, 4] := FloatToStr(ASellVolumeArray[0]);
+//  pPriceGrid.Cells[iCountIndex, 5] := '---------';
+  pPriceGrid.Cells[iCountIndex, 5] := FloatToStr(ABuyVolumeArray[0]);
+  pPriceGrid.Cells[iCountIndex, 6] := FloatToStr(ABuyVolumeArray[1]);
+  pPriceGrid.Cells[iCountIndex, 7] := FloatToStr(ABuyVolumeArray[2]);
+  pPriceGrid.Cells[iCountIndex, 8] := FloatToStr(ABuyVolumeArray[3]);
+  pPriceGrid.Cells[iCountIndex, 9] := FloatToStr(ABuyVolumeArray[4]);
+
+  if ASellVolumeArray[4] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 0] := IntToStr(ASellPriceArray[4])
+  else
+    pPriceGrid.Cells[iPriceIndex, 0] := '-';
+  if ASellVolumeArray[3] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 1] := FloatToStr(ASellPriceArray[3])
+  else
+    pPriceGrid.Cells[iPriceIndex, 1] := '-';
+  if ASellVolumeArray[2] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 2] := FloatToStr(ASellPriceArray[2])
+  else
+    pPriceGrid.Cells[iPriceIndex, 2] := '-';
+  if ASellVolumeArray[1] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 3] := FloatToStr(ASellPriceArray[1])
+  else
+    pPriceGrid.Cells[iPriceIndex, 3] := '-';
+  if ASellVolumeArray[0] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 4] := FloatToStr(ASellPriceArray[0])
+  else
+    pPriceGrid.Cells[iPriceIndex, 4] := '-';
+
+//  pPriceGrid.Cells[iPriceIndex, 5] := '-------';
+
+  if ABuyVolumeArray[0] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 5] := FloatToStr(ABuyPriceArray[0])
+  else
+    pPriceGrid.Cells[iPriceIndex, 5] := '-';
+  if ABuyVolumeArray[1] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 6] := FloatToStr(ABuyPriceArray[1])
+  else
+    pPriceGrid.Cells[iPriceIndex, 6] := '-';
+  if ABuyVolumeArray[2] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 7] := FloatToStr(ABuyPriceArray[2])
+  else
+    pPriceGrid.Cells[iPriceIndex, 7] := '-';
+  if ABuyVolumeArray[3] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 8] := FloatToStr(ABuyPriceArray[3])
+  else
+    pPriceGrid.Cells[iPriceIndex, 8] := '-';
+  if ABuyVolumeArray[4] <> 0 then
+    pPriceGrid.Cells[iPriceIndex, 9] := FloatToStr(ABuyPriceArray[4])
+  else
+    pPriceGrid.Cells[iPriceIndex, 9] := '-';
+end;
+
 procedure TDrawView.DrawQuotationGridView();
 var
   sid: string;
   index: Integer;
   item: TStrings;
+  Grid: TStringGrid;
+  sChange: string;
+  sChangeRate: string;
+  dChange: Double;
+  dChangeRate: Double;
+  tick: PQuotationData;
+  dataList: TStrings;
 begin
 //  MessageBox(0, PChar(GetCurrentThreadId()), '提示', MB_OK);
   //将数据中心的当前数据推到界面
+  Grid := MainWindow.FFuturesQuotationGrid;
   sid := TQuotationDataCenter.Instance.GetLastItemKey(FUTURES);
-  index := TQuotationDataCenter.Instance.FFuturesSeatingList.IndexOf(sid);
-  MainWindow.FFuturesQuotationGrid.Rows[index + 1] := TStrings(TQuotationDataCenter.Instance.GetItem(sid, FUTURES));
+  try
+    New(tick);
+    Move(PQuotationData(TQuotationDataCenter.Instance.GetItem(sid, FUTURES))^, tick^, SizeOf(TQuotationData));
+    index := TQuotationDataCenter.Instance.FFuturesSeatingList.IndexOf(tick.InstrumentID);
+    if (index = -1) then
+    begin
+//      raise Exception.Create('DrawQuotationGridView:无法获取合约index');
+      exit;
+    end;
+      //1确定涨跌和涨跌幅
+    if (Grid.Cells[2, index + 1] = '') then
+    begin
+      sChange := '0';
+      sChangeRate := '0%';
+    end
+    else
+    begin
+      dChange := tick.LastPrice - tick.PreSettlementPrice;
+      sChange := FloatToStr(RoundTo(dChange, -2));
+      dChangeRate := RoundTo(dChange / tick.PreSettlementPrice, -4);
+      sChangeRate := FloatTostr(dChangeRate * 100) + '%';
+    
+        //3
+    //    if (TQuotationDataCenter.Instance.FFuturesSeatingList[Grid.Row - 1] = tick.InstrumentID) then
+    //    begin
+    //      updatePriceGrid(tick);
+    //    end;
+        //2走势图绘制
+      if (FFuturesSeriesManager.Find(tick.InstrumentID) <> -1) then
+      begin
+        DrawChartTimely(string(tick.UpdateTime), tick.LastPrice, TThreeSeriesGroup(FFuturesSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
+        DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TThreeSeriesGroup(FFuturesSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
+        DrawChartTimely(string(tick.UpdateTime), FFuturesSeriesManager.GetAveragePrice(tick.InstrumentID, tick.LastPrice), TThreeSeriesGroup(FFuturesSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries3);
+      end;
+    //
+    //    if (tick.InstrumentID = AvaibleChartId) then
+    //    begin
+    //      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries1);
+    //      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries2);
+    //    end;
+        //1添加变动信息为变色显示提供依据，数据变小就变成负数，Grid响应事件中会对负数做处理
+      if (StrToFloat(Grid.Cells[2, index + 1]) > tick.LastPrice) then
+      begin
+        tick.LastPrice := -1.0 * tick.LastPrice;
+      end;
+      if (StrToFloat(Grid.Cells[4, index + 1]) > tick.BidPrice1) then
+      begin
+        tick.BidPrice1 := -1.0 * tick.BidPrice1;
+      end;
+      if (StrToFloat(Grid.Cells[6, index + 1]) > tick.AskPrice1) then
+      begin
+        tick.AskPrice1 := -1.0 * tick.AskPrice1;
+      end;
+    end;
+    
+      //1Grid列表数据刷新
+    dataList := fQuotationDataTurnToTStrings(tick^, sChange, sChangeRate);
+    MainWindow.FFuturesQuotationGrid.Rows[index + 1] := dataList;
+  finally
+    Dispose(tick);
+  end;
+//  MessageBox(0, PChar(GetCurrentThreadId()), '提示', MB_OK);
+  //将数据中心的当前数据推到界面
+//  sid := TQuotationDataCenter.Instance.GetLastItemKey(FUTURES);
+//  index := TQuotationDataCenter.Instance.FFuturesSeatingList.IndexOf(sid);
+//  MainWindow.FFuturesQuotationGrid.Rows[index + 1] := TStrings(TQuotationDataCenter.Instance.GetItem(sid, FUTURES));
   if (sid = MainWindow.ContractIdComboBox.Text) then
   begin
-    MainWindow.SellPriceLabel.Caption := TStrings(TQuotationDataCenter.Instance.GetItem(sid, FUTURES))[5];
-    MainWindow.BuyPriceLabel.Caption := TStrings(TQuotationDataCenter.Instance.GetItem(sid, FUTURES))[3];
+    MainWindow.SellPriceLabel.Caption := dataList[5];
+    MainWindow.BuyPriceLabel.Caption := dataList[3];
   end;
 
 end;
 
 procedure TDrawView.DrawOptionQuotationGridView;
 var
-  sid: string;
+  skey: string;
   index: Integer;
   item: TStrings;
+  dataList: Tstrings;
+  sid: string;
+  pOptionMarketData: PDF_OptionMarketData;
+  Grid: TStringGrid;
+  iNewPrice: Integer;
+  iBuyPrice: Integer;
+  iSellPrice: Integer;
+  StrTime: string;
+  tmpstr: string;
+  nMarketID: Integer;
+  nCodeID: Integer;
+  index2: Integer;
+  sConteactName: string;
+  iStop: Integer;
+  iStart: Integer;
 begin
-  sid := TQuotationDataCenter.Instance.GetLastItemKey(OPTION);
-  index := TQuotationDataCenter.Instance.FOptionSeatingList.IndexOf(sid);
+  Grid := MainWindow.FOptionQuotationGrid;
+//  Writeln('=====>ID:' + PDF_CodeInfo(OptionQuotationCodeList.Objects[codeList.IndexOf(str)]).szID + '未平数:' + IntToStr(pOptionMarketData.iTotalLongPosition) + '总成交数：' + IntToStr(pOptionMarketData.iTradeVolume) + '成交金额：' + FloatToStr(pOptionMarketData.dTotalValueTraded) + '昨结算:' + FloatToStr(pOptionMarketData.unPreSettlPrice) + '涨跌：' + FloatToStr(pOptionMarketData.unSD1));
+//  TDrawView.instance.log('=====>ID' + PDF_CodeInfo(TQuotationDataCenter.Instance.OptionQuotationCodeList.Objects[TQuotationDataCenter.Instance.OptionQuotationCodeList.IndexOf(str)]).szID + '未平数:' + IntToStr(pOptionMarketData.iTotalLongPosition) + '总成交数：' + IntToStr(pOptionMarketData.iTradeVolume) + '成交金额：' + FloatToStr(pOptionMarketData.dTotalValueTraded) + '昨结算:' + FloatToStr(pOptionMarketData.unPreSettlPrice) + '涨跌：' + FloatToStr(pOptionMarketData.unSD1), $00004080, IntToStr(I));
+//  sBuyPrice := '';
+//  for J := 0 to 4 do
+//  begin
+//    sBuyPrice := sBuyPrice + '|' + IntToStr(pOptionMarketData.arrunBuyPrice_5[J]);
+//  end;
+//  sSellPrice := '';
+//  for J := 0 to 4 do
+//  begin
+//    sSellPrice := sSellPrice + '|' + IntToStr(pOptionMarketData.arrunSellPrice_5[J]);
+//  end;
+//  sSellCount := '';
+//  for J := 0 to 4 do
+//  begin
+//    sSellCount := sSellCount + '|' + IntToStr(pOptionMarketData.arriSellVolume_5[J]);
+//  end;
+//  sBuyCount := '';
+//  for J := 0 to 4 do
+//  begin
+//    sBuyCount := sBuyCount + '|' + IntToStr(pOptionMarketData.arriBuyVolume_5[J]);
+//  end;
+  skey := TQuotationDataCenter.Instance.GetLastItemKey(OPTION);
+  index := TQuotationDataCenter.Instance.FOptionSeatingList.IndexOf(skey);
+
   if (index = -1) then
   begin
-    raise Exception.Create('期权Grid绘图取空');
+    Exit;
   end;
-  MainWindow.FOptionQuotationGrid.Rows[index + 1] := TStrings(TQuotationDataCenter.Instance.GetItem(sid, OPTION));
+
+  try
+    New(pOptionMarketData);
+    Move(PDF_OptionMarketData(TQuotationDataCenter.Instance.GetItem(skey, OPTION))^, pOptionMarketData^, SizeOf(TDF_OptionMarketData));
+    if (Grid.Cells[2, index + 1] <> '') then
+    begin
+      //1添加变动信息为变色显示提供依据，数据变小就变成负数，Grid响应事件中会对负数做处理
+      if (StrToInt(Grid.Cells[1, index + 1]) > pOptionMarketData.unTradePrice) then
+      begin
+        iNewPrice := -1 * pOptionMarketData.unTradePrice;
+      end;
+      if (StrToInt(Grid.Cells[3, index + 1]) > pOptionMarketData.arrunBuyPrice_5[0]) then
+      begin
+        iBuyPrice := -1 * pOptionMarketData.arrunBuyPrice_5[0];
+      end;
+      if (StrToInt(Grid.Cells[5, index + 1]) > pOptionMarketData.arrunSellPrice_5[0]) then
+      begin
+        iSellPrice := -1 * pOptionMarketData.arrunSellPrice_5[0];
+      end;
+    end;
+    if (iNewPrice = 0) then
+    begin
+      iNewPrice := pOptionMarketData.unTradePrice;
+      iBuyPrice := pOptionMarketData.arrunBuyPrice_5[0];
+      iSellPrice := pOptionMarketData.arrunSellPrice_5[0];
+    end;
+
+    sid := skey;
+    dataList := TStringList.Create;
+    StrTime := '';
+    tmpstr := IntToStr(pOptionMarketData.nTime div 10000000);
+    if (Length(tmpstr) = 1) then
+    begin
+      StrTime := StrTime + '0';
+    end;
+    StrTime := StrTime + tmpstr;
+    tmpstr := IntToStr((pOptionMarketData.nTime mod 10000000) div 100000);
+    StrTime := StrTime + ':';
+    if (Length(tmpstr) = 1) then
+    begin
+      StrTime := StrTime + '0';
+    end;
+    StrTime := StrTime + tmpstr;
+    tmpstr := IntToStr((pOptionMarketData.nTime mod 100000) div 1000);
+    StrTime := StrTime + ':';
+    if (Length(tmpstr) = 1) then
+    begin
+      StrTime := StrTime + '0';
+    end;
+    StrTime := StrTime + tmpstr;
+    //走势图绘制
+    if (FOptionSeriesManager.Find(skey) <> -1) then
+    begin
+      DrawChartTimely(StrTime, pOptionMarketData.unTradePrice, TThreeSeriesGroup(FOptionSeriesManager.GetObjPionter(sid)).ValueSeries1);
+      DrawChartTimely(StrTime, pOptionMarketData.unOpenPrice, TThreeSeriesGroup(FOptionSeriesManager.GetObjPionter(sid)).ValueSeries2);
+      DrawChartTimely(StrTime, FOptionSeriesManager.GetAveragePrice(sid, pOptionMarketData.unTradePrice), TThreeSeriesGroup(FOptionSeriesManager.GetObjPionter(sid)).ValueSeries3);
+    end;
+
+    nMarketID := pOptionMarketData.nIdnum mod 100;
+    nCodeID := pOptionMarketData.nIdnum div 100;
+
+    index2 := TQuotationDataCenter.Instance.OptionQuotationCodeList.IndexOf(IntToStr(nMarketID) + ',' + IntToStr(nCodeID));
+    sConteactName := PDF_CodeInfo(TQuotationDataCenter.Instance.OptionQuotationCodeList.Objects[index2]).szName;
+    dataList.DelimitedText := sConteactName + ',' + IntToStr(iNewPrice) + ',' + IntToStr(Integer(pOptionMarketData.unSD1)) + ',' + IntToStr(iBuyPrice) + ',' + IntToStr(pOptionMarketData.arriBuyVolume_5[0]) + ',' + IntToStr(iSellPrice) + ',' + IntToStr(pOptionMarketData.arriSellVolume_5[0]) + ',' + IntToStr(pOptionMarketData.unPreSettlPrice) + ',' + IntToStr(pOptionMarketData.unOpenPrice) + ',' + IntToStr(pOptionMarketData.unHighPrice) + ',' + IntToStr(pOptionMarketData.unLowPrice) + ',' + IntToStr(pOptionMarketData.iTradeVolume) + ',' + FloatToStr(pOptionMarketData.dTotalValueTraded) + ',' + sid + ',' + StrTime;
+    //交易看板绘制
+    if (MainWindow.PriceGrid.Visible) and (sid = MainWindow.ContractIdComboBox.Text) then
+    begin
+      DrawPriceGrid(pOptionMarketData.arrunBuyPrice_5, pOptionMarketData.arriBuyVolume_5, pOptionMarketData.arrunSellPrice_5, pOptionMarketData.arriSellVolume_5);
+    end;
+  finally
+    Dispose(pOptionMarketData);
+  end;
+
+//TQuotationDataCenter.Instance.addItem(PDF_CodeInfo(TQuotationDataCenter.Instance.OptionQuotationCodeList.Objects[TQuotationDataCenter.Instance.OptionQuotationCodeList.IndexOf(str)]).szID, dataList, OPTION);
+//  Writeln('=====>ID:' + PDF_CodeInfo(OptionQuotationCodeList.Objects[codeList.IndexOf(str)]).szID + '未平数:' + IntToStr(pOptionMarketData.iTotalLongPosition) + '总成交数：' + IntToStr(pOptionMarketData.iTradeVolume) + '成交金额：' + FloatToStr(pOptionMarketData.dTotalValueTraded) + '昨结算:' + FloatToStr(pOptionMarketData.unPreSettlPrice) + '涨跌：' + FloatToStr(pOptionMarketData.unSD1));
+
+  MainWindow.FOptionQuotationGrid.Rows[index + 1] := dataList;
+  dataList.Destroy;
 end;
 
 procedure TDrawView.PushOrderToCommandWindows();
@@ -203,16 +470,6 @@ begin
   edit.SelAttributes.Color := clBlack;
   edit.lines.Delete(edit.Lines.Count - 1);
 //  text.Free;
-end;
-
-procedure TDrawView.initQuotationView(arr: array of PChar; Atype: ContractType);
-begin
-  FDataSchedule.AddContracts(arr, Atype);
-  MainWindow.ContractIdComboBox.Items := TQuotationDataCenter.Instance.FFuturesSeatingList;
-  MainWindow.ContractIdComboBox.ItemIndex := 0;
-  FSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[2]);
-  FSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[1]);
-  FSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[0]);
 end;
 
 procedure TDrawView.DrawOrderView();

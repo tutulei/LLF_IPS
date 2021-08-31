@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2021/07/14 09:49:14.998.pas,C:\Users\think\Documents\RAD Studio\Projects\Unit5.pas=D:\Projects\LLF_IPS\Unit5.pas</Transaction>
+    <Transaction>2021/07/14 09:49:14.998.dfm,C:\Users\think\Documents\RAD Studio\Projects\Unit5.dfm=D:\Projects\LLF_IPS\Unit5.dfm</Transaction>
+    <Transaction>2021/07/14 09:49:28.962.dproj,C:\Users\think\Documents\RAD Studio\Projects\Project8.dproj=D:\Projects\LLF_IPS\Project8.dproj</Transaction>
+    <Transaction>2021/07/14 16:42:23.566.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\Quotation_Manager\Unit1.pas</Transaction>
+    <Transaction>2021/07/14 16:43:00.159.pas,D:\Projects\LLF_IPS\Quotation_Manager\Unit1.pas=D:\Projects\LLF_IPS\Quotation_Manager\uQuotationThread.pas</Transaction>
+    <Transaction>2021/07/15 10:18:37.552.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uContractsSchedule.pas</Transaction>
+    <Transaction>2021/07/15 10:18:56.403.pas,D:\Projects\LLF_IPS\uContractsSchedule.pas=D:\Projects\LLF_IPS\Quotation_Manager\uContractsSchedule.pas</Transaction>
+    <Transaction>2021/07/16 16:12:40.432.dproj,D:\Projects\LLF_IPS\Project8.dproj=D:\Projects\LLF_IPS\LLF_IPS.dproj</Transaction>
+    <Transaction>2021/07/20 08:51:52.822.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\ufrmRemoveConteact.pas</Transaction>
+    <Transaction>2021/07/20 08:51:52.822.dfm,D:\Projects\LLF_IPS\Unit1.dfm=D:\Projects\LLF_IPS\ufrmRemoveConteact.dfm</Transaction>
+    <Transaction>2021/07/20 08:52:15.106.pas,D:\Projects\LLF_IPS\ufrmRemoveConteact.pas=</Transaction>
+    <Transaction>2021/07/20 08:52:15.106.dfm,D:\Projects\LLF_IPS\ufrmRemoveConteact.dfm=</Transaction>
+    <Transaction>2021/07/21 14:24:46.116.pas,D:\Projects\LLF_IPS\ufrmContract\ufrmRemoveConteact.pas=</Transaction>
+    <Transaction>2021/07/21 14:24:46.116.dfm,D:\Projects\LLF_IPS\ufrmContract\ufrmRemoveConteact.dfm=</Transaction>
+    <Transaction>2021/07/22 17:06:00.966.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uMyChartManager.pas</Transaction>
+    <Transaction>2021/07/22 17:06:14.806.pas,D:\Projects\LLF_IPS\uMyChartManager.pas=D:\Projects\LLF_IPS\Chart_Manager\uMyChartManager.pas</Transaction>
+    <Transaction>2021/07/22 17:08:49.904.pas,D:\Projects\LLF_IPS\Chart_Manager\ChartManager.pas=D:\Projects\LLF_IPS\CommonUnits\ChartManager.pas</Transaction>
+    <Transaction>2021/07/23 13:57:53.946.pas,D:\Projects\LLF_IPS\uQuotationAPI.pas=D:\Projects\LLF_IPS\CommonUnits\uQuotationAPI.pas</Transaction>
+    <Transaction>2021/07/23 13:58:24.909.pas,D:\Projects\LLF_IPS\uQuotationDataStruct.pas=D:\Projects\LLF_IPS\CommonUnits\uQuotationDataStruct.pas</Transaction>
+    <Transaction>2021/07/23 13:58:29.492.pas,D:\Projects\LLF_IPS\uConstants.pas=D:\Projects\LLF_IPS\CommonUnits\uConstants.pas</Transaction>
+    <Transaction>2021/07/23 13:59:15.035.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uDBManager\Unit1.pas</Transaction>
+    <Transaction>2021/07/23 14:04:13.737.pas,D:\Projects\LLF_IPS\uDBManager\Unit1.pas=D:\Projects\LLF_IPS\uDBManager\uDBManager.pas</Transaction>
+    <Transaction>2021/07/27 14:24:14.858.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uTradeAPI.pas</Transaction>
+    <Transaction>2021/07/27 16:18:37.991.pas,D:\Projects\LLF_IPS\CommonUnits\uQuotationAPI.pas=D:\Projects\LLF_IPS\CTPProxy\uQuotationAPI.pas</Transaction>
+    <Transaction>2021/07/27 16:18:49.583.pas,D:\Projects\LLF_IPS\CommonUnits\uTradeAPI.pas=D:\Projects\LLF_IPS\CTPProxy\uTradeAPI.pas</Transaction>
+    <Transaction>2021/07/27 16:19:58.236.pas,D:\Projects\LLF_IPS\CommonUnits\uQuotationDataStruct.pas=D:\Projects\LLF_IPS\CommonUnits\uDataStruct.pas</Transaction>
+    <Transaction>2021/07/27 16:58:03.085.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas</Transaction>
+    <Transaction>2021/07/27 18:27:33.996.pas,D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas=</Transaction>
+    <Transaction>2021/07/28 08:59:49.254.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uConfigUnit.pas</Transaction>
+    <Transaction>2021/07/28 11:27:27.696.pas,D:\Projects\LLF_IPS\Quotation_Manager\uQuotationThread.pas=D:\Projects\LLF_IPS\Quotation_Manager\uManagerThread.pas</Transaction>
+    <Transaction>2021/07/28 16:41:27.573.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uTradeUnit\Unit1.pas</Transaction>
+    <Transaction>2021/07/28 16:45:11.139.pas,D:\Projects\LLF_IPS\uTradeUnit\Unit1.pas=D:\Projects\LLF_IPS\uTradeUnit\uTradeUnit.pas</Transaction>
+    <Transaction>2021/07/30 09:33:16.806.ini,D:\Projects\LLF_IPS\config.ini=</Transaction>
+    <Transaction>2021/07/30 13:09:47.560.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\uData\uDataCenter.pas</Transaction>
+    <Transaction>2021/07/30 16:04:42.591.pas,D:\Projects\LLF_IPS\Unit2.pas=D:\Projects\LLF_IPS\CommonUnits\uTimer.pas</Transaction>
+    <Transaction>2021/07/31 17:20:07.133.pas,D:\Projects\LLF_IPS\Unit2.pas=D:\Projects\LLF_IPS\DrawView\uDrawView.pas</Transaction>
+    <Transaction>2021/08/02 16:19:06.599.pas,D:\Projects\LLF_IPS\Unit2.pas=D:\Projects\LLF_IPS\uCommandParser\uCommandParser.pas</Transaction>
+    <Transaction>2021/08/03 10:58:23.564.pas,D:\Projects\LLF_IPS\Unit3.pas=D:\Projects\LLF_IPS\ufrmlogin.pas</Transaction>
+    <Transaction>2021/08/03 10:58:23.564.dfm,D:\Projects\LLF_IPS\Unit3.dfm=D:\Projects\LLF_IPS\ufrmlogin.dfm</Transaction>
+    <Transaction>2021/08/03 10:58:56.744.pas,D:\Projects\LLF_IPS\ufrmlogin.pas=D:\Projects\LLF_IPS\ufrm\ufrmlogin.pas</Transaction>
+    <Transaction>2021/08/03 10:58:56.744.dfm,D:\Projects\LLF_IPS\ufrmlogin.dfm=D:\Projects\LLF_IPS\ufrm\ufrmlogin.dfm</Transaction>
+    <Transaction>2021/08/03 10:59:23.567.pas,D:\Projects\LLF_IPS\ufrmContract\ufrmAddConteact.pas=D:\Projects\LLF_IPS\ufrm\ufrmAddConteact.pas</Transaction>
+    <Transaction>2021/08/03 10:59:23.567.dfm,D:\Projects\LLF_IPS\ufrmContract\ufrmAddConteact.dfm=D:\Projects\LLF_IPS\ufrm\ufrmAddConteact.dfm</Transaction>
+    <Transaction>2021/08/03 11:25:39.127.pas,D:\Projects\LLF_IPS\Quotation_Manager\uManagerThread.pas=D:\Projects\LLF_IPS\CommonUnits\uManagerThread.pas</Transaction>
+    <Transaction>2021/08/04 14:04:08.582.pas,D:\Projects\LLF_IPS\Unit3.pas=D:\Projects\LLF_IPS\CommonUnits\Unit3.pas</Transaction>
+    <Transaction>2021/08/04 14:04:26.259.pas,D:\Projects\LLF_IPS\CommonUnits\Unit3.pas=D:\Projects\LLF_IPS\CommonUnits\Glass.pas</Transaction>
+    <Transaction>2021/08/07 15:06:44.112.pas,D:\Projects\LLF_IPS\Unit3.pas=</Transaction>
+    <Transaction>2021/08/07 15:06:44.112.dfm,D:\Projects\LLF_IPS\Unit3.dfm=</Transaction>
+    <Transaction>2021/08/07 15:10:56.499.pas,D:\Projects\LLF_IPS\ufrm\Unit5.pas=D:\Projects\LLF_IPS\ufrm\LoginForm.pas</Transaction>
+    <Transaction>2021/08/07 15:10:56.499.dfm,D:\Projects\LLF_IPS\ufrm\Unit5.dfm=D:\Projects\LLF_IPS\ufrm\LoginForm.dfm</Transaction>
+    <Transaction>2021/08/07 15:12:18.506.pas,D:\Projects\LLF_IPS\ufrm\LoginForm.pas=D:\Projects\LLF_IPS\ufrm\ufrmLoginForm.pas</Transaction>
+    <Transaction>2021/08/07 15:12:18.506.dfm,D:\Projects\LLF_IPS\ufrm\LoginForm.dfm=D:\Projects\LLF_IPS\ufrm\ufrmLoginForm.dfm</Transaction>
+    <Transaction>2021/08/07 15:12:30.886.pas,D:\Projects\LLF_IPS\ufrm\Unit1.pas=D:\Projects\LLF_IPS\ufrm\ufrmConfigForm.pas</Transaction>
+    <Transaction>2021/08/07 15:12:30.886.dfm,D:\Projects\LLF_IPS\ufrm\Unit1.dfm=D:\Projects\LLF_IPS\ufrm\ufrmConfigForm.dfm</Transaction>
+    <Transaction>2021/08/07 20:17:09.538.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CommonUnits\uGlobalInstance.pas</Transaction>
+    <Transaction>2021/08/09 13:58:44.396.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\CTPProxy\uTradeResponse.pas</Transaction>
+    <Transaction>2021/08/16 16:43:14.781.pas,D:\Projects\LLF_IPS\Unit1.pas=D:\Projects\LLF_IPS\ufrm\ufrmChangeForm.pas</Transaction>
+    <Transaction>2021/08/16 16:43:14.781.dfm,D:\Projects\LLF_IPS\Unit1.dfm=D:\Projects\LLF_IPS\ufrm\ufrmChangeForm.dfm</Transaction>
+    <Transaction>2021/08/18 17:27:00.673.pas,D:\Projects\LLF_IPS\CTPProxy\uQuotationAPI.pas=D:\Projects\LLF_IPS\Proxy\uQuotationAPI.pas</Transaction>
+    <Transaction>2021/08/18 17:28:41.551.pas,D:\Projects\LLF_IPS\Proxy\uQuotationAPI.pas=</Transaction>
+    <Transaction>2021/08/18 17:28:41.589.pas,D:\Projects\LLF_IPS\Proxy\uTradeAPI.pas=</Transaction>
+    <Transaction>2021/08/18 17:28:44.373.pas,D:\Projects\LLF_IPS\Proxy\uTradeResponse.pas=</Transaction>
+  </Transactions>
+</BorlandProject>

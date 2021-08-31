@@ -26,7 +26,6 @@ type
     ChartPanel: TPanel;
     middlePanel: TPanel;
     middlerightPanel: TPanel;
-    PriceGrid: TStringGrid;
     InputOrderRadioGroup: TRadioGroup;
     Button1: TButton;
     Button2: TButton;
@@ -73,7 +72,7 @@ type
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
-    ActualsQuotationGrid: TStringGrid;
+    FActualsQuotationGrid: TStringGrid;
     FOptionQuotationGrid: TStringGrid;
     N3: TMenuItem;
     N4: TMenuItem;
@@ -82,11 +81,13 @@ type
     N7: TMenuItem;
     N8: TMenuItem;
     N9: TMenuItem;
+    PriceGrid: TStringGrid;
     procedure PopupAddContractClick(Sender: TObject);
     procedure FFuturesQuotationGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure PopupDeleteContractClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FFuturesQuotationGridClick(Sender: TObject);
+    procedure FOptionQuotationGridClick(Sender: TObject);
     procedure FutureChartDblClick(Sender: TObject);
     procedure InputOrderRadioGroupClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -118,6 +119,9 @@ type
     procedure N8Click(Sender: TObject);
     procedure N9Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
+    procedure PriceGridClick(Sender: TObject);
+    procedure ContractIdComboBoxChange(Sender: TObject);
   private
     { Private declarations }
     Glass: TGlass;
@@ -146,7 +150,6 @@ var
 //  quotationProxy: TQuotationProxy;
 //  tradeProxy: TTradeProxy;
 //  FDataSchedule: TDataSchedule;
-  FSeriesManager: TmySeriesManager;
   TotalValue: double;
   m_bSort: boolean = false;
 
@@ -165,19 +168,18 @@ var
   pTmp: Pointer;
   ret: Integer;
 begin
-  Glass := TGlass.Create(nil);
-
   TManagerThread.ThreadList := TList.Create;
   WindowState := wsMaximized;
-  MainWindow := Self;
 //  InitConfiguration();
   //  Self.Height := Screen.WorkAreaHeight;
   //  Self.Width := Screen.WorkAreaWidth;
   InitWidgets();
     //数据调度器新建
   FDataSchedule := TDataSchedule.Create(@Self);
-    //走势图管理器新建
-  FSeriesManager := TmySeriesManager.Create(@FutureChart);
+  //走势图管理器新建
+  FFuturesSeriesManager := TmySeriesManager.Create(@FutureChart);
+  FOptionSeriesManager := TmySeriesManager.Create(@FutureChart);
+  FActualsSeriesManager := TmySeriesManager.Create(@FutureChart);
 //  TManagerThread.Create(1, Connected);
     //  FutureChart.LeftAxis.SetMinMax(0, 100);
     //  FutureChart.BottomAxis.SetMinMax(0, 100);
@@ -199,15 +201,20 @@ begin
     tmp := FFuturesQuotationProxy.Subscribe(Pointer(arr), 3);
     if (tmp = 0) then
     begin
-      TDrawView.Instance().initQuotationView(arr, FUTURES);
+      FDataSchedule.AddContracts(arr, FUTURES);
+      MainWindow.ContractIdComboBox.Items := TQuotationDataCenter.Instance.FFuturesSeatingList;
+      MainWindow.ContractIdComboBox.ItemIndex := 0;
+      if (PageControl1.ActivePageIndex = 0) then
+      begin
+        FFuturesSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[2]);
+        FFuturesSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[1]);
+        FFuturesSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[0]);
+      end;
     end;
   end;
   FQuotationThread := TManagerThread.Create(updateData);
   TManagerThread.ThreadList.Add(FQuotationThread);
-  if (TradeServerStatus.FuturesIsLogin) then
-  begin
-    InitTradeData();
-  end;
+
 
   //期权行情初始化订阅
   pTmp := GetMemory(SizeOf(TDF_SubscriptionCode) * 2);
@@ -233,6 +240,11 @@ begin
 //  strpcopy(pSubscriptionCode.szMarketFlag, g_szMarketFlag[DF_MARKET_TYPE_SHOPT]);
 //  strpcopy(pSubscriptionCode.szSymbol, '10003503');
 
+  if (TradeServerStatus.FuturesIsLogin) then
+  begin
+    InitTradeData();
+  end;
+
 end;
 
 procedure TMainWindow.InitWidgets();
@@ -240,6 +252,7 @@ var
   title: TStrings;
 begin
 //  Glass := TGlass.Create(Owner);
+  PageControl1.ActivePageIndex := 0;
   title := TStringList.Create;
   if (QuotationServerStatus.FuturesIsLogin) then
   begin
@@ -248,21 +261,23 @@ begin
   //期货行情
   title.DelimitedText := '合约,最新价,涨跌,买价,买量,卖价,卖量,成交量,持仓量,涨停价,跌停价,今开盘,昨结算,最高价,最低价,现量,涨跌幅,昨收盘,成交额,行情更新时间';
   FFuturesQuotationGrid.Rows[0] := title;
-  ActualsQuotationGrid.Rows[0] := title;
   //期权行情
-  title.DelimitedText := '合约,最新价,涨跌,买价,买量,卖量,卖价,昨结算,今开盘,涨停价,跌停价,总成交量,成交金额,行情时间';
+  title.DelimitedText := '名称,最新价,涨跌,买价,买量,卖价,卖量,昨结算,今开盘,涨停价,跌停价,总成交量,成交金额,代码,行情时间';
   FOptionQuotationGrid.Rows[0] := title;
+  //现货行情
+  title.DelimitedText := '名称,最新价,涨跌,买价,买量,卖价,卖量,前收盘价,今开盘,涨停价,跌停价,总成交量,成交金额,代码,行情时间';
+  FActualsQuotationGrid.Rows[0] := title;
+
+
   //期货资金情况
   title.DelimitedText := '可用资金,持仓盈亏,平仓盈亏';
   TopGrid.Rows[0] := title;
   TopGrid.ColCount := 3;
 
   //报单看板中的卖5~买1价表
-  PriceGrid.ColCount := 2;
-  PriceGrid.RowCount := 10;
-  PriceGrid.ColWidths[1] := 15;
-  PriceGrid.Height := PriceGrid.DefaultRowHeight * PriceGrid.RowCount + 10;
-  PriceGrid.Width := PriceGrid.DefaultColWidth + PriceGrid.ColWidths[1] + 10;
+  PriceGrid.ColWidths[0] := 22;
+  PriceGrid.ColWidths[1] := 72;
+  PriceGrid.ColWidths[2] := 32;
 
   title.Free;
 //  PriceGrid.Row := -1;
@@ -276,6 +291,62 @@ begin
     WndParent := 0;
   end;
 end;
+
+procedure TMainWindow.PageControl1Change(Sender: TObject);
+var
+  sid: string;
+begin
+  if ((TPageControl(Sender).ActivePageIndex = 0)) then
+  begin
+    //切换期货界面
+    if (FFuturesQuotationGrid.Cells[0, 1] <> '') then
+    begin
+      //获取选中的合约ID
+      sid := TQuotationDataCenter.Instance.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1];
+      //管理器切换当前数据
+      FFuturesSeriesManager.SetCurrentSeries(sid);
+      //快速交易看板下拉框更新
+      ContractIdComboBox.Items := TQuotationDataCenter.Instance.FFuturesSeatingList;
+      ContractIdComboBox.ItemIndex := FFuturesQuotationGrid.Row - 1;
+    end;
+    //显示交易的价格界面
+    PriceGrid.Visible := False;
+    PriceGroup.Height := 233;
+    PriceGroup.Top := (middlerightPanel.Height + TopGrid.Height - PriceGroup.Height) div 2;
+    PriceBaseLabel.Visible := True;
+  end
+  else if (TPageControl(Sender).ActivePageIndex = 1) then
+  begin
+    if (TQuotationDataCenter.Instance.FOptionSeatingList.Count > 0) then
+    begin
+      sid := TQuotationDataCenter.Instance.FOptionSeatingList[FOptionQuotationGrid.Row - 1];
+      //管理器切换当前数据
+      FOptionSeriesManager.SetCurrentSeries(sid);
+      //快速交易看板下拉框更新
+      ContractIdComboBox.Items := TQuotationDataCenter.Instance.FOptionSeatingList;
+      ContractIdComboBox.ItemIndex := FOptionQuotationGrid.Row - 1;
+    end;
+    PriceGrid.Visible := True;
+    PriceGroup.Height := 313;
+    PriceGroup.Top := (middlerightPanel.Height + TopGrid.Height - PriceGroup.Height) div 2;
+    PriceBaseLabel.Visible := false;
+  end
+  else if (TPageControl(Sender).ActivePageIndex = 2) then
+  begin
+    if (TQuotationDataCenter.Instance.FActualsSeatingList.Count > 0) then
+    begin
+      sid := TQuotationDataCenter.Instance.FActualsSeatingList[FActualsQuotationGrid.Row - 1];
+      //管理器切换当前数据
+      FActualsSeriesManager.SetCurrentSeries(sid);
+      //快速交易看板下拉框更新
+      ContractIdComboBox.Items := TQuotationDataCenter.Instance.FActualsSeatingList;
+      ContractIdComboBox.ItemIndex := FActualsQuotationGrid.Row - 1;
+    end;
+  end;
+
+end;
+
+
 
 //添加合约
 procedure TMainWindow.PopupAddContractClick(Sender: TObject);
@@ -291,38 +362,60 @@ var
   str: string;
   iret: Integer;
   I: Integer;
+  pGrid: TStringGrid;
+  pSeriesManger: TmySeriesManager;
+  pseatingList: TStringList;
 begin
 //  RemoveConteactForm.Show;
+  case PageControl1.ActivePageIndex of
+    0:
+      begin
+        pGrid := FFuturesQuotationGrid;
+        pSeriesManger := FFuturesSeriesManager;
+        pseatingList := TQuotationDataCenter.Instance.FFuturesSeatingList;
+      end;
+    1:
+      begin
+        pGrid := FOptionQuotationGrid;
+        pSeriesManger := FOptionSeriesManager;
+        pseatingList := TQuotationDataCenter.Instance.FOptionSeatingList;
+      end;
+    2:
+      begin
+        pGrid := FActualsQuotationGrid;
+        pSeriesManger := FActualsSeriesManager;
+        pseatingList := TQuotationDataCenter.Instance.FActualsSeatingList;
+      end;
+  end;
 
-  str := '确认删除' + IntToStr(FFuturesQuotationGrid.Selection.Top) + '行至' + IntToStr(FFuturesQuotationGrid.Selection.Bottom) + '行？';
+  str := '确认删除' + IntToStr(pGrid.Selection.Top) + '行至' + IntToStr(pGrid.Selection.Bottom) + '行？';
   iret := MessageBox(0, Pchar(str), 'tishi', MB_OKCANCEL);
 
   if iret = 1 then
   begin
     //删除chart中的合约列表记录
-    for I := FFuturesQuotationGrid.Selection.Bottom downto FFuturesQuotationGrid.Selection.Top do
+    for I := pGrid.Selection.Bottom downto pGrid.Selection.Top do
     begin
       //删除series
-      if (FSeriesManager.Find(TQuotationDataCenter.Instance.FFuturesSeatingList[I - 1]) <> -1) then
+      if (pSeriesManger.Find(pseatingList[I - 1]) <> -1) then
       begin
-        FSeriesManager.RemoveSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[I - 1]);
+        pSeriesManger.RemoveSeries(pseatingList[I - 1]);
       end;
       
       //删除ListItem
-      if (TQuotationDataCenter.Instance.FFuturesSeatingList.Count > 0) then
+      if (pseatingList.Count > 0) then
       begin
-        TQuotationDataCenter.Instance.FFuturesSeatingList.Delete(I - 1);
-
+        pseatingList.Delete(I - 1);
       end;
-      if (FFuturesQuotationGrid.RowCount = 2) then
+      if (pGrid.RowCount = 2) then
       begin
-        FFuturesQuotationGrid.Rows[1].Clear;
+        pGrid.Rows[1].Clear;
         Break;
       end;
-      TmyTStringGrid(FFuturesQuotationGrid).DeleteRow(I);
+      TmyTStringGrid(pGrid).DeleteRow(I);
     end;
-    MainWindow.ContractIdComboBox.Items := TQuotationDataCenter.Instance.FFuturesSeatingList;
-    MainWindow.ContractIdComboBox.ItemIndex := FFuturesQuotationGrid.Row - 1;
+    MainWindow.ContractIdComboBox.Items := pseatingList;
+    MainWindow.ContractIdComboBox.ItemIndex := pGrid.Row - 1;
   end;
 
 end;
@@ -335,23 +428,35 @@ begin
   end;
 end;
 
+procedure TMainWindow.PriceGridClick(Sender: TObject);
+begin
+  priceEdit.Text := PriceGrid.Cells[1, PriceGrid.Row];
+end;
+
 procedure TMainWindow.PriceGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
 var
   grid: TStringGrid;
   format: Graphics.TTextFormat;
   snewstr: string;
 begin
-
+  grid := TStringGrid(Sender);
   if (gdSelected in State) then
   begin
-    grid := TStringGrid(Sender);
-    format := [tfSingleLine, tfVerticalCenter];
-    snewstr := grid.Cells[ACol, ARow];
-    grid.Canvas.Brush.Color := clBtnFace;
-    grid.Canvas.FillRect(Rect);
+//    grid.Canvas.Brush.Color := clBtnFace;
     grid.Canvas.Font.Color := clBlack;
-    grid.Canvas.TextRect(Rect, snewstr, format);
   end;
+  if (ARow < 5) then
+  begin
+    grid.Canvas.Brush.Color := $00B4FF8A;
+  end
+  else if (ARow >= 5) then
+  begin
+    grid.Canvas.Brush.Color := $008A8AFF;
+  end;
+  format := [tfSingleLine, tfVerticalCenter];
+  snewstr := grid.Cells[ACol, ARow];
+  grid.Canvas.FillRect(Rect);
+  grid.Canvas.TextRect(Rect, snewstr, format);
 end;
 
 procedure TMainWindow.InputOrderRadioGroupClick(Sender: TObject);
@@ -382,9 +487,9 @@ begin
   begin
     N8.Caption := '期权(' + QuotationServerStatus.OptionServer + ')';
   end;
-  if (QuotationServerStatus.SharesIsLogin) then
+  if (QuotationServerStatus.ActualsIsLogin) then
   begin
-    N9.Caption := '现货(' + QuotationServerStatus.SharesServer + ')';
+    N9.Caption := '现货(' + QuotationServerStatus.ActualsServer + ')';
   end;
   if (TradeServerStatus.FuturesIsLogin) then
   begin
@@ -494,7 +599,7 @@ end;
 {行情现货}
 procedure TMainWindow.N9Click(Sender: TObject);
 begin
-  if (QuotationServerStatus.SharesIsLogin) then
+  if (QuotationServerStatus.ActualsIsLogin) then
   begin
     //切换界面
   end
@@ -609,8 +714,24 @@ begin
     //获取选中的合约ID
     sid := TQuotationDataCenter.Instance.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1];
     //管理器切换当前数据
-    FSeriesManager.SetCurrentSeries(sid);
+    FFuturesSeriesManager.SetCurrentSeries(sid);
     //下拉框选择当前合约
+    ContractIdComboBox.Text := sid;
+  end;
+
+end;
+
+procedure TMainWindow.FOptionQuotationGridClick(Sender: TObject);
+var
+  sid: string;
+begin
+  if (TQuotationDataCenter.Instance.FOptionSeatingList.Count > 0) then
+  begin
+    //获取选中的合约ID
+    sid := TQuotationDataCenter.Instance.FOptionSeatingList[FOptionQuotationGrid.Row - 1];
+    //管理器切换当前数据
+    FOptionSeriesManager.SetCurrentSeries(sid);
+//  //下拉框选择当前合约
     ContractIdComboBox.Text := sid;
   end;
 
@@ -691,6 +812,16 @@ begin
   FFuturesQuotationGrid.ColWidths[18] := FFuturesQuotationGrid.ColWidths[18] + 30;
   //期权grid
   FOptionQuotationGrid.DefaultColWidth := Width div 15;
+  FOptionQuotationGrid.ColWidths[0] := FOptionQuotationGrid.ColWidths[0] + 50;
+  FOptionQuotationGrid.ColWidths[2] := 80;
+  FOptionQuotationGrid.ColWidths[4] := 80;
+  FOptionQuotationGrid.ColWidths[6] := 80;
+  //现货grid
+  FActualsQuotationGrid.DefaultColWidth := Width div 15;
+  FActualsQuotationGrid.ColWidths[0] := FActualsQuotationGrid.ColWidths[0] + 50;
+  FActualsQuotationGrid.ColWidths[2] := 80;
+  FActualsQuotationGrid.ColWidths[4] := 80;
+  FActualsQuotationGrid.ColWidths[6] := 80;
 
 
   //各个panel的比例
@@ -705,11 +836,11 @@ begin
   TopGrid.Height := TopGrid.DefaultRowHeight * 2 + 10;
 
   //已经隐藏了
-  PriceGrid.Top := (middlerightPanel.Height - PriceGrid.Height) div 2;
-  PriceGrid.Left := Trunc(middlerightPanel.Width * 0.08);
+  //PriceGrid.Top := (middlerightPanel.Height - PriceGrid.Height) div 2;
+  //PriceGrid.Left := Trunc(middlerightPanel.Width * 0.08);
 
   PriceGroup.Left := Trunc(middlerightPanel.Width * 0.05);
-  PriceGroup.Top := (middlerightPanel.Height - PriceGrid.Height) div 2;
+  PriceGroup.Top := (middlerightPanel.Height + TopGrid.Height - PriceGroup.Height) div 2;
 
   GroupBox.Top := ((middlerightPanel.Height - TopGrid.Height - GroupBox.Height) div 2) + TopGrid.Height;
   GroupBox.Left := PriceGroup.Left + PriceGroup.Width + 20;
@@ -1008,19 +1139,43 @@ end;
 ////  QuotationThread := TManagerThread.Create(updateData);
 //end;
 //
-//procedure TMainWindow.ContractIdComboBoxClick(Sender: TObject);
-//var
-//  index: Integer;
-//begin
-//  index := MainWindow.ContractIdComboBox.ItemIndex;
-//  if (index >= 0) then
-//  begin
-//    FFuturesQuotationGrid.Row := index + 1;
-//    //管理器切换当前数据
-//    FSeriesManager.SetCurrentSeries(FDataSchedule.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1]);
-//  end;
-//
-//end;
+
+procedure TMainWindow.ContractIdComboBoxChange(Sender: TObject);
+var
+  index: Integer;
+  grid: TStringGrid;
+  SeriesManager: TmySeriesManager;
+  SeatingList: TStringList;
+begin
+  index := MainWindow.ContractIdComboBox.ItemIndex;
+  case PageControl1.ActivePageIndex of
+    0:
+      begin
+        grid := FFuturesQuotationGrid;
+        SeriesManager := FFuturesSeriesManager;
+        SeatingList := TQuotationDataCenter.Instance.FFuturesSeatingList;
+      end;
+    1:
+      begin
+        grid := FOptionQuotationGrid;
+        SeriesManager := FOptionSeriesManager;
+        SeatingList := TQuotationDataCenter.Instance.FOptionSeatingList;
+      end;
+    2:
+      begin
+        grid := FActualsQuotationGrid;
+        SeriesManager := FActualsSeriesManager;
+        SeatingList := TQuotationDataCenter.Instance.FActualsSeatingList;
+      end;
+  end;
+
+  if (index >= 0) then
+  begin
+    grid.Row := index + 1;
+    //管理器切换当前数据
+    SeriesManager.SetCurrentSeries(SeatingList[index]);
+  end;
+end;
 
 procedure TMainWindow.ContractIdComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
@@ -1053,7 +1208,7 @@ begin
     ContractIdComboBox.ItemIndex := index;
     FFuturesQuotationGrid.Row := index + 1;
     //管理器切换当前数据
-    FSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1]);
+    FFuturesSeriesManager.SetCurrentSeries(TQuotationDataCenter.Instance.FFuturesSeatingList[FFuturesQuotationGrid.Row - 1]);
 
   end;
 

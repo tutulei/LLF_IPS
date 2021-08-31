@@ -83,7 +83,11 @@ begin
     end;
     //添加列表中
     pList.Add(string(PID));
-    MainWindow.ContractIdComboBox.Items := pList^;
+    if (MainWindow.PageControl1.ActivePageIndex = Integer(Atype)) then
+    begin
+      MainWindow.ContractIdComboBox.Items := pList^;
+      MainWindow.ContractIdComboBox.ItemIndex := 0;
+    end;
     grid.Cells[0, grid.RowCount - 1] := PID;
   end;
 
@@ -115,70 +119,70 @@ var
   dChangeRate: Double;
   sChangeRate: string;
 begin
-  //获取相关组件和变量
-  pID := tick.InstrumentID;
-  ctype := AnalysisType(strPas(pID));
-  pChart := getList(ctype);
-  pGrid := getGrid(ctype);
-  //打包数据，并且推到组件上刷新
-  index := pChart.IndexOf(string(pID));
-  if (index = -1) then
-  begin
-//    MessageBox(0, tick.InstrumentID, '错误ID不存在', MB_OKCANCEL);
-    Exit;
-  end;
-  //1确定涨跌和涨跌幅
-  if (pGrid.Cells[2, index + 1] = '') then
-  begin
-    sChange := '0';
-    sChangeRate := '0%';
-  end
-  else
-  begin
-    dChange := tick.LastPrice - tick.PreSettlementPrice;
-    sChange := FloatToStr(RoundTo(dChange, -2));
-    dChangeRate := RoundTo(dChange / tick.PreSettlementPrice, -4);
-    sChangeRate := FloatTostr(dChangeRate * 100) + '%';
-
-    //3
-    if (TQuotationDataCenter.Instance.FFuturesSeatingList[pGrid.Row - 1] = tick.InstrumentID) then
-    begin
-      updatePriceGrid(tick);
-    end;
-
-    //2走势图绘制
-    if (FSeriesManager.Find(tick.InstrumentID) <> -1) then
-    begin
-      DrawChartTimely(string(tick.UpdateTime), tick.LastPrice, TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
-      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
-      DrawChartTimely(string(tick.UpdateTime), FSeriesManager.GetAveragePrice(tick.InstrumentID, tick.LastPrice), TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries3);
-    end;
+//  //获取相关组件和变量
+//  pID := tick.InstrumentID;
+//  ctype := AnalysisType(strPas(pID));
+//  pChart := getList(ctype);
+//  pGrid := getGrid(ctype);
+//  //打包数据，并且推到组件上刷新
+//  index := pChart.IndexOf(string(pID));
+//  if (index = -1) then
+//  begin
+////    MessageBox(0, tick.InstrumentID, '错误ID不存在', MB_OKCANCEL);
+//    Exit;
+//  end;
+//  //1确定涨跌和涨跌幅
+//  if (pGrid.Cells[2, index + 1] = '') then
+//  begin
+//    sChange := '0';
+//    sChangeRate := '0%';
+//  end
+//  else
+//  begin
+//    dChange := tick.LastPrice - tick.PreSettlementPrice;
+//    sChange := FloatToStr(RoundTo(dChange, -2));
+//    dChangeRate := RoundTo(dChange / tick.PreSettlementPrice, -4);
+//    sChangeRate := FloatTostr(dChangeRate * 100) + '%';
 //
-//    if (tick.InstrumentID = AvaibleChartId) then
+//    //3
+//    if (TQuotationDataCenter.Instance.FFuturesSeatingList[pGrid.Row - 1] = tick.InstrumentID) then
 //    begin
-//      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries1);
-//      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries2);
+//      updatePriceGrid(tick);
 //    end;
-    //1添加变动信息为变色显示提供依据，数据变小就变成负数，Grid响应事件中会对负数做处理
-    if (StrToFloat(pGrid.Cells[2, index + 1]) > tick.LastPrice) then
-    begin
-      tick.LastPrice := -1.0 * tick.LastPrice;
-    end;
-    if (StrToFloat(pGrid.Cells[4, index + 1]) > tick.BidPrice1) then
-    begin
-      tick.BidPrice1 := -1.0 * tick.BidPrice1;
-    end;
-    if (StrToFloat(pGrid.Cells[6, index + 1]) > tick.AskPrice1) then
-    begin
-      tick.AskPrice1 := -1.0 * tick.AskPrice1;
-    end;
-  end;
-
-  //1Grid列表数据刷新
-  dataList := fQuotationDataTurnToTStrings(tick, sChange, sChangeRate);
-  TQuotationDataCenter.Instance.addItem(tick.InstrumentID, dataList, FUTURES);
-  //界面更新
-  TDrawView.instance.RunSynchronize(TDrawView.instance.DrawQuotationGridView);
+//
+//    //2走势图绘制
+//    if (FFuturesSeriesManager.Find(tick.InstrumentID) <> -1) then
+//    begin
+//      DrawChartTimely(string(tick.UpdateTime), tick.LastPrice, TThreeSeriesGroup(FFuturesSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries1);
+//      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TThreeSeriesGroup(FFuturesSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries2);
+//      DrawChartTimely(string(tick.UpdateTime), FFuturesSeriesManager.GetAveragePrice(tick.InstrumentID, tick.LastPrice), TThreeSeriesGroup(FSeriesManager.GetObjPionter(tick.InstrumentID)).ValueSeries3);
+//    end;
+////
+////    if (tick.InstrumentID = AvaibleChartId) then
+////    begin
+////      DrawChartTimely(string(tick.UpdateTime), Abs(tick.LastPrice), TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries1);
+////      DrawChartTimely(string(tick.UpdateTime), tick.OpenPrice, TwoSeriesChart(FSeriesManager.GetCurrentSeries).ValueSeries2);
+////    end;
+//    //1添加变动信息为变色显示提供依据，数据变小就变成负数，Grid响应事件中会对负数做处理
+//    if (StrToFloat(pGrid.Cells[2, index + 1]) > tick.LastPrice) then
+//    begin
+//      tick.LastPrice := -1.0 * tick.LastPrice;
+//    end;
+//    if (StrToFloat(pGrid.Cells[4, index + 1]) > tick.BidPrice1) then
+//    begin
+//      tick.BidPrice1 := -1.0 * tick.BidPrice1;
+//    end;
+//    if (StrToFloat(pGrid.Cells[6, index + 1]) > tick.AskPrice1) then
+//    begin
+//      tick.AskPrice1 := -1.0 * tick.AskPrice1;
+//    end;
+//  end;
+//
+//  //1Grid列表数据刷新
+//  dataList := fQuotationDataTurnToTStrings(tick, sChange, sChangeRate);
+//  TQuotationDataCenter.Instance.addItem(tick.InstrumentID, dataList, FUTURES);
+//  //界面更新
+//  TDrawView.instance.RunSynchronize(TDrawView.instance.DrawQuotationGridView);
 //  pGrid.Rows[index + 1] := dataList;
 end;
 
@@ -244,7 +248,7 @@ begin
   pwindow := pwin;
   pFuturesGrid := @(PMainWindow(pwindow).FFuturesQuotationGrid);
   pOptionGrid := @(PMainWindow(pwindow).FOptionQuotationGrid);
-  pActualsGrid := @(PMainWindow(pwindow).ActualsQuotationGrid);
+  pActualsGrid := @(PMainWindow(pwindow).FActualsQuotationGrid);
   pPriceGrid := @(PMainWindow(pwindow).PriceGrid);
 end;
 
