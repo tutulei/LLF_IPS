@@ -1,0 +1,23 @@
+2021-09-09 09:32:53.873 ==> ************************************************************************
+2021-09-09 09:32:53.873 ==> 日志记录初始化完毕
+2021-09-09 09:32:53.873 ==> ************************************************************************
+2021-09-09 09:32:53.873 ==> 启动日志....
+2021-09-09 09:32:53.873 ==> 开始连接....
+2021-09-09 09:32:53.884 ==> 连接成功....
+2021-09-09 09:32:53.992 ==> 发送指令成功: FUNCID = 110100, iParkID = 0, nReqItem = 1, nRequestID = 0
+2021-09-09 09:32:54.713 ==> 指令应答: FUNCID = 110100, iParkID = 0, nAnsItems = 1, nAnsItemSize = 248, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:32:54.714 ==> 发送指令成功: FUNCID = 992000, iParkID = 1, nReqItem = 1, nRequestID = 0
+2021-09-09 09:32:54.724 ==> 指令应答: FUNCID = 992000, iParkID = 1, nAnsItems = 1, nAnsItemSize = 4, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:32:54.976 ==> 启动日志....
+2021-09-09 09:32:54.976 ==> 开始连接....
+2021-09-09 09:32:55.005 ==> 连接成功....
+2021-09-09 09:32:55.079 ==> 发送指令成功: FUNCID = 110100, iParkID = 2, nReqItem = 1, nRequestID = 0
+2021-09-09 09:32:55.248 ==> 指令应答: FUNCID = 110100, iParkID = 2, nAnsItems = 1, nAnsItemSize = 248, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:32:55.248 ==> 发送指令成功: FUNCID = 992000, iParkID = 3, nReqItem = 1, nRequestID = 0
+2021-09-09 09:32:55.275 ==> 指令应答: FUNCID = 992000, iParkID = 3, nAnsItems = 1, nAnsItemSize = 4, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:33:03.779 ==> 发送指令成功: FUNCID = 140303, iParkID = 7, nReqItem = 1, nRequestID = 0
+2021-09-09 09:33:04.399 ==> 指令应答: FUNCID = 140303, iParkID = 7, nAnsItems = 0, nAnsItemSize = 0, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:33:04.771 ==> 发送指令成功: FUNCID = 140306, iParkID = 8, nReqItem = 1, nRequestID = 0
+2021-09-09 09:33:05.084 ==> 指令应答: FUNCID = 140306, iParkID = 8, nAnsItems = 0, nAnsItemSize = 0, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:33:05.771 ==> 发送指令成功: FUNCID = 140302, iParkID = 10, nReqItem = 1, nRequestID = 0
+2021-09-09 09:33:06.386 ==> 指令应答: FUNCID = 140302, iParkID = 10, nAnsItems = 3, nAnsItemSize = 369, nAnsResult = 0, szErrorInfo = 

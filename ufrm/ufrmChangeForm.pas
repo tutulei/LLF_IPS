@@ -31,7 +31,7 @@ implementation
 
 uses
   uConfigUnit, ufrmConfigForm, uGlobalInstance, uContractsSchedule,
-  ufrmLoginForm, MainWIN, uQuotationAPI, uDrawView, uManagerThread;
+  ufrmLoginForm, MainWIN, uQuotationAPI, uDrawView, uManagerThread, uLoginFunctions;
 
 {$R *.dfm}
 
@@ -97,7 +97,7 @@ begin
 ////    ResumeThread(FQuotationThread.Handle);
     FQuotationThread := TManagerThread.Create(updateData);
     TManagerThread.ThreadList.Add(FQuotationThread);
-    MessageBox(TQuotationChangeForm(Sender).Handle,'切换成功','提示',MB_OK);
+    MessageBox(TQuotationChangeForm(Sender).Handle, '切换成功', '提示', MB_OK);
   end
   else
   begin

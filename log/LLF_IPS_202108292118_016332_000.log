@@ -1,7 +1,0 @@
-2021-08-29 21:18:54.687 LOG_INFO  -----------------  JGLog thread started!   ---------------------------- 
-2021-08-29 21:18:54.687 LOG_INFO  logger id=0 key=Main name=LLF_IPS path=./log/ level=1 display=1 
-2021-08-29 21:18:56.262 LOG_INFO  启动实例ID[1]. (ConnectObject.cpp):65 
-2021-08-29 21:18:56.324 LOG_INFO  实例ID[1],请求连接服务器[124.74.252.82:8901]. (ConnectObject.cpp):245 
-2021-08-29 21:18:58.326 LOG_INFO  [JGCMNET::Connection::HandleConnect][178][IP:124.74.252.82][Port:8901][error_code:995][error_msg:由于线程退出或应用程序请求，已中止 I/O 操作。] (ConnectObject.cpp):220 
-2021-08-29 21:18:58.326 LOG_INFO  实例ID[1], 接收到SocketID[1]的onClose消息. (ConnectObject.cpp):181 
-2021-08-29 21:21:25.239 LOG_INFO  实例ID[1],请求连接服务器[124.74.252.82:8901]. (ConnectObject.cpp):245 

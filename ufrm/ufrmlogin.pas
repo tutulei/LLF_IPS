@@ -39,31 +39,23 @@ implementation
 
 uses
   ComCtrls, MainWIN, uTradeAPI, uConfigUnit, uDrawView, uGlobalInstance,
-  ufrmConfigForm;
+  ufrmConfigForm, uLoginFunctions, uMainFunctions, uManagerThread;
 
 procedure TLoginTradeFrom.Button1Click(Sender: TObject);
-var
-  item: TListItem;
-  pTradeFuturesServer: PTradeServerStruct;
-  pAccount: PAccountStruct;
 begin
+
   if ((accountedit.Text <> '') and (passwordedit.Text <> '')) then
   begin
-    FFuturesTradeProxy := TTradeProxy.Create(FuturesdllName);
-  //  defaultAccount.sAccount := LoginTradeFrom.accountedit.Text;
-  //  defaultAccount.sPassword := LoginTradeFrom.passwordedit.Text;
-  //  defaultAccount.sAuthCode := LoginTradeFrom.authcodeedit.Text;
-  //  defaultAccount.sBrokerID := LoginTradeFrom.brokeridedit.Text;
-  //  defaultAccount.sAppid := LoginTradeFrom.appidedit.Text;
-    pTradeFuturesServer := PTradeServerStruct(FutureTradeServerList.Objects[DefaultFutureTradeServerIndex]);
-    pAccount := PAccountStruct(AccountList.Objects[DefaultAccountIndex]);
-    FFuturesTradeProxy.Connected(PChar(pTradeFuturesServer.sServer), PChar(''));
-    FFuturesTradeProxy.AuthAndLogin(PChar(pTradeFuturesServer.sBrokerID), PChar(LoginTradeFrom.accountedit.Text), PChar(LoginTradeFrom.passwordedit.Text), PChar(pAccount.sAuthCode), PChar(pAccount.sAppid));
-    pAccount.sAccount := LoginTradeFrom.accountedit.Text;
-  //  pAccount.sPassword := LoginTradeFrom.passwordedit.Text;
+    case mytype of
+      FUTURES:
+        ConnectedFuturesTrade(accountedit.Text, passwordedit.Text);
+      OPTION:
+        ConnectedOptionTrade(accountedit.Text, passwordedit.Text);
+      ACTUALS:
+        ConnectedActualsTrade(accountedit.Text, passwordedit.Text);
+    end;
     LoginTradeFrom.Close;
-    MainWindow.InitTradeData;
-
+    TManagerThread.ThreadList.Add(TManagerThread.Create(1, InitTradeData));
   end
   else
   begin
@@ -84,32 +76,47 @@ var
   pAccount: PAccountStruct;
 begin
   I := ComboBox1.ItemIndex;
-  pAccount := PAccountStruct(AccountList.Objects[I]);
+  pAccount := PAccountStruct(FuturesAccountList.Objects[I]);
   LoginTradeFrom.accountedit.Text := pAccount.sAccount;
 end;
 
 procedure TLoginTradeFrom.FormShow(Sender: TObject);
 var
   I: Integer;
+  tmplist: TStringList;
 begin
   //界面数据更新
-  Self.Caption := TypeStr(mytype) + '登录';
-  if (mytype = FUTURES) then
-  begin
-    Self.AddrLabel.Caption := FutureTradeServerList[DefaultFutureTradeServerIndex] + ':' + PTradeServerStruct(FutureTradeServerList.Objects[DefaultFutureTradeServerIndex]).sServer;
-  end;
 
   for I := 0 to ComboBox1.Items.Count do
   begin
     ComboBox1.Items.Delete(0);
   end;
 
-  for I := 0 to accountList.Count - 1 do
+  Self.Caption := TypeStr(mytype) + '登录';
+  case mytype of
+    FUTURES:
+      begin
+        Self.AddrLabel.Caption := FutureTradeServerList[DefaultFutureTradeServerIndex] + ':' + PTradeServerStruct(FutureTradeServerList.Objects[DefaultFutureTradeServerIndex]).sServer;
+        tmplist := FuturesAccountList;
+      end;
+    OPTION:
+      begin
+        Self.AddrLabel.Caption := OptionTradeServerList[DefaultOptionTradeServerIndex] + ':' + PTradeServerStruct(OptionTradeServerList.Objects[DefaultOptionTradeServerIndex]).sServer;
+        tmplist := OptionAccountList;
+      end;
+    ACTUALS:
+      begin
+        Self.AddrLabel.Caption := ActualsTradeServerList[DefaultActualsTradeServerIndex] + ':' + PTradeServerStruct(ActualsTradeServerList.Objects[DefaultActualsTradeServerIndex]).sServer;
+        tmplist := ActualsAccountList;
+      end;
+  end;
+
+  for I := 0 to tmplist.Count - 1 do
   begin
-    ComboBox1.AddItem(accountList[I], accountList.Objects[I]);
+    ComboBox1.AddItem(tmplist[I], tmplist.Objects[I]);
   end;
   ComboBox1.ItemIndex := 0;
-  accountedit.Text := PAccountStruct(AccountList.Objects[0]).sAccount;
+  accountedit.Text := PAccountStruct(tmplist.Objects[0]).sAccount;
   ShowWindow(handle, sw_ShowNormal);
   SetWindowPos(Self.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
 end;

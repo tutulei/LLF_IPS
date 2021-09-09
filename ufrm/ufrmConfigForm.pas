@@ -33,6 +33,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    tmpDefaultIndex: array[0..2, 0..2] of Integer;
   end;
 
 var
@@ -52,6 +53,7 @@ var
 begin
   QuotationAddrGrid.DefaultColWidth := 40;
   datalist := TStringList.Create;
+
   case TComboBox(Sender).ItemIndex of
     0:      //期货
       begin
@@ -62,6 +64,7 @@ begin
           QuotationAddrGrid.Rows[I].Clear;
           tmp := PQuotationServerStruct(FutureQuotationServerList.Objects[I]);
           datalist.DelimitedText := ' ,' + PQuotationServerStruct(tmp).sName + ',' + PQuotationServerStruct(tmp).sServer;
+          QuotationAddrGrid.Rows[I].Clear;
           QuotationAddrGrid.Rows[I] := datalist;
         end;
         QuotationAddrGrid.Row := DefaultFutureQuotationServerIndex;
@@ -72,19 +75,21 @@ begin
           TradeGrid.Rows[I].Clear;
           tmp := PTradeServerStruct(FutureTradeServerList.Objects[I]);
           datalist.DelimitedText := ' ,' + PTradeServerStruct(tmp).sName + ',' + PTradeServerStruct(tmp).sServer + ',' + PTradeServerStruct(tmp).sBrokerID;
+          TradeGrid.Rows[I].Clear;
           TradeGrid.Rows[I] := datalist;
         end;
         TradeGrid.Row := DefaultFutureTradeServerIndex;
         //账户
-        AccountGrid.RowCount := AccountList.Count;
-        for I := 0 to AccountList.Count - 1 do
+        AccountGrid.RowCount := FuturesAccountList.Count;
+        for I := 0 to FuturesAccountList.Count - 1 do
         begin
           AccountGrid.Rows[I].Clear;
-          tmp := PAccountStruct(AccountList.Objects[I]);
+          tmp := PAccountStruct(FuturesAccountList.Objects[I]);
           datalist.DelimitedText := ' ,' + PAccountStruct(tmp).sName + ',' + PAccountStruct(tmp).sAccount + ',' + PAccountStruct(tmp).sAuthCode + ',' + PAccountStruct(tmp).sAppid;
+          AccountGrid.Rows[I].Clear;
           AccountGrid.Rows[I] := datalist;
         end;
-        AccountGrid.Row := DefaultAccountIndex;
+        AccountGrid.Row := DefaultFuturesAccountIndex;
       end;
     1:      //期权
       begin
@@ -93,16 +98,76 @@ begin
         for I := 0 to OptionQuotationServerList.Count - 1 do
         begin
           tmp := PQuotationServerStruct(OptionQuotationServerList.Objects[I]);
-          datalist.DelimitedText := ' ,' + PQuotationServerStruct(tmp).sName + ',' + PQuotationServerStruct(tmp).sServer + ',' + PQuotationServerStruct(tmp).iPort + ',' + PQuotationServerStruct(tmp).sAccount + ',' + PQuotationServerStruct(tmp).sPassword;
+          datalist.DelimitedText := ' ,' + PQuotationServerStruct(tmp).sName + ',' + PQuotationServerStruct(tmp).sServer + ',' + IntToStr(PQuotationServerStruct(tmp).iPort) + ',' + PQuotationServerStruct(tmp).sAccount + ',' + PQuotationServerStruct(tmp).sPassword;
+          QuotationAddrGrid.Rows[I].Clear;
           QuotationAddrGrid.Rows[I] := datalist;
         end;
-        QuotationAddrGrid.Row := DefaultFutureQuotationServerIndex;
-      end;
-    2:      //现货
-      begin
+        QuotationAddrGrid.Row := DefaultOptionQuotationServerIndex;
+        //交易
+        TradeGrid.RowCount := OptionTradeServerList.Count;
+        for I := 0 to OptionTradeServerList.Count - 1 do
+        begin
+          TradeGrid.Rows[I].Clear;
+          tmp := PTradeServerStruct(OptionTradeServerList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PTradeServerStruct(tmp).sName + ',' + PTradeServerStruct(tmp).sServer + ',' + IntToStr(PTradeServerStruct(tmp).iPort);
+          TradeGrid.Rows[I].Clear;
+          TradeGrid.Rows[I] := datalist;
+        end;
+        TradeGrid.Row := DefaultOptionTradeServerIndex;
+        //账户
+        AccountGrid.RowCount := OptionAccountList.Count;
+        for I := 0 to OptionAccountList.Count - 1 do
+        begin
+          AccountGrid.Rows[I].Clear;
+          tmp := PAccountStruct(OptionAccountList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PAccountStruct(tmp).sName + ',' + PAccountStruct(tmp).sAccount;
+          AccountGrid.Rows[I].Clear;
+          AccountGrid.Rows[I] := datalist;
+        end;
+        AccountGrid.Row := DefaultOptionAccountIndex;
 
       end;
+    2: //现货
+      begin
+        //行情
+        QuotationAddrGrid.RowCount := ActualsQuotationServerList.Count;
+        for I := 0 to ActualsQuotationServerList.Count - 1 do
+        begin
+          tmp := PQuotationServerStruct(ActualsQuotationServerList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PQuotationServerStruct(tmp).sName + ',' + PQuotationServerStruct(tmp).sServer + ',' + IntToStr(PQuotationServerStruct(tmp).iPort);
+          QuotationAddrGrid.Rows[I].Clear;
+          QuotationAddrGrid.Rows[I] := datalist;
+        end;
+        QuotationAddrGrid.Row := DefaultActualsQuotationServerIndex;
+        //交易
+        TradeGrid.RowCount := ActualsTradeServerList.Count;
+        for I := 0 to ActualsTradeServerList.Count - 1 do
+        begin
+          TradeGrid.Rows[I].Clear;
+          tmp := PTradeServerStruct(ActualsTradeServerList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PTradeServerStruct(tmp).sName + ',' + PTradeServerStruct(tmp).sServer + ',' + IntToStr(PTradeServerStruct(tmp).iPort);
+          TradeGrid.Rows[I].Clear;
+          TradeGrid.Rows[I] := datalist;
+        end;
+        TradeGrid.Row := DefaultOptionTradeServerIndex;
+        //账户
+        AccountGrid.RowCount := ActualsAccountList.Count;
+        for I := 0 to ActualsAccountList.Count - 1 do
+        begin
+          AccountGrid.Rows[I].Clear;
+          tmp := PAccountStruct(ActualsAccountList.Objects[I]);
+          datalist.DelimitedText := ' ,' + PAccountStruct(tmp).sName + ',' + PAccountStruct(tmp).sAccount;
+          AccountGrid.Rows[I].Clear;
+          AccountGrid.Rows[I] := datalist;
+        end;
+        AccountGrid.Row := DefaultActualsAccountIndex;
+
+      end;
+
   end;
+  tmpDefaultIndex[TComboBox(Sender).ItemIndex][0] := QuotationAddrGrid.Row;
+  tmpDefaultIndex[TComboBox(Sender).ItemIndex][1] := TradeGrid.Row;
+  tmpDefaultIndex[TComboBox(Sender).ItemIndex][2] := AccountGrid.Row;
 end;
 
 procedure TConfigForm.FormShow(Sender: TObject);
@@ -139,17 +204,17 @@ begin
   TradeGrid.Row := DefaultFutureTradeServerIndex;
 
   //账户（期货）表格初始化
-  AccountGrid.RowCount := AccountList.Count;
+  AccountGrid.RowCount := FuturesAccountList.Count;
 //  AccountGrid.DefaultColWidth := (PageControl1.Width div 4) - 30;
   AccountGrid.ColWidths[0] := 50;
   //账户（期货）配置导入
-  for I := 0 to AccountList.Count - 1 do
+  for I := 0 to FuturesAccountList.Count - 1 do
   begin
-    tmp := PAccountStruct(AccountList.Objects[I]);
+    tmp := PAccountStruct(FuturesAccountList.Objects[I]);
     datalist.DelimitedText := ' ,' + PAccountStruct(tmp).sName + ',' + PAccountStruct(tmp).sAccount + ',' + PAccountStruct(tmp).sAuthCode + ',' + PAccountStruct(tmp).sAppid;
     AccountGrid.Rows[I] := datalist;
   end;
-  AccountGrid.Row := DefaultAccountIndex;
+  AccountGrid.Row := DefaultFuturesAccountIndex;
 
 
 //
@@ -208,9 +273,22 @@ procedure TConfigForm.SaveButtonClick(Sender: TObject);
 var
   RootNode: IXMLNode;
 begin
-  DefaultFutureQuotationServerIndex := QuotationAddrGrid.Row;
-  DefaultFutureTradeServerIndex := TradeGrid.Row;
-  DefaultAccountIndex := AccountGrid.Row;
+  tmpDefaultIndex[ComboBox2.ItemIndex][0] := QuotationAddrGrid.Row;
+  tmpDefaultIndex[ComboBox2.ItemIndex][1] := TradeGrid.Row;
+  tmpDefaultIndex[ComboBox2.ItemIndex][2] := AccountGrid.Row;
+
+  DefaultFutureQuotationServerIndex := tmpDefaultIndex[0][0];
+  DefaultFutureTradeServerIndex := tmpDefaultIndex[0][1];
+  DefaultFuturesAccountIndex := tmpDefaultIndex[0][2];
+
+  DefaultOptionQuotationServerIndex := tmpDefaultIndex[1][0];
+  DefaultOptionTradeServerIndex := tmpDefaultIndex[1][1];
+  DefaultOptionAccountIndex := tmpDefaultIndex[1][2];
+
+  DefaultActualsQuotationServerIndex := tmpDefaultIndex[2][0];
+  DefaultActualsTradeServerIndex := tmpDefaultIndex[2][1];
+  DefaultActualsAccountIndex := tmpDefaultIndex[2][2];
+
   LoginForm.RefreshView();
   QuotationChangeForm.RefreshView();
   ConfigForm.Visible := False;
@@ -218,9 +296,18 @@ begin
   iXMLAreaFile.active := True;
   RootNode := iXMLAreaFile.DocumentElement;
 
-  RootNode.ChildNodes['account'].ChildNodes['FuturesAccount'].Attributes['Default'] := DefaultAccountIndex;
+  RootNode.ChildNodes['account'].ChildNodes['FuturesAccount'].Attributes['Default'] := DefaultFuturesAccountIndex;
   RootNode.ChildNodes['quotation'].ChildNodes['FuturesServer'].Attributes['Default'] := DefaultFutureQuotationServerIndex;
   RootNode.ChildNodes['trade'].ChildNodes['FuturesServer'].Attributes['Default'] := DefaultFutureTradeServerIndex;
+
+  RootNode.ChildNodes['account'].ChildNodes['OptionAccount'].Attributes['Default'] := DefaultOptionAccountIndex;
+  RootNode.ChildNodes['quotation'].ChildNodes['OptionServer'].Attributes['Default'] := DefaultOptionQuotationServerIndex;
+  RootNode.ChildNodes['trade'].ChildNodes['OptionServer'].Attributes['Default'] := DefaultOptionTradeServerIndex;
+
+  RootNode.ChildNodes['account'].ChildNodes['ActualsAccount'].Attributes['Default'] := DefaultActualsAccountIndex;
+  RootNode.ChildNodes['quotation'].ChildNodes['ActualsServer'].Attributes['Default'] := DefaultActualsQuotationServerIndex;
+  RootNode.ChildNodes['trade'].ChildNodes['ActualsServer'].Attributes['Default'] := DefaultActualsTradeServerIndex;
+
   iXMLAreaFile.SaveToFile(ExtractFilePath(application.exename) + 'config\config.xml');
 end;
 

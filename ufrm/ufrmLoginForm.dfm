@@ -676,6 +676,18 @@ object LoginForm: TLoginForm
         2AEC55D8ABB15762AEC55D8ABB15762AEC55D8ABFFD9}
       Stretch = True
     end
+    object loadingLabel: TLabel
+      Left = 304
+      Top = 319
+      Width = 4
+      Height = 14
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
     object GroupBox1: TGroupBox
       Left = 24
       Top = 103
@@ -818,7 +830,7 @@ object LoginForm: TLoginForm
         TabOrder = 1
         OnKeyDown = KeyDown
       end
-      object Edit4: TEdit
+      object OptionAccountEdit: TEdit
         Left = 96
         Top = 63
         Width = 121
@@ -832,7 +844,7 @@ object LoginForm: TLoginForm
         TabOrder = 2
         OnKeyDown = KeyDown
       end
-      object Edit3: TEdit
+      object OptionPwdEdit: TEdit
         Left = 269
         Top = 63
         Width = 121
@@ -847,7 +859,7 @@ object LoginForm: TLoginForm
         TabOrder = 3
         OnKeyDown = KeyDown
       end
-      object Edit5: TEdit
+      object ActualsPwdEdit: TEdit
         Left = 269
         Top = 108
         Width = 121
@@ -862,7 +874,7 @@ object LoginForm: TLoginForm
         TabOrder = 5
         OnKeyDown = KeyDown
       end
-      object Edit6: TEdit
+      object ActualsAccountEdit: TEdit
         Left = 96
         Top = 108
         Width = 121
@@ -895,5 +907,11 @@ object LoginForm: TLoginForm
         OnClick = ExitButtonClick
       end
     end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    Left = 272
+    Top = 312
   end
 end

@@ -16,17 +16,16 @@ type
     procedure DeleteRow(ARow: Longint); override;
   end;
 
-  ContractType = (FUTURES, OPTION, ACTUALS);
+  ContractType = (FUTURES, OPTION, ACTUALS, ACTUALSINDEX);
+
+  TFiller = array[0..2] of Char;
 
 const
   {color}
   DebugColor = $001AFF00;
   InfoColor = clBlue;
   ErrorColor = clRed;
-
 const
-
-
   {函数名常量}
   {期货行情&交易}
   CREATE_QUOTATION_SERVER = 'CreateQuotationServer';
@@ -166,7 +165,8 @@ const
   DF_SUB_TYPE_DEL = 2;						///< 订阅删除.
   DF_SUB_TYPE_ALLDEL = 3;					///< 取消所有订阅.
 
-
+  {现货}
+  JGAPI_SERVERINFO_MAX = 4;
 
 //0买 1 卖
 
@@ -176,16 +176,34 @@ function getOrderStatusMsg(OrderSubmitStatus: Char; statusMsg: string): string;
 
 function getOrderOffsetFlag(OffsetFlag: Char): string;
 
-procedure Delay(dwMilliseconds: DWORD);
+function Delay(dwMilliseconds: DWORD; pbool: PBoolean): Boolean; overload;
+
+procedure Delay(dwMilliseconds: DWORD); overload;
 
 function TypeStr(typeName: ContractType): string;
+
+function CodeTypeChange(Atype: Integer): string;
 
 var
   WorkPath: string;
 
 implementation
 
-procedure Delay(dwMilliseconds: DWORD);//Longint
+function Delay(dwMilliseconds: DWORD; pbool: PBoolean): Boolean;
+var
+  iStart, iStop: DWORD;
+begin
+  Result := True;
+  iStart := GetTickCount;
+  repeat
+    iStop := GetTickCount;
+    Application.ProcessMessages;
+  until ((iStop - iStart) >= dwMilliseconds) or (pbool^ = True);
+  if ((iStop - iStart) >= dwMilliseconds) then
+    Result := False;
+end;
+
+procedure Delay(dwMilliseconds: DWORD);
 var
   iStart, iStop: DWORD;
 begin
@@ -281,6 +299,157 @@ begin
   begin
     Result := '现货';
   end;
+end;
+
+function CodeTypeChange(Atype: Integer): string;
+begin
+  case Atype of
+    1:
+      Result := '交易所指数';
+    3:
+      Result := '亚洲指数';
+    4:
+      Result := '国际指数';
+    5:
+      Result := '系统分类指数';
+    6:
+      Result := '用户分类指数';
+    7:
+      Result := '期货指数';
+    8:
+      Result := '指数现货';
+    16:
+      Result := 'A股';
+    17:
+      Result := '中小板股';
+    18:
+      Result := '创业板股';
+    22:
+      Result := 'B股';
+    23:
+      Result := 'H股';
+    26:
+      Result := 'US';
+    27:
+      Result := 'USADR';
+    30:
+      Result := '扩展板块股票(港)';
+    32:
+      Result := '基金';
+    33:
+      Result := '未上市开放基金（开放式基金申赎）';
+    34:
+      Result := '上市开放基金（LOF基金）';
+    35:
+      Result := '交易型开放式指数基金（ETF基金）';
+    37:
+      Result := '扩展板块基金(港)';
+    38:
+      Result := '分级子基金';
+    39:
+      Result := '封闭式基金';
+    48:
+      Result := '政府债券（国债）';
+    49:
+      Result := '企业债券';
+    50:
+      Result := '金融债券（证券资产化）';
+    51:
+      Result := '可转债券';
+    52:
+      Result := '可转可分离债';
+    53:
+      Result := '地方债';
+    54:
+      Result := '公司债';
+    55:
+      Result := '贴债';
+    56:
+      Result := '私募债';
+    64:
+      Result := '国债回购';
+    65:
+      Result := '企债回购';
+    66:
+      Result := '债券质押式回购';
+    96:
+      Result := '权证';
+    97:
+      Result := '认购权证';
+    98:
+      Result := '认沽权证';
+    100:
+      Result := '认购权证(B股)';
+    101:
+      Result := '认沽权证(B股)';
+    102:
+      Result := '牛证（moo-cow）';
+    103:
+      Result := '熊证（bear）';
+    112:
+      Result := '指数期货';
+    113:
+      Result := '商品期货';
+    114:
+      Result := '股票期货';
+    115:
+      Result := '同业拆借利率期货';
+    116:
+      Result := '外汇基金债券(ExchangeFundNoteFutures)';
+    117:
+      Result := '期货转现货交易(ExchangeForPhysicals)';
+    118:
+      Result := '期货转掉期交易(ExchangeofFuturesForSwaps)';
+    120:
+      Result := '指数期货连线CX';
+    121:
+      Result := '指数期货连线CC';
+    122:
+      Result := '商品期货连线CX';
+    123:
+      Result := '商品期货连线CC';
+    124:
+      Result := '股票期货连线CX';
+    125:
+      Result := '股票期货连线CC';
+    126:
+      Result := '期现差价线';
+    127:
+      Result := '跨期差价线';
+    128:
+      Result := '基本汇率';
+    129:
+      Result := '交叉汇率';
+    130:
+      Result := '反向汇率';
+    144:
+      Result := '认购期权';
+    145:
+      Result := '认沽期权';
+    146:
+      Result := '指数认购期权';
+    147:
+      Result := '指数认沽期权';
+    148:
+      Result := '商品认沽期权';
+    149:
+      Result := '商品认沽期权';
+    208:
+      Result := '银行利率';
+    209:
+      Result := '银行利率(HK)';
+    210:
+      Result := '银行利率(Interal)';
+    224:
+      Result := '贵金属(noblemetal)';
+    240:
+      Result := '其他';
+    241:
+      Result := 'A股新股申购';
+    242:
+      Result := 'A股增发';
+  end;
+
 end;
 
 end.

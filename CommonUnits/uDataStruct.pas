@@ -136,11 +136,162 @@ type
 
   TThostFtdcActionFlagType = Char;
 
-  TThostFtdcErrorIDType = Integer;  
+  TThostFtdcErrorIDType = Integer;
 
+  TJGtdcClientIDType = array[0..15] of Char;
 
+  TJGtdcFundAccountType = array[0..15] of Char;
+
+  TJGtdcSupportSubType = Integer;
+
+  TJGtdcResultType = Integer;
+
+  TJGtdcErrorInfoType = array[0..127] of Char;
+
+  TJGtdcEntrustNoType = array[0..23] of Char;
+
+  TJGtdcBatchNoType = array[0..23] of Char;
+
+  TJGtdcExchangeType = Integer;
+
+  TJGtdcStockAccountType = array[0..15] of Char;
+
+  TJGtdcContractNumber = array[0..15] of Char;
+
+  TJGtdcTradeType = Integer;
+
+  TJGtdcOffsetType = Char;
+
+  TJGtdcCoveredType = Char;
+
+  TJGtdcPriceType = Integer;
+
+  TJGtdcOrderVolume = Int64;
+
+  TJGtdcOrderPrice = Int64;
+
+  TJGtdcNewEntrustNoType = array[0..23] of Char;
+
+  TJGtdcBranchNoType = array[0..7] of Char;
+
+  TJGtdcSeatNoType = array[0..31] of Char;
+
+  TJGtdcContractCodeType = array[0..23] of Char;
+
+  TJGtdcContractNameType = array[0..39] of Char;
+
+  TJGtdcStockCodeType = array[0..23] of Char;
+
+  TJGtdcStockNameType = array[0..23] of Char;
+
+  TJGtdcPositionStrType = array[0..39] of Char;
+
+  TJGtdcReportNoType = array[0..23] of Char;
+
+  TJGtdcMoneyType = Char;
+
+  TJGtdcEntrustStatus = Char;
+
+  TJGtdcDate = Integer;
+
+  TJGtdcTime = Integer;
+
+  TJGtdcBuinessVolume = Int64;
+
+  TJGtdcBusinessPrice = Int64;
+
+  TJGtdcCancelVolume = Int64;
+
+  TJGtdcBusinessBalance = Double;
+
+  TJGtdcInvalidReason = array[0..63] of Char;
+
+  TJGtdcBusinessNoType = array[0..23] of Char;
+
+  TJGtdcBusinessStatus = Char;
+
+  TJGtdcOptionType = Char;
+
+  TJGtdcOptionHoldType = Char;
+
+  TJGtdcOptionYDAmount = Int64;
+
+  TJGtdcOptionAmount = Int64;
+
+  TJGtdcEnableAmount = Int64;
+
+  TJGtdcPossessAmount = Int64;
+
+  TJGtdcFrozenAmount = Int64;
+
+  TJGtdcUnFrozenAmount = Int64;
+
+  TJGtdcTransitAmount = Int64;
+
+  TJGtdcTodayOpenAmount = Int64;
+
+  TJGtdcTodayPayoffAmount = Int64;
+
+  TJGtdcPremiumBalance = double;
+
+  TJGtdcBailBalance = Double;
+
+  TJGtdcCostPrice = Int64;
+
+  TJGtdcBuyCost = Double;
+
+  TJGtdcOptionBalance = Double;
+
+  TJGtdcHoldIncome = Double;
+
+  TJGtdcPayoffIncome = Double;
+
+  TJGtdcMainFlag = Char;
+
+  TJGtdcEnableBalance = Double;
+
+  TJGtdcFetchBalance = Double;
+
+  TJGtdcFrozenBalance = Double;
+
+  TJGtdcStockBalance = Double;
+
+  TJGtdcFundBalance = Double;
+
+  TJGtdcAssetBalance = double;
+
+  TJGtdcIncome = double;
+
+  TJGtdcEnableBail = Double;
+
+  TJGtdcUsedBail = Double;
+
+  TJGtdcAgreeAssureRatio = Double;
+
+  TJGtdcRiskRatio = Double;
+
+  TJGtdcRiskRatio1 = double;
+
+  TJGtdcServiceType = Integer;
+
+  TJGtdcYdAmount = Int64;
+
+  TJGtdcStockAmount = Int64;
+
+  TJGtdcPurchaseAmount = Int64;
+
+  TJGtdcYStoreAmount = Int64;
+
+  TJGtdcKeepCostPrice = Int64;
+
+  TJGtdcFloatIncome = Double;
+
+  TJGtdcProIncome = Double;
+
+  TJGtdcEnableBalanceHK = Double;
   {CTP期货相关数据结构}
   //投资者持仓
+
   PThostFtdcInvestorPositionField = ^CThostFtdcInvestorPositionField;
 
   CThostFtdcInvestorPositionField = record
@@ -945,6 +1096,624 @@ type
   
   {$A1-}
 
+  
+  {DF现货行情相关数据结构}
+  PDFDAPI_OPEN_CONNECT_SET = ^DFDAPI_OPEN_CONNECT_SET;
+
+  PDFDAPI_SET_ENVIRONMENT = ^DFDAPI_SET_ENVIRONMENT;
+
+  PDFDAPI_ERR_CODE = ^DFDAPI_ERR_CODE;
+
+  PSUBSCRIPTION_STYLE = ^SUBSCRIPTION_STYLE;
+
+  PDFDAPI_CODEINFO = ^DFDAPI_CODEINFO;
+
+  PDFDAPI_APP_HEAD = ^DFDAPI_APP_HEAD;
+
+  PDFDAPI_CALLBACK_MSG = ^DFDAPI_CALLBACK_MSG;
+
+  PDFDAPI_INDEX_DATA = ^DFDAPI_INDEX_DATA;
+
+  PDFDAPI_MARKET_DATA = ^DFDAPI_MARKET_DATA;
+
+  PDFDAPI_CODE_RESULT = ^DFDAPI_CODE_RESULT;
+
+  PDFDAPI_CONNECT_RESULT = ^DFDAPI_CONNECT_RESULT;  
+
+  {$A1+}
+  {$Z4+}
+  {现货}
+
+  DFDAPI_MSG_ID = (MSG_INVALID = -100,
+  	
+  	///< 系统消息
+    MSG_SYS_DISCONNECT_NETWORK,							///< 网络断开事件, 相应的结构体为NULL
+    MSG_SYS_CONNECT_RESULT,								///< 主动发起连接的结果
+    MSG_SYS_LOGIN_RESULT,								///< 登陆应答
+    MSG_SYS_CODETABLE_RESULT,							///< 代码表结果，收到此消息后可获取对应代码表,此消息表示所有授权市场代码表可取
+    MSG_SYS_QUOTATIONDATE_CHANGE,						///< 行情日期变更通知（已取消）
+    MSG_SYS_MARKET_CLOSE,								///< 闭市（已取消）
+    MSG_SYS_HEART_BEAT,									///< 服务器心跳消息, 相应的结构体为NULL
+    MSG_SYS_MARKET_EVENT,								///< 市场事件通知消息(如市场清盘，转数等),收到此事件的清盘或者快照后可获取快照和期权信息
+  	
+  	//单个市场代码表通知.由于某些较小市场数据回调时，同时请求的其他市场才处理完代码表，行情数据较MSG_SYS_CODETABLE_RESULT先到，
+  	//增加该消息，通知每一市场代码表处理结果，客户可据此选择何时请求代码表
+    MSG_SYS_SINGLE_CODETABLE_RESULT,					///< 单个市场代码表结果，收到此消息后可获取对应的单个市场代码表
+    MSG_SYS_QUOTEUNIT_CHANGE,							///< 价差变化
+    MSG_SYS_PACK_OVER,									///< 当前网络包解析完毕
+  
+  	///< 数据消息
+    MSG_DATA_INDEX,										///< 指数数据
+    MSG_DATA_MARKET,									///< 行情数据
+    MSG_DATA_FUTURE,									///< 期货行情
+    MSG_DATA_HKEX,										///< 港股行情
+    MSG_DATA_TRANSACTION,								///< 逐笔成交
+    MSG_DATA_ORDERQUEUE,								///< 委托队列
+    MSG_DATA_ORDER,										///< 逐笔委托
+    MSG_DATA_BBQTRANSACTION,							///< BBQ现券成交数据
+    MSG_DATA_BBQBID,									///< BBQ现券报价数据
+    MSG_DATA_NON_MD,									///< 非行情消息
+    MSG_DATA_OTC_OPTION,								///< 场外期权
+    MSG_DATA_BROKERQUEUE,								///< 经纪商队列(港股)
+    MSG_SH_ETF_LIST,									///< 收到沪市ETF清单信息.
+    MSG_SZ_ETF_LIST,									///< 收到深市ETF清单信息.
+    MSG_UPDATE_ETFLIST,									///< ETF清单有更新,沪深两市需请重新获取.
+    MSG_HKEX_BASICINFO,									///< 港股基本信息更新,请获取.
+    MSG_DATA_OPTION,									///< 期权行情
+    MSG_OPTION_BASICINFO								///< 期权基本信息更新,请获取.
+);
+
+  DFDAPI_SET_ENVIRONMENT = (DFDAPI_ENVIRON_HEART_BEAT_INTERVAL,					///< Heart Beat间隔（秒数）, 若值为0则表示默认值10秒钟
+  	//DFDAPI_ENVIRON_MISSED_BEAT_COUNT,					///< 如果没有收到心跳次数超过这个值，且没收到其他任何数据，则判断为掉线，若值0为默认次数2次
+    DFDAPI_ENVIRON_OPEN_TIME_OUT,						///< 在调DFDAPI_Open期间，接收每一个数据包的超时时间（秒数，不是DFDAPI_Open调用总的最大等待时间），若值为0则默认30秒
+    DFDAPI_ENVIRON_USE_PACK_OVER, DFDAPI_ENVIRON_HEART_BEAT_FLAG,						///< 心跳数据发送方式（0: 取消发送心跳包 1：没有数据发送的时候发送心跳数据，2：有规律发送心跳数据）
+    DFDAPI_ENVIRON_SOURCE_MODE,							///< 双活数据源模式,值参考DFDAPI_SOURCE_SETTING枚举类
+    DFDAPI_ENVIRON_SOURCE_MODE_VALUE,					///< 双活数据源模式下参数的值
+    DFDAPI_ENVIRON_OUT_LOG,								///< 1、当前目录下创建log，否则在当前路径有log文件夹时创建到log文件夹中
+    DFDAPI_ENVIRON_SNAPSHOT_ENENT,						///< 1、发送快照事件和清盘通知但快照不发送到回调函数，否则直接发送快照到回调函数，无快照通知
+    DFDAPI_ENVIRON_ORIGINAL_VOL,						///< 原始结构有效，1、指数成交量和成交额的单位为股和元，默认为100股和100元
+    DFDAPI_ENVIRON_BREAKPOINT,							///< 1.网络断开后断点续传，else.请求最新快照
+    DFDAPI_ENVIRON_PUSHMODE							///< 0:启用默认订阅推送；1:禁用默认订阅推送。
+);
+
+  DFDAPI_ERR_CODE = (DFDAPI_ERR_UNKOWN = -400,							///< 未知错误
+    DFDAPI_ERR_UNINITIALIZE = -399,						///< 接口环境未初始化
+    DFDAPI_ERR_INITIALIZE_FAILURE = -200,				///< 初始化socket环境失败
+    DFDAPI_ERR_NETWORK_ERROR,							///< 网络连接出现问题
+    DFDAPI_ERR_INVALID_PARAMS,							///< 输入参数无效
+    DFDAPI_ERR_VERIFY_FAILURE,							///< 登陆验证失败：原因为用户名或者密码错误；超出登陆数量
+    DFDAPI_ERR_NO_AUTHORIZED_MARKET,					///< 所有请求的市场都没有授权
+    DFDAPI_ERR_NO_CODE_TABLE,							///< 所有请求的市场该天都没有代码表
+    DFDAPI_ERR_NO_BASICINFO,							///< 所有请求的市场基本信息数据为空.
+    DFDAPI_ERR_SUCCESS = 0								///< 成功
+);
+
+  SUBSCRIPTION_STYLE = (SUBSCRIPTION_SET = 0,								///< 设置订阅行情，再次设置订阅时会自动取消之前所有订阅代码.
+    SUBSCRIPTION_ADD = 1,								///< 增加订阅代码
+    SUBSCRIPTION_DEL = 2								///< 删除订阅代码
+);
+
+  {$Z4-}
+  ///< 行情快照：MSG_DATA_MARKET.
+  DFDAPI_MARKET_DATA = record
+    szWindCode: array[0..31] of Char;								///< 600001.SH
+    szCode: array[0..31] of Char;									///< 原始Code
+    nActionDay: Integer;									///< 业务发生日(自然日)
+    nTradingDay: Integer;								///< 交易日
+    nTime: Integer;										///< 时间(HHMMSSmmm)
+    nStatus: Integer;									///< 状态
+    nPreClose: Int64;									///< 前收盘价
+    nOpen: Int64;										///< 开盘价
+    nHigh: Int64;										///< 最高价
+    nLow: Int64;										///< 最低价
+    nMatch: Int64;										///< 最新价
+    nAskPrice: array[0..9] of Int64;								///< 申卖价
+    nAskVol: array[0..9] of Int64;								///< 申卖量
+    nBidPrice: array[0..9] of Int64;								///< 申买价
+    nBidVol: array[0..9] of Int64;								///< 申买量
+    nNumTrades: Integer;									///< 成交笔数
+    iVolume: Int64;									///< 成交总量
+    iTurnover: Int64;									///< 成交总金额
+    nTotalBidVol: Int64;								///< 委托买入总量
+    nTotalAskVol: Int64;								///< 委托卖出总量
+    nWeightedAvgBidPrice: Int64;						///< 加权平均委买价格
+    nWeightedAvgAskPrice: Int64;						///< 加权平均委卖价格
+    nIOPV: Integer;										///< IOPV净值估值
+    nYieldToMaturity: Integer;							///< 到期收益率
+    nHighLimited: Int64;								///< 涨停价
+    nLowLimited: Int64;								///< 跌停价
+    chPrefix: array[0..3] of Char;								///< 证券信息前缀
+    nSyl1: Integer;										///< 市盈率1
+    nSyl2: Integer;										///< 市盈率2
+    nSD2: Integer;										///< 升跌2（对比上一笔）
+    	//const DFDAPI_CODE_INFO *  pCodeInfo;					///< 代码信息， DFDAPI_Close，清盘重连后，此指针无效
+  end;
+  
+  
+  
+    ///< 指数行情快照：MSG_DATA_INDEX.
+  DFDAPI_INDEX_DATA = record
+    szWindCode: array[0..31] of Char;								///< 600001.SH
+    szCode: array[0..31] of Char;									///< 原始Code
+    nActionDay: Integer;									///< 业务发生日(自然日)
+    nTradingDay: Integer;								///< 交易日
+    nTime: Integer;										///< 时间(HHMMSSmmm)
+    nStatus: Integer;									///< 状态，20151223新增
+    nOpenIndex: Int64;									///< 今开盘指数
+    nHighIndex: Int64;									///< 最高指数
+    nLowIndex: Int64;									///< 最低指数
+    nLastIndex: Int64;									///< 最新指数
+    iTotalVolume: Int64;								///< 参与计算相应指数的交易数量
+    iTurnover: Int64;									///< 参与计算相应指数的成交金额
+    nPreCloseIndex: Int64;								///< 前盘指数
+    	//const DFDAPI_CODE_INFO *  pCodeInfo;					///< 代码信息， DFDAPI_Close，清盘重连后，此指针无效
+  end;
+  
+  
+    ///< 应用头
+  DFDAPI_APP_HEAD = record
+    nHeadSize: Integer;										///< 本记录结构大小
+    nItemCount: Integer;										///< 记录条数
+    nItemSize: Integer;										///< 记录大小
+  end;
+  
+    ///< 数据消息结构
+  DFDAPI_CALLBACK_MSG = record
+    nDataType: Integer;					///< 数据类型
+    nDataLen: Integer;					///< 数据长度（不包括DFDAPI_APP_HEAD的长度）
+    nServerTime: Integer;				///< 服务器本地时间戳（精确到毫秒HHMMSSmmm）
+    nConnectId: Integer;					///< 连接ID
+    pAppHead: PDFDAPI_APP_HEAD;					///< 应用头
+    pData: Pointer;						///< 数据指针
+  end;
+  
+  
+    ///< 代码表信息.
+  DFDAPI_CODEINFO = record
+    szWindCode: array[0..31] of Char;									///< 000001.SZ;600000.SH;IH1711.CFF;
+    szSecurityID: array[0..15] of Char;									///< 今古行情证券代码.
+    szSecurityCode: array[0..23] of Char;								///< 交易所原始证券代码.
+    szMarket: array[0..7] of Char;										///< SZ;SH;CFF;SHO;SZO;
+    szENName: array[0..31] of Char;										///< 英文名称.
+    szCNName: array[0..31] of Char;										///< 证券名称.
+    nType: Integer;												///< 证券类型.
+  end;
+  
+  
+  //服务器配置信息
+  DFDAPI_SERVER_INFO = record
+    szIp: array[0..31] of char;											///< IP
+    nPort: SmallInt;											///< 端口
+    szUser: array[0..63] of Char;										///< 用户名
+    szPwd: array[0..63] of Char;											///< 密码
+    bDoMain: Boolean;											///< 是否使用域名
+  end;
+
+  DFDAPI_OPEN_CONNECT_SET = record
+    ServerInfo: array[0..JGAPI_SERVERINFO_MAX - 1] of DFDAPI_SERVER_INFO;	///< 服务器信息
+    unServerNum: Cardinal;								///< 服务器数量
+    data_fun: Pointer;							///< 数据消息处理回调
+    notice_fun: Pointer;						///< 系统消息通知回调
+      	///< 订阅设置 注意：订阅是市场独立的！对于每个市场必须订阅市场或代码，只订阅市场，则发送此市场全部代码
+    szMarkets: PChar;									///< 市场订阅！例如"SZ;SH;CF;SHF;DCE;SHF"，需要订阅的市场列表，以“;”分割.
+    szSubScriptions: PChar;							///< 代码订阅！例如"600000.sh;IH1711.cf;000001.sz"，需要订阅的股票，以“;”分割.
+    szTypeFlags: PChar;								///< 数据类型订阅！支持订阅3种类型TRANSACTION;ORDER;ORDERQUEUE。！注意：行情数据任何时候都发送，不需要订阅! 参见enum DATA_TYPE_FLAG.
+    nTime: Cardinal;										///< 为0则请求实时行情，为0xffffffff从头请求.
+    nConnectionID: Cardinal;								///< 连接ID，连接回调消息的附加结构 DFDAPI_CONNECT_RESULT中 会包含这个ID，消息头也会包含该ID.
+  end;
+    {现货}
+
+  
+    ///< 系统消息：MSG_SYS_CODETABLE_RESULT 对应的结构
+
+  DFDAPI_CODE_RESULT = record
+    szInfo: array[0..127] of Char;										///< 代码表结果文本
+    nMarkets: Integer;											///< 市场个数
+    szMarket: array[0..255, 0..7] of Char;									///< 市场代码
+    nCodeCount: array[0..255] of Integer;									///< 代码表项数
+    nCodeDate: array[0..255] of Integer;										///< 代码表日期
+  end;
+
+  ///< 连接结果：MSG_SYS_CONNECT_RESULT
+  DFDAPI_CONNECT_RESULT = record
+    szIp: array[0..31] of Char;
+    szPort: array[0..7] of Char;
+    szUser: array[0..63] of Char;
+    szPwd: array[0..63] of Char;
+    nConnResult: Cardinal;								///< 为0则表示连接成功，非0则表示连接失败
+    nConnectionID: Integer;										///< 连接ID
+  end;
+
+  {$A1-}
+
+  {$A8+}
+  {期权交易}
+  ///< 用户登陆应答
+  PCJGtdcRspUserLogin = ^TCJGtdcRspUserLogin;
+
+  TCJGtdcRspUserLogin = record
+    ClientID: TJGtdcClientIDType;                    ///< 客户号
+    FundAccount: TJGtdcFundAccountType;              ///< 资金账号
+    SupportSubType: TJGtdcSupportSubType;			///< 支持的订阅类型
+  end;
+
+  ///< 响应信息
+  PCJGtdcRspInfoField = ^TCJGtdcRspInfoField;
+
+  TCJGtdcRspInfoField = record
+    ResultType: TJGtdcResultType;                   ///< 应答结果
+    ErrorInfo: TJGtdcErrorInfoType;                  ///< 错误信息
+    nFieldItem: Integer;                                 ///< 应答数据个数
+  end;
+
+  ///< 用户登出应答
+  PCJGtdcRspUserLogout = ^TCJGtdcRspUserLogout;
+
+  TCJGtdcRspUserLogout = record
+    ClientID: TJGtdcClientIDType;                    ///< 客户号
+    FundAccount: TJGtdcFundAccountType;              ///< 资金账号
+  end;
+
+
+ ///< 投资者期权委托下单应答
+  PCJGtdcOptionRspEntrust = ^TCJGtdcOptionRspEntrust;
+
+  TCJGtdcOptionRspEntrust = record
+    ResultType: TJGtdcResultType;	    ///< 应答结果
+    ErrorInfo: TJGtdcErrorInfoType;		///< 错误信息
+    EntrustNo: TJGtdcEntrustNoType;		///< 合同号
+    BatchNo: TJGtdcBatchNoType;			///< 批号
+    ExchangeType: TJGtdcExchangeType;	///< 市场类型
+    StockAccount: TJGtdcStockAccountType;
+    ContractNumber: TJGtdcContractNumber;
+    TradeType: TJGtdcTradeType;			///< 交易类型
+    OffsetType: TJGtdcOffsetType;		///< 开平仓类型
+    CoveredType: TJGtdcCoveredType;		///< 备兑标识
+    PriceType: TJGtdcPriceType;			///< 价格类型
+    EntrustAmount: TJGtdcOrderVolume;	///< 委托数量
+    EntrustPrice: TJGtdcOrderPrice;		///< 委托价格
+  end;
+
+  ///< 投资者期权委托撤单应答
+  PCJGtdcOptionRspCancel = ^TCJGtdcOptionRspCancel;
+
+  TCJGtdcOptionRspCancel = record
+    ResultType: TJGtdcResultType;	///<	应答结果
+    ErrorInfo: TJGtdcErrorInfoType;	///<	错误信息
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    NewEntrustNo: TJGtdcNewEntrustNoType;	///<	新合同号
+    BatchNo: TJGtdcBatchNoType;	///<	批号
+  end;
+
+  ///< 投资者期权委托查询应答
+  PCJGtdcOptionRspQryEntrust = ^TCJGtdcOptionRspQryEntrust;
+
+  TCJGtdcOptionRspQryEntrust = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    SeatNo: TJGtdcSeatNoType;	///<	席位号
+    ContractNumber: TJGtdcContractNumber;	///<	合约编码
+    ContractCode: TJGtdcContractCodeType;	///<	合约代码
+    ContractName: TJGtdcContractNameType;	///<	合约名称
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    StockName: TJGtdcStockNameType;	///<	证券名称
+    PositionStr: TJGtdcPositionStrType;	///<	定位串
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    ReportNo: TJGtdcReportNoType;	///<	申报号
+    BatchNo: TJGtdcBatchNoType;	///<	批号
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    EntrustStatus: TJGtdcEntrustStatus;	///<	委托状态
+    TradeType: TJGtdcTradeType;	///<	交易类型
+    OffsetType: TJGtdcOffsetType;	///<	开平仓类型
+    CoveredType: TJGtdcCoveredType;	///<	备兑标识
+    PriceType: TJGtdcPriceType;	///<	价格类型
+    EntrustDate: TJGtdcDate;	///<	委托日期
+    EntrustTime: TJGtdcTime;	///<	委托时间
+    EntrustAmount: TJGtdcOrderVolume;	///<	委托数量
+    EntrustPrice: TJGtdcOrderPrice;	///<	委托价格
+    BusinessAmount: TJGtdcBuinessVolume;	///<	成交数量
+    BusinessPrice: TJGtdcBusinessPrice;	///<	成交价格
+    CancelAmount: TJGtdcCancelVolume;	///<	撤销数量
+    BusinessBalance: TJGtdcBusinessBalance;	///<	成交金额
+    InvalidReason: TJGtdcInvalidReason;	///<	废单原因
+  end;
+
+  ///< 投资者期权增量成交查询应答
+  PCJGtdcOptionRspQryBusByPos = ^TCJGtdcOptionRspQryBusByPos;
+
+  TCJGtdcOptionRspQryBusByPos = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    SeatNo: TJGtdcSeatNoType;	///<	席位号
+    ContractNumber: TJGtdcContractNumber;	///<	合约编码
+    ContractCode: TJGtdcContractCodeType;	///<	合约代码
+    ContractName: TJGtdcContractNameType;	///<	合约名称
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    StockName: TJGtdcStockNameType;	///<	证券名称
+    PositionStr: TJGtdcPositionStrType;	///<	定位串
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    ReportNo: TJGtdcReportNoType;	///<	申报号
+    BatchNo: TJGtdcBatchNoType;	///<	批号
+    BusinessNo: TJGtdcBusinessNoType;	///<	成交号
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    BusinessStatus: TJGtdcBusinessStatus;	///<	成交状态
+    TradeType: TJGtdcTradeType;	///<	交易类型
+    OffsetType: TJGtdcOffsetType;	///<	开平仓类型
+    CoveredType: TJGtdcCoveredType;	///<	备兑标识
+    PriceType: TJGtdcPriceType;	///<	价格类型
+    BusinessDate: TJGtdcDate;	///<	成交日期
+    BusinessTime: TJGtdcTime;	///<	成交时间
+    EntrustAmount: TJGtdcOrderVolume;	///<	委托数量
+    EntrustPrice: TJGtdcOrderPrice;	///<	委托价格
+    BusinessAmount: TJGtdcBuinessVolume;	///<	成交数量
+    BusinessPrice: TJGtdcBusinessPrice;	///<	成交价格
+    CancelAmount: TJGtdcCancelVolume;	///<	撤销数量
+    BusinessBalance: TJGtdcBusinessBalance;	///<	成交金额
+  end;
+
+  ///< 投资者期权持仓查询应答
+  PCJGtdcOptionRspQryHold = ^TCJGtdcOptionRspQryHold;
+
+  TCJGtdcOptionRspQryHold = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    ContractNumber: TJGtdcContractNumber;	///<	合约编码
+    ContractCode: TJGtdcContractCodeType;	///<	合约代码
+    ContractName: TJGtdcContractNameType;	///<	合约名称
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    StockName: TJGtdcStockNameType;	///<	证券名称
+    PositionStr: TJGtdcPositionStrType;	///<	定位串
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    OptionType: TJGtdcOptionType;	///<	期权类别
+    OptionHoldType: TJGtdcOptionHoldType;	///<	期权持仓类别
+    OptionYDAmount: TJGtdcOptionYDAmount;	///<	期权昨日余额
+    OptionAmount: TJGtdcOptionAmount;	///<	期权余额
+    EnableAmount: TJGtdcEnableAmount;	///<	可卖数量
+    PossessAmount: TJGtdcPossessAmount;	///<	当前拥股数量
+    FrozenAmount: TJGtdcFrozenAmount;	///<	冻结数量
+    UnFrozenAmount: TJGtdcUnFrozenAmount;	///<	解冻数量
+    TransitAmount: TJGtdcTransitAmount;	///<	在途数量
+    TodayOpenAmount: TJGtdcTodayOpenAmount;	///<	今日开仓量
+    TodayPayoffAmount: TJGtdcTodayPayoffAmount;	///<	今日平仓量
+    PremiumBalance: TJGtdcPremiumBalance;	///<	权利金
+    BailBalance: TJGtdcBailBalance;	///<	保证金
+    CostPrice: TJGtdcCostPrice;	///<	成本价格
+    BuyCost: TJGtdcBuyCost;	///<	当前成本
+    OptionBalance: TJGtdcOptionBalance;	///<	期权市值
+    HoldIncome: TJGtdcHoldIncome;	///<	持仓盈亏
+    PayoffIncome: TJGtdcPayoffIncome;	///<	平仓盈亏
+  end;
+
+  ///< 投资者期权资金查询应答
+  PCJGtdcOptionRspQryFund = ^TCJGtdcOptionRspQryFund;
+
+  TCJGtdcOptionRspQryFund = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    MainFlag: TJGtdcMainFlag;	///<	主副标志
+    EnableBalance: TJGtdcEnableBalance;	///<	可用余额
+    FetchBalance: TJGtdcFetchBalance;	///<	可取余额
+    FrozenBalance: TJGtdcFrozenBalance;	///<	冻结金额
+    StockBalance: TJGtdcStockBalance;	///<	证券市值
+    FundBalance: TJGtdcFundBalance;	///<	资金余额
+    AssetBalance: TJGtdcAssetBalance;	///<	资产总值
+    Income: TJGtdcIncome;	///<	总盈亏
+    EnableBail: TJGtdcEnableBail;	///<	可用保证金
+    UsedBail: TJGtdcUsedBail;	///<	已用保证金
+    AgreeAssureRatio: TJGtdcAgreeAssureRatio;	///<	履约担保比例
+    RiskRatio: TJGtdcRiskRatio;	///<	风险度
+    RiskRatio1: TJGtdcRiskRatio1;	///<	风险度1
+
+  end;
+
+   ///< 投资者期权可撤单查询应答
+  PCJGtdcOptionRspQryRevocEnt = ^TCJGtdcOptionRspQryRevocEnt;
+
+  TCJGtdcOptionRspQryRevocEnt = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    SeatNo: TJGtdcSeatNoType;	///<	席位号
+    ContractNumber: TJGtdcContractNumber;	///<	合约编码
+    ContractCode: TJGtdcContractCodeType;	///<	合约代码
+    ContractName: TJGtdcContractNameType;	///<	合约名称
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    StockName: TJGtdcStockNameType;	///<	证券名称
+    PositionStr: TJGtdcPositionStrType;	///<	定位串
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    ReportNo: TJGtdcReportNoType;	///<	申报号
+    BatchNo: TJGtdcBatchNoType;	///<	批号
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    EntrustStatus: TJGtdcEntrustStatus;	///<	委托状态
+    TradeType: TJGtdcTradeType;	///<	交易类型
+    OffsetType: TJGtdcOffsetType;	///<	开平仓类型
+    CoveredType: TJGtdcCoveredType;	///<	备兑标识
+    PriceType: TJGtdcPriceType;	///<	价格类型
+    EntrustDate: TJGtdcDate;	///<	委托日期
+    EntrustTime: TJGtdcTime;	///<	委托时间
+    EntrustAmount: TJGtdcOrderVolume;	///<	委托数量
+    EntrustPrice: TJGtdcOrderPrice;	///<	委托价格
+    BusinessAmount: TJGtdcBuinessVolume;	///<	成交数量
+    BusinessPrice: TJGtdcBusinessPrice;	///<	成交价格
+    CancelAmount: TJGtdcCancelVolume;	///<	撤销数量
+    BusinessBalance: TJGtdcBusinessBalance;	///<	成交金额
+    InvalidReason: TJGtdcInvalidReason;	///<	废单原因
+  end;
+
+  ///< 用户报单应答
+  PCJGtdcRspOrderInsert = ^TCJGtdcRspOrderInsert;
+
+  TCJGtdcRspOrderInsert = record
+    ResultType: TJGtdcResultType;	///<	应答结果
+    ErrorInfo: TJGtdcErrorInfoType;	///<	错误信息
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    BatchNo: TJGtdcBatchNoType;	///<	批号
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    TradeType: TJGtdcTradeType;	///<	交易类型
+    PriceType: TJGtdcPriceType;	///<	价格类型
+    OrderVolume: TJGtdcOrderVolume;	///<	委托数量
+    OrderPrice: TJGtdcOrderPrice;	///<	委托价格
+  end;
+
+  ///< 用户撤单应答
+  PCJGtdcRspOrderCancel = ^TCJGtdcRspOrderCancel;
+
+  TCJGtdcRspOrderCancel = record
+    ResultType: TJGtdcResultType;	///<	应答结果
+    ErrorInfo: TJGtdcErrorInfoType;	///<	错误信息
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    NewEntrustNo: TJGtdcEntrustNoType;	///<	新合同号
+    BatchNo: TJGtdcBatchNoType;	///<	批号
+  end;
+
+  ///< 投资者当日委托查询应答
+  PCJGtdcRspQryOrder = ^TCJGtdcRspQryOrder;
+
+  TCJGtdcRspQryOrder = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    SeatNo: TJGtdcSeatNoType;	///<	席位号
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    StockName: TJGtdcStockNameType;	///<	证券名称
+    PositionStr: TJGtdcPositionStrType;	///<	定位串
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    EntrustStatus: TJGtdcEntrustStatus;	///<	委托状态
+    TradeType: TJGtdcTradeType;	///<	交易类型
+    PriceType: TJGtdcPriceType;	///<	价格类型
+    EntrustDate: TJGtdcDate;	///<	委托日期
+    EntrustTime: TJGtdcTime;	///<	委托时间
+    OrderVolume: TJGtdcOrderVolume;	///<	委托数量
+    OrderPrice: TJGtdcOrderPrice;	///<	委托价格
+    BusinessVolume: TJGtdcBuinessVolume;	///<	成交数量
+    BusinessPrice: TJGtdcBusinessPrice;	///<	成交价格
+    CancelVolume: TJGtdcCancelVolume;	///<	撤单数量
+    BusinessBalance: TJGtdcBusinessBalance;	///<	成交金额
+    ServiceType: TJGtdcServiceType;	///<	业务类型
+  end;
+
+  ///< 投资者成交单查询应答
+  PCJGtdcRspQryTrade = ^TCJGtdcRspQryTrade;
+
+  TCJGtdcRspQryTrade = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    SeatNo: TJGtdcSeatNoType;	///<	席位号
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    StockName: TJGtdcStockNameType;	///<	证券名称
+    PositionStr: TJGtdcPositionStrType;	///<	定位串
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    BusinessNo: TJGtdcBusinessNoType;	///<	成交编号
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    BusinessStatus: TJGtdcBusinessStatus;	///<	成交状态
+    TradeType: TJGtdcTradeType;	///<	交易类型
+    PriceType: TJGtdcPriceType;	///<	价格类型
+    BusinessDate: TJGtdcDate;	///<	成交日期
+    BusinessTime: TJGtdcTime;	///<	成交时间
+    OrderVolume: TJGtdcOrderVolume;	///<	委托数量
+    OrderPrice: TJGtdcOrderPrice;	///<	委托价格
+    BusinessVolume: TJGtdcBuinessVolume;	///<	成交数量
+    BusinessPrice: TJGtdcBusinessPrice;	///<	成交价格
+    CancelVolume: TJGtdcCancelVolume;	///<	撤单数量
+    BusinessBalance: TJGtdcBusinessBalance;	///<	成交金额
+  end;
+
+  ///< 投资者持仓查询应答
+  PCJGtdcRspQryHold = ^TCJGtdcRspQryHold;
+
+  TCJGtdcRspQryHold = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    StockName: TJGtdcStockNameType;	///<	证券名称
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    YdAmount: TJGtdcYdAmount;	///<	昨日持仓量
+    StockAmount: TJGtdcStockAmount;	///<	股份余额
+    EnableAmount: TJGtdcEnableAmount;	///<	可卖数量
+    PurchaseAmount: TJGtdcPurchaseAmount;	///<	可申购数量
+    PossessAmount: TJGtdcPossessAmount;	///<	当前拥股数量
+    FrozenAmount: TJGtdcFrozenAmount;	///<	冻结数量
+    YStoreAmount: TJGtdcYStoreAmount;	///<	昨日库存数量
+    CostPrice: TJGtdcCostPrice;	///<	成本价格
+    KeepCostPrice: TJGtdcKeepCostPrice;	///<	保本价格
+    BuyCost: TJGtdcBuyCost;	///<	当前成本
+    StockBalance: TJGtdcStockBalance;	///<	证券市值
+    FloatIncome: TJGtdcFloatIncome;	///<	浮动盈亏
+    ProIncome: TJGtdcProIncome;	///<	累计盈亏
+  end;
+
+  ///< 投资者资金查询应答
+  PCJGtdcRspQryFund = ^TCJGtdcRspQryFund;
+
+  TCJGtdcRspQryFund = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    MainFlag: TJGtdcMainFlag;	///<	主副标志
+    EnableBalance: TJGtdcEnableBalance;	///<	可用余额
+    FetchBalance: TJGtdcFetchBalance;	///<	可取余额
+    FrozenBalance: TJGtdcFrozenBalance;	///<	冻结金额
+    StockBalance: TJGtdcStockBalance;	///<	证券市值
+    FundBalance: TJGtdcFundBalance;	///<	资金余额
+    AssetBalance: TJGtdcAssetBalance;	///<	资产总值
+    InCome: TJGtdcIncome;	///<	总盈亏
+    EnableBalanceHK: TJGtdcEnableBalanceHK;	///<	港股可用余额
+  end;
+
+  ///< 投资者可撤单查询应答
+  PCJGtdcRspQryCancel = ^TCJGtdcRspQryCancel;
+
+  TCJGtdcRspQryCancel = record
+    BranchNo: TJGtdcBranchNoType;	///<	营业部号
+    ClientID: TJGtdcClientIDType;	///<	客户号
+    FundAccount: TJGtdcFundAccountType;	///<	资金账号
+    ExchangeType: TJGtdcExchangeType;	///<	市场类型
+    StockAccount: TJGtdcStockAccountType;	///<	股东代码
+    SeatNo: TJGtdcSeatNoType;	///<	席位号
+    StockCode: TJGtdcStockCodeType;	///<	证券代码
+    StockName: TJGtdcStockNameType;	///<	证券名称
+    PositionStr: TJGtdcPositionStrType;	///<	定位串
+    EntrustNo: TJGtdcEntrustNoType;	///<	合同号
+    MoneyType: TJGtdcMoneyType;	///<	币种
+    EntrustStatus: TJGtdcEntrustStatus;	///<	委托状态
+    TradeType: TJGtdcTradeType;	///<	交易类型
+    PriceType: TJGtdcPriceType;	///<	价格类型
+    EntrustDate: TJGtdcDate;	///<	委托日期
+    EntrustTime: TJGtdcTime;	///<	委托时间
+    OrderVolume: TJGtdcOrderVolume;	///<	委托数量
+    OrderPrice: TJGtdcOrderPrice;	///<	委托价格
+    BusinessVolume: TJGtdcBuinessVolume;	///<	成交数量
+    BusinessPrice: TJGtdcBusinessPrice;	///<	成交价格
+    CancelVolume: TJGtdcCancelVolume;	///<	撤单数量
+    BusinessBalance: TJGtdcBusinessBalance;	///<	成交金额
+    ServiceType: TJGtdcServiceType;	///<	业务类型
+  end;
+  {$A8-}
 
   //折线图-三线
 
@@ -968,8 +1737,8 @@ type
     FuturesAccount: string;
     OptionIsLogin: Boolean;
     OptionAccount: string;
-    SharesIsLogin: Boolean;
-    SharesAccount: string;
+    ActualsIsLogin: Boolean;
+    ActualsAccount: string;
   end;
 
 implementation

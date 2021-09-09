@@ -4,9 +4,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, jpeg, ExtCtrls, ufrmConfigForm, uConfigUnit,
-  uGlobalInstance, uQuotationAPI, uTradeAPI, uDrawView, uManagerThread,
-  uDataStruct, uContractsSchedule, MainWIN, ComCtrls;
+  Dialogs, StdCtrls, jpeg, ExtCtrls, uConfigUnit, uGlobalInstance, uQuotationAPI,
+  uTradeAPI, uDrawView, uManagerThread, uDataStruct, uContractsSchedule, MainWIN,
+  ComCtrls;
 
 type
   TLoginForm = class(TForm)
@@ -18,18 +18,20 @@ type
     Button1: TButton;
     FuturesPwdEdit: TEdit;
     Label2: TLabel;
-    Edit3: TEdit;
+    OptionPwdEdit: TEdit;
     Label3: TLabel;
-    Edit4: TEdit;
+    OptionAccountEdit: TEdit;
     Label4: TLabel;
     Label5: TLabel;
-    Edit5: TEdit;
-    Edit6: TEdit;
+    ActualsPwdEdit: TEdit;
+    ActualsAccountEdit: TEdit;
     Label6: TLabel;
     LoginButton: TButton;
     ExitButton: TButton;
     QuotationServerLabel: TLabel;
     QuotationLabel: TLabel;
+    loadingLabel: TLabel;
+    Timer1: TTimer;
     procedure FormShow(Sender: TObject);
     procedure Panel1MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure Panel1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -38,6 +40,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure LoginButtonClick(Sender: TObject);
     procedure KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Timer1Timer(Sender: TObject);
   private
     moveFlag: Boolean;
     moveX: Integer;
@@ -49,17 +52,7 @@ type
     procedure RefreshView();
   end;
 
-procedure ConnectedQuotation();
-
-procedure ConnectedFutures();
-
-procedure ConnectedOption();
-
-procedure ConnectedActuals();
-
-procedure updateData();
-
-procedure ConnectedTrade();
+  myfunction = procedure();
 
 var
   LoginForm: TLoginForm;
@@ -67,7 +60,7 @@ var
 implementation
 
 uses
-  uConstants, uDataCenter;
+  uConstants, uDataCenter, StrUtils, uLoginFunctions, ufrmConfigForm;
 
 {$R *.dfm}
 
@@ -131,6 +124,7 @@ end;
 procedure TLoginForm.FormShow(Sender: TObject);
 var
   tradeServer: PAccountStruct;
+  path: string;
 begin
   DoInvisible();
   InitConfiguration();
@@ -138,17 +132,35 @@ begin
   moveFlag := False;
   RefreshView();
   FuturesPwdEdit.Text := 'xy@12345';
+  //设置数据存储路径
+  FuturesquotationPath := '.\conlog\' + formatdatetime('yyyymmdd', now);
+  if (DirectoryExists(FuturesquotationPath) = false) then
+    MkDir(FuturesquotationPath);
+  FuturesquotationPath := FuturesquotationPath + '\quotation_';
+  //本系统日志
+  path := '.\IPSlog\' + formatdatetime('yyyymmdd', now);
+  if (DirectoryExists(path) = false) then
+    MkDir(path);
+  myFuturesquotationPath := path + '\futures_quotation.txt';
+//  FileCreate(myFuturesquotationPath);
+  myFuturestradePath := path + '\futures_trade.txt';
+  myOptionquotationPath := path + '\option_quotation.txt';
+  myOptiontradePath := path + '\option_trade.txt';
+  myActualsquotationPath := path + '\actuals_quotation.txt';
+  myActualstradePath := path + '\actulas_trade.txt';
+
 end;
 
 procedure TLoginForm.LoginButtonClick(Sender: TObject);
 begin
+  Timer1.Enabled := True;
   //enable其他输入框。
   FuturesAccountEdit.Enabled := False;
   FuturesPwdEdit.Enabled := False;
-  Edit3.Enabled := False;
-  Edit4.Enabled := False;
-  Edit5.Enabled := False;
-  Edit6.Enabled := False;
+  OptionAccountEdit.Enabled := False;
+  OptionPwdEdit.Enabled := False;
+  ActualsAccountEdit.Enabled := False;
+  ActualsPwdEdit.Enabled := False;
   Button1.Enabled := False;
   //登录行情
   FDataSchedule := TDataSchedule.Create(MainWindow);
@@ -158,24 +170,36 @@ begin
   //检查有效可登录账户有多少
     if ((FuturesAccountEdit.Text <> '') and (FuturesPwdEdit.Text <> '')) then
     begin
-      ConnectedTrade();
-      TradeServerStatus.FuturesIsLogin := true;
-      TradeServerStatus.FuturesAccount := FuturesAccountEdit.Text;
+      ConnectedFuturesTrade(FuturesAccountEdit.text, FuturesPwdEdit.text);
     end;
-
-    MainWindow.Show;
+    Application.ProcessMessages;
+    if ((OptionAccountEdit.Text <> '') and (OptionPwdEdit.Text <> '')) then
+    begin
+      ConnectedOptionTrade(OptionAccountEdit.text, OptionPwdEdit.text);
+    end;
+    Application.ProcessMessages;
+    if ((ActualsAccountEdit.Text <> '') and (ActualsPwdEdit.Text <> '')) then
+    begin
+      ConnectedActualsTrade(ActualsAccountEdit.text, ActualsPwdEdit.text);
+    end;
+    Application.ProcessMessages;
+    if (TradeServerStatus.FuturesIsLogin or TradeServerStatus.OptionIsLogin or TradeServerStatus.ActualsIsLogin) then
+    begin
+      MainWindow.Show;
 //  SetWindowLong(Self.Handle,GWL_EXSTYLE,WS_EX_TOOLWINDOW);
-    ShowWindow(Application.Handle, SW_HIDE);
+      ShowWindow(Application.Handle, SW_HIDE);
+    end;
   end;
+
   //enable其他输入框。
   FuturesAccountEdit.Enabled := True;
   FuturesPwdEdit.Enabled := True;
-  Edit3.Enabled := True;
-  Edit4.Enabled := True;
-  Edit5.Enabled := True;
-  Edit6.Enabled := True;
+  OptionAccountEdit.Enabled := True;
+  OptionPwdEdit.Enabled := True;
+  ActualsAccountEdit.Enabled := True;
+  ActualsPwdEdit.Enabled := True;
   Button1.Enabled := True;
-
+  Timer1.Enabled := False;
 end;
 
 procedure TLoginForm.Panel1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -200,165 +224,66 @@ begin
   moveFlag := False;
 end;
 
-procedure ConnectedQuotation();
-var
-  tmp: Integer;
-  arr: array of PChar;
-  times: Integer;
-  pQuotationServer: PQuotationServerStruct;
-  ret: Integer;
-  pSubscriptionCode: PDF_SubscriptionCode;
-  pTmp: Pointer;
-begin
-  ConnectedFutures();
-  ConnectedOption();
-  //空
-  ConnectedActuals();
-
-
-//  //行情初始化订阅
-//  SetLength(arr, 3);
-//  arr[0] := Pchar('IF2108');
-//  arr[1] := Pchar('IH2108');
-//  arr[2] := Pchar('IC2108');
-//  tmp := FQuotationProxy.Subscribe(Pointer(arr), 3);
-//
-//  //订阅成功界面初始化
-//  if tmp = 0 then
-//  begin
-//    TDrawView.Instance().initQuotationView(arr);
-//
-//  end;
-//  FQuotationThread := TManagerThread.Create(updateData);
-end;
-
-procedure ConnectedFutures();
-var
-  tmp: Integer;
-  pQuotationServer: PQuotationServerStruct;
-begin
-   //期货行情
-  FFuturesQuotationProxy := TFuturesQuotationProxy.Create(FuturesdllName);
-  pQuotationServer := PQuotationServerStruct(FutureQuotationServerList.Objects[DefaultFutureQuotationServerIndex]);
-  FFuturesQuotationProxy.Connected(PChar(pQuotationServer.sServer), Pchar(''));
-  tmp := 0;
-  while FFuturesQuotationProxy.IsConnected <> True do
-  begin
-    Sleep(1000);
-    tmp := tmp + 1;
-    if (tmp > 5) then
-    begin
-      FFuturesQuotationProxy.Destroy;
-      MessageBox(0, '行情自动登录失败', '提示', MB_OK);
-      Exit;
-    end;
-//    Writeln('[delphi]: waiting for connected ...');
-  end;
-  FFuturesQuotationProxy.SimpleLogin(nChar, nChar, nChar);
-  while FFuturesQuotationProxy.LoginSucess <> True do
-  begin
-    Sleep(500);
-//    Writeln('[delphi]: waiting for login ...');
-  end;
-  QuotationServerStatus.FuturesIsLogin := True;
-  QuotationServerStatus.FuturesServer := pQuotationServer.sServer;
-end;
-
-procedure ConnectedOption();
-var
-  pQuotationServer: PQuotationServerStruct;
-  ret: Integer;
-begin
-  //期权行情
-  FOptionQuotationProxy := TOptionQuotationProxy.Create(OptiondllName);
-  pQuotationServer := PQuotationServerStruct(OptionQuotationServerList.Objects[DefaultOptionQuotationServerIndex]);
-  ret := FOptionQuotationProxy.Connected();
-  if (ret <> 0) then
-  begin
-    MessageBox(0, '期权连接错误', '错误', MB_OK);
-    exit;
-  end;
-  ret := FOptionQuotationProxy.AddServer(pQuotationServer.sServer, StrToInt(pQuotationServer.iPort), pQuotationServer.sAccount, pQuotationServer.sPassword);
-  if (ret <> 0) then
-  begin
-    MessageBox(0, '期权地址配置误', '错误', MB_OK);
-    exit;
-  end;
-  ret := FOptionQuotationProxy.SetResponseFunc(@OnDfRecvdata, @OnDfNotice);
-  if (ret <> 0) then
-  begin
-    MessageBox(0, '期权绑定回调错误', '错误', MB_OK);
-    exit;
-  end;
-  ret := FOptionQuotationProxy.ServerBegin();
-  if (ret <> 0) then
-  begin
-    MessageBox(0, '期权行情连接请求', '错误', MB_OK);
-    exit;
-  end;
-  QuotationServerStatus.OptionIsLogin := True;
-  QuotationServerStatus.OptionServer := pQuotationServer.sServer;
-end;
-
-procedure ConnectedActuals();
-begin
-
-end;
-
-procedure ConnectedTrade();
-var
-  item: TListItem;
-  pTradeFuturesServer: PTradeServerStruct;
-  pAccount: PAccountStruct;
-begin
-  FFuturesTradeProxy := TTradeProxy.Create(FuturesdllName);
-  pTradeFuturesServer := PTradeServerStruct(FutureTradeServerList.Objects[DefaultFutureTradeServerIndex]);
-  pAccount := PAccountStruct(AccountList.Objects[DefaultAccountIndex]);
-  FFuturesTradeProxy.Connected(PChar(pTradeFuturesServer.sServer), PChar(''));
-
-  FFuturesTradeProxy.AuthAndLogin(PChar(pTradeFuturesServer.sBrokerID), PChar(LoginForm.FuturesAccountEdit.Text), PChar(LoginForm.FuturesPwdEdit.text), PChar(pAccount.sAuthCode), PChar(pAccount.sAppid));
-
-  pAccount.sAccount := LoginForm.FuturesAccountEdit.Text;
-  //  pAccount.sPassword := LoginTradeFrom.passwordedit.Text;
-//    LgoinForm.Close;
-//    MainWindow.InitTradeData;
-end;
-
-procedure updateData();
-var
-  tick: TQuotationData;
-  id: string;
-  icount: integer;
-  pdata: PQuotationData;
-  skey: string;
-begin
-  icount := TQuotationDataCenter.instance.FFuturesSeatingList.Count;
-  if icount <= 0 then
-    icount := 1;
-  Sleep(500 div icount);
-  tick := FFuturesQuotationProxy.GetOneTick();
-  skey := tick.InstrumentID;
-  if (skey <> '') then
-  begin
-    New(pdata);
-    Move(tick, pdata^, SizeOf(TQuotationdata));
-    TQuotationDataCenter.Instance.addItem(pdata.InstrumentID, pdata, FUTURES);
-
-    //界面更新
-    TDrawView.instance.RunSynchronize(TDrawView.instance.DrawQuotationGridView);
-    //    FDataSchedule.ScheduleTick(tick);
-  end;
-//    Total_Quotation.Rows[1] := fQuotationView(tick);
-end;
-
 procedure TLoginForm.RefreshView();
 var
   account: PAccountStruct;
 begin
   //初始化可视化组件内容
   QuotationServerLabel.Caption := FutureQuotationServerList[DefaultFutureQuotationServerIndex] + ':' + PQuotationServerStruct(FutureQuotationServerList.Objects[DefaultFutureQuotationServerIndex]).sServer;
-  account := PAccountStruct(AccountList.Objects[DefaultAccountIndex]);
+  account := PAccountStruct(FuturesAccountList.Objects[DefaultFuturesAccountIndex]);
   FuturesAccountEdit.Text := account.sAccount;
+  account := PAccountStruct(OptionAccountList.Objects[DefaultOptionAccountIndex]);
+  OptionAccountEdit.Text := account.sAccount;
+  account := PAccountStruct(ActualsAccountList.Objects[DefaultActualsAccountIndex]);
+  ActualsAccountEdit.Text := account.sAccount;
+end;
+
+procedure TLoginForm.Timer1Timer(Sender: TObject);
+var
+  str: string;
+  time: TTimer;
+  icount: Integer;
+begin
+  time := TTimer(Sender);
+  if (QuotationServerStatus.FuturesIsLogin = False) then
+  begin
+    str := '期货行情连接中';
+  end
+  else if (QuotationServerStatus.OptionIsLogin = False) then
+  begin
+    str := '期权行情连接中';
+  end
+  else if (QuotationServerStatus.ActualsIsLogin = False) then
+  begin
+    str := '现货行情连接中';
+  end
+  else if (TradeServerStatus.FuturesIsLogin = False) then
+  begin
+    str := '期货交易账户登录中';
+  end
+  else if (TradeServerStatus.OptionIsLogin = False) then
+  begin
+    str := '期权交易账户登录中';
+  end
+  else if (TradeServerStatus.ActualsIsLogin = False) then
+  begin
+    str := '现货交易账户登录中';
+  end
+  else
+  begin
+    str := '成功';
+  end;
+  icount := 0;
+  PosEx('。', str, icount);
+  if (icount < 3) then
+  begin
+    str := str + '。';
+  end
+  else
+  begin
+    str := StringReplace(str, '。', '', [rfReplaceAll]);
+  end;
+  loadingLabel.Caption := str;
 end;
 
 end.

@@ -21,6 +21,7 @@ type
     pFuturesGrid: PStringGrid;
     pOptionGrid: PStringGrid;
     pActualsGrid: PStringGrid;
+    pIndexGrid: PStringGrid;
     pPriceGrid: PStringgrid;
   public
     //用于存储已订阅的合约以及顺序信息
@@ -249,6 +250,7 @@ begin
   pFuturesGrid := @(PMainWindow(pwindow).FFuturesQuotationGrid);
   pOptionGrid := @(PMainWindow(pwindow).FOptionQuotationGrid);
   pActualsGrid := @(PMainWindow(pwindow).FActualsQuotationGrid);
+  pIndexGrid := @(PMainWindow(pwindow).FIndexQuotationGrid);
   pPriceGrid := @(PMainWindow(pwindow).PriceGrid);
 end;
 
@@ -287,7 +289,12 @@ begin
   else if myType = ACTUALS then
   begin
     Result := pActualsGrid;
+  end
+  else if myType = ACTUALSINDEX then
+  begin
+    Result := pIndexGrid;
   end;
+
 end;
 
 function TDataSchedule.getList(myType: ContractType): PStringList;
@@ -303,6 +310,10 @@ begin
   else if myType = ACTUALS then
   begin
     Result := @TQuotationDataCenter.Instance.FActualsSeatingList;
+  end
+  else if myType = ACTUALSINDEX then
+  begin
+    Result := @TQuotationDataCenter.Instance.FIndexSeatingList;
   end;
 end;
 
@@ -319,6 +330,10 @@ begin
   else if t = ACTUALS then
   begin
     Result := '现货';
+  end
+  else if t = ACTUALSINDEX then
+  begin
+    Result := '指数';
   end;
 end;
 

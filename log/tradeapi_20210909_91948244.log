@@ -1,0 +1,33 @@
+2021-09-09 09:19:48.244 ==> ************************************************************************
+2021-09-09 09:19:48.244 ==> 日志记录初始化完毕
+2021-09-09 09:19:48.244 ==> ************************************************************************
+2021-09-09 09:19:48.244 ==> 启动日志....
+2021-09-09 09:19:48.244 ==> 开始连接....
+2021-09-09 09:19:48.336 ==> 连接成功....
+2021-09-09 09:19:48.357 ==> 发送指令成功: FUNCID = 110100, iParkID = 0, nReqItem = 1, nRequestID = 0
+2021-09-09 09:19:49.157 ==> 指令应答: FUNCID = 110100, iParkID = 0, nAnsItems = 1, nAnsItemSize = 248, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:19:49.157 ==> 发送指令成功: FUNCID = 992000, iParkID = 1, nReqItem = 1, nRequestID = 0
+2021-09-09 09:19:49.447 ==> 启动日志....
+2021-09-09 09:19:49.447 ==> 指令应答: FUNCID = 992000, iParkID = 1, nAnsItems = 1, nAnsItemSize = 4, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:19:49.447 ==> 开始连接....
+2021-09-09 09:19:49.476 ==> 连接成功....
+2021-09-09 09:19:49.562 ==> 发送指令成功: FUNCID = 110100, iParkID = 2, nReqItem = 1, nRequestID = 0
+2021-09-09 09:19:49.761 ==> 指令应答: FUNCID = 110100, iParkID = 2, nAnsItems = 1, nAnsItemSize = 248, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:19:49.761 ==> 发送指令成功: FUNCID = 992000, iParkID = 3, nReqItem = 1, nRequestID = 0
+2021-09-09 09:19:49.788 ==> 指令应答: FUNCID = 992000, iParkID = 3, nAnsItems = 1, nAnsItemSize = 4, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:20:02.567 ==> 发送指令成功: FUNCID = 140303, iParkID = 8, nReqItem = 1, nRequestID = 0
+2021-09-09 09:20:03.287 ==> 指令应答: FUNCID = 140303, iParkID = 8, nAnsItems = 0, nAnsItemSize = 0, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:20:03.568 ==> 发送指令成功: FUNCID = 140306, iParkID = 10, nReqItem = 1, nRequestID = 0
+2021-09-09 09:20:03.990 ==> 指令应答: FUNCID = 140306, iParkID = 10, nAnsItems = 0, nAnsItemSize = 0, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:20:04.567 ==> 发送指令成功: FUNCID = 140302, iParkID = 12, nReqItem = 1, nRequestID = 0
+2021-09-09 09:20:05.288 ==> 指令应答: FUNCID = 140302, iParkID = 12, nAnsItems = 3, nAnsItemSize = 369, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:20:05.567 ==> 发送指令成功: FUNCID = 140301, iParkID = 13, nReqItem = 1, nRequestID = 0
+2021-09-09 09:20:05.567 ==> 发送指令成功: FUNCID = 110303, iParkID = 14, nReqItem = 1, nRequestID = 0
+2021-09-09 09:20:05.596 ==> 指令应答: FUNCID = 110303, iParkID = 14, nAnsItems = 0, nAnsItemSize = 0, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:20:06.568 ==> 发送指令成功: FUNCID = 110306, iParkID = 15, nReqItem = 1, nRequestID = 0
+2021-09-09 09:20:06.603 ==> 指令应答: FUNCID = 110306, iParkID = 15, nAnsItems = 0, nAnsItemSize = 0, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:20:07.567 ==> 发送指令成功: FUNCID = 110302, iParkID = 16, nReqItem = 1, nRequestID = 0
+2021-09-09 09:20:08.567 ==> 发送指令成功: FUNCID = 110301, iParkID = 18, nReqItem = 1, nRequestID = 0
+2021-09-09 09:20:08.728 ==> 指令应答: FUNCID = 110301, iParkID = 18, nAnsItems = 1, nAnsItemSize = 106, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:20:13.685 ==> 指令应答: FUNCID = 140301, iParkID = 13, nAnsItems = 1, nAnsItemSize = 138, nAnsResult = 0, szErrorInfo = 
+2021-09-09 09:20:20.977 ==> 指令应答: FUNCID = 110302, iParkID = 16, nAnsItems = 4493, nAnsItemSize = 255, nAnsResult = 0, szErrorInfo = 

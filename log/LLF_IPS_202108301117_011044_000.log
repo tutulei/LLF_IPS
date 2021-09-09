@@ -1,9 +1,0 @@
-2021-08-30 11:17:17.515 LOG_INFO  -----------------  JGLog thread started!   ---------------------------- 
-2021-08-30 11:17:17.515 LOG_INFO  logger id=0 key=Main name=LLF_IPS path=./log/ level=1 display=1 
-2021-08-30 11:17:19.173 LOG_INFO  启动实例ID[1]. (ConnectObject.cpp):65 
-2021-08-30 11:17:19.237 LOG_INFO  实例ID[1],请求连接服务器[124.74.252.82:8901]. (ConnectObject.cpp):245 
-2021-08-30 11:17:19.299 LOG_DEBUG 实例ID[1],接收到SOCKET_ID[1][124.74.252.82:8901]的OnConnect消息. (ConnectObject.cpp):118 
-2021-08-30 11:18:19.328 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[02F947A0]. (ConnectObject.cpp):1011 
-2021-08-30 11:19:19.414 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[02F947A0]. (ConnectObject.cpp):1011 
-2021-08-30 11:20:19.490 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[02F947A0]. (ConnectObject.cpp):1011 
-2021-08-30 11:21:19.551 LOG_INFO  实例ID[1],请求[沪市][深市]代码表obj=[02F947A0]. (ConnectObject.cpp):1011 

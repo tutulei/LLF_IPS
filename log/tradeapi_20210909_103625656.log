@@ -1,0 +1,64 @@
+2021-09-09 10:36:25.656 ==> ************************************************************************
+2021-09-09 10:36:25.656 ==> 日志记录初始化完毕
+2021-09-09 10:36:25.656 ==> ************************************************************************
+2021-09-09 10:36:25.657 ==> 启动日志....
+2021-09-09 10:36:25.657 ==> 开始连接....
+2021-09-09 10:36:25.750 ==> 连接成功....
+2021-09-09 10:36:25.770 ==> 发送指令成功: FUNCID = 110100, iParkID = 0, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:26.573 ==> 指令应答: FUNCID = 110100, iParkID = 0, nAnsItems = 1, nAnsItemSize = 248, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:26.573 ==> 发送指令成功: FUNCID = 992000, iParkID = 1, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:26.869 ==> 指令应答: FUNCID = 992000, iParkID = 1, nAnsItems = 1, nAnsItemSize = 4, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:26.869 ==> 启动日志....
+2021-09-09 10:36:26.869 ==> 开始连接....
+2021-09-09 10:36:26.899 ==> 连接成功....
+2021-09-09 10:36:26.970 ==> 发送指令成功: FUNCID = 110100, iParkID = 2, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:27.059 ==> 指令应答: FUNCID = 110100, iParkID = 2, nAnsItems = 1, nAnsItemSize = 248, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:27.059 ==> 发送指令成功: FUNCID = 992000, iParkID = 3, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:27.087 ==> 指令应答: FUNCID = 992000, iParkID = 3, nAnsItems = 1, nAnsItemSize = 4, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:36.732 ==> 发送指令成功: FUNCID = 140303, iParkID = 7, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:37.724 ==> 发送指令成功: FUNCID = 140306, iParkID = 9, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:38.131 ==> 指令应答: FUNCID = 140303, iParkID = 7, nAnsItems = 7, nAnsItemSize = 578, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:38.724 ==> 发送指令成功: FUNCID = 140302, iParkID = 10, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:38.809 ==> 指令应答: FUNCID = 140306, iParkID = 9, nAnsItems = 7, nAnsItemSize = 538, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:39.393 ==> 指令应答: FUNCID = 140302, iParkID = 10, nAnsItems = 3, nAnsItemSize = 369, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:39.723 ==> 发送指令成功: FUNCID = 140301, iParkID = 11, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:39.723 ==> 发送指令成功: FUNCID = 110303, iParkID = 12, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:39.756 ==> 指令应答: FUNCID = 110303, iParkID = 12, nAnsItems = 1, nAnsItemSize = 436, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:40.543 ==> 指令应答: FUNCID = 140301, iParkID = 11, nAnsItems = 1, nAnsItemSize = 138, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:40.724 ==> 发送指令成功: FUNCID = 110306, iParkID = 14, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:40.758 ==> 指令应答: FUNCID = 110306, iParkID = 14, nAnsItems = 1, nAnsItemSize = 456, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:41.724 ==> 发送指令成功: FUNCID = 110302, iParkID = 15, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:42.723 ==> 发送指令成功: FUNCID = 110301, iParkID = 17, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:42.895 ==> 指令应答: FUNCID = 110301, iParkID = 17, nAnsItems = 1, nAnsItemSize = 106, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:49.049 ==> 发送指令成功: FUNCID = 110200, iParkID = 20, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:49.081 ==> 指令应答: FUNCID = 110200, iParkID = 20, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.509000,0.010000]!
+2021-09-09 10:36:50.454 ==> 指令应答: FUNCID = 110302, iParkID = 15, nAnsItems = 4493, nAnsItemSize = 255, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:53.648 ==> 发送指令成功: FUNCID = 110200, iParkID = 23, nReqItem = 1, nRequestID = 0
+2021-09-09 10:36:53.684 ==> 指令应答: FUNCID = 110200, iParkID = 23, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:53.723 ==> 指令应答: FUNCID = 110303, iParkID = 0, nAnsItems = 1, nAnsItemSize = 436, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:54.086 ==> 指令应答: FUNCID = 110306, iParkID = 0, nAnsItems = 1, nAnsItemSize = 456, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:36:54.088 ==> 指令应答: FUNCID = 110303, iParkID = 0, nAnsItems = 1, nAnsItemSize = 436, nAnsResult = 0, szErrorInfo = 
+2021-09-09 10:37:09.815 ==> 发送指令成功: FUNCID = 110200, iParkID = 30, nReqItem = 1, nRequestID = 0
+2021-09-09 10:37:09.847 ==> 指令应答: FUNCID = 110200, iParkID = 30, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.519000,0.010000]!
+2021-09-09 10:37:11.536 ==> 发送指令成功: FUNCID = 110200, iParkID = 32, nReqItem = 1, nRequestID = 0
+2021-09-09 10:37:11.569 ==> 指令应答: FUNCID = 110200, iParkID = 32, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.519000,0.010000]!
+2021-09-09 10:37:20.441 ==> 发送指令成功: FUNCID = 110200, iParkID = 36, nReqItem = 1, nRequestID = 0
+2021-09-09 10:37:20.474 ==> 指令应答: FUNCID = 110200, iParkID = 36, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.509000,0.010000]!
+2021-09-09 10:37:21.123 ==> 发送指令成功: FUNCID = 110200, iParkID = 38, nReqItem = 1, nRequestID = 0
+2021-09-09 10:37:21.156 ==> 指令应答: FUNCID = 110200, iParkID = 38, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.509000,0.010000]!
+2021-09-09 10:37:23.631 ==> 发送指令成功: FUNCID = 110200, iParkID = 40, nReqItem = 1, nRequestID = 0
+2021-09-09 10:37:23.665 ==> 指令应答: FUNCID = 110200, iParkID = 40, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.509000,0.010000]!
+2021-09-09 10:37:44.264 ==> 发送指令成功: FUNCID = 110200, iParkID = 49, nReqItem = 1, nRequestID = 0
+2021-09-09 10:37:44.297 ==> 指令应答: FUNCID = 110200, iParkID = 49, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.519000,0.010000]!
+2021-09-09 10:37:46.354 ==> 发送指令成功: FUNCID = 110200, iParkID = 51, nReqItem = 1, nRequestID = 0
+2021-09-09 10:37:46.388 ==> 指令应答: FUNCID = 110200, iParkID = 51, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.519000,0.010000]!
+2021-09-09 10:37:58.265 ==> 发送指令成功: FUNCID = 110200, iParkID = 57, nReqItem = 1, nRequestID = 0
+2021-09-09 10:37:58.296 ==> 指令应答: FUNCID = 110200, iParkID = 57, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[4.519000,0.010000]!
+2021-09-09 10:38:00.642 ==> 发送指令成功: FUNCID = 110200, iParkID = 58, nReqItem = 1, nRequestID = 0
+2021-09-09 10:38:00.675 ==> 指令应答: FUNCID = 110200, iParkID = 58, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 委托价格(8.609)超出涨跌幅限制(6.060 ~ 7.400)!
+2021-09-09 10:38:03.744 ==> 发送指令成功: FUNCID = 110200, iParkID = 61, nReqItem = 1, nRequestID = 0
+2021-09-09 10:38:03.777 ==> 指令应答: FUNCID = 110200, iParkID = 61, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[15.339000,0.010000]!
+2021-09-09 10:38:04.264 ==> 发送指令成功: FUNCID = 110200, iParkID = 62, nReqItem = 1, nRequestID = 0
+2021-09-09 10:38:04.297 ==> 指令应答: FUNCID = 110200, iParkID = 62, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[15.339000,0.010000]!
+2021-09-09 10:39:42.488 ==> 发送指令成功: FUNCID = 110200, iParkID = 93, nReqItem = 1, nRequestID = 0
+2021-09-09 10:39:42.522 ==> 指令应答: FUNCID = 110200, iParkID = 93, nAnsItems = 1, nAnsItemSize = 320, nAnsResult = -1, szErrorInfo = 买入/卖出非整价位[15.349000,0.010000]!

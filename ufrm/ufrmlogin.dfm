@@ -136,7 +136,7 @@ object LoginTradeFrom: TLoginTradeFrom
     Font.Height = -13
     Font.Name = 'Comic Sans MS'
     Font.Style = []
-    ItemHeight = 0
+    ItemHeight = 18
     ParentFont = False
     TabOrder = 3
     OnClick = ComboBox1Click

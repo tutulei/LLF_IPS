@@ -60,7 +60,7 @@ begin
   //Ìí¼ÓµÇÂ¼ÊÊÅäÏß³Ì
 end;
 
-constructor TManagerThread.Create(count: Integer; neededFunction: TFunction; CreateSuspended: Boolean);
+constructor TManagerThread.Create(count: Integer; neededFunction: TFunction; CreateSuspended: Boolean = False);
 begin
   inherited Create(CreateSuspended);
   times := count;

@@ -22,9 +22,11 @@ uses
   ufrmLoginForm in 'ufrm\ufrmLoginForm.pas' {LoginForm},
   uGlobalInstance in 'CommonUnits\uGlobalInstance.pas',
   ufrmChangeForm in 'ufrm\ufrmChangeForm.pas' {QuotationChangeForm},
-  uQuotationAPI in 'Proxy\Futures\uQuotationAPI.pas',
-  uTradeAPI in 'Proxy\Futures\uTradeAPI.pas',
-  uTradeResponse in 'Proxy\Futures\uTradeResponse.pas';
+  uQuotationAPI in 'Proxy\uQuotationAPI.pas',
+  uTradeAPI in 'Proxy\uTradeAPI.pas',
+  uTradeResponse in 'Proxy\uTradeResponse.pas',
+  uLoginFunctions in 'uFunctions\uLoginFunctions.pas',
+  uMainFunctions in 'uFunctions\uMainFunctions.pas';
 
 {$R *.res}
 

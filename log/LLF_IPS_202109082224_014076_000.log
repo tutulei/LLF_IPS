@@ -1,0 +1,18 @@
+2021-09-08 22:24:24.707 LOG_INFO  -----------------  JGLog thread started!   ---------------------------- 
+2021-09-08 22:24:24.707 LOG_INFO  logger id=0 key=Main name=LLF_IPS path=./log/ level=1 display=1 
+2021-09-08 22:24:26.237 LOG_INFO  启动实例ID[1]. (ConnectObject.cpp):65 
+2021-09-08 22:24:26.302 LOG_INFO  实例ID[1],请求连接服务器[124.74.252.82:8910]. (ConnectObject.cpp):245 
+2021-09-08 22:24:28.329 LOG_INFO  [JGCMNET::Connection::HandleConnect][156][IP:124.74.252.82][Port:8910][error_code:995][error_msg:由于线程退出或应用程序请求，已中止 I/O 操作。] (ConnectObject.cpp):220 
+2021-09-08 22:24:28.329 LOG_INFO  实例ID[1], 接收到SocketID[1]的onClose消息. (ConnectObject.cpp):181 
+2021-09-08 22:24:31.303 LOG_INFO  实例ID[1],请求连接服务器[124.74.252.82:8910]. (ConnectObject.cpp):245 
+2021-09-08 22:24:31.314 LOG_DEBUG 实例ID[1],接收到SOCKET_ID[1][124.74.252.82:8910]的OnConnect消息. (ConnectObject.cpp):118 
+2021-09-08 22:24:31.328 LOG_INFO  实例ID[1],登录成功. (ConnectObject.cpp):926 
+2021-09-08 22:24:31.328 LOG_INFO  实例ID[1],请求[深市][沪市]代码表obj=[02D66048]. (ConnectObject.cpp):1011 
+2021-09-08 22:24:31.733 LOG_INFO  实例ID[1],接收到[深市]市场代码表个数[13190]. (ConnectObject.cpp):1264 
+2021-09-08 22:24:31.733 LOG_INFO  实例ID[1],接收到[沪市]市场代码表个数[17065]. (ConnectObject.cpp):1264 
+2021-09-08 22:24:44.940 LOG_INFO  实例ID[1],请求订阅[添加-现货-指数快照],个数[1]. (ConnectObject.cpp):3901 
+2021-09-08 22:24:45.375 LOG_INFO  实例ID[1],请求订阅[添加-现货-行情快照],个数[2]. (ConnectObject.cpp):3999 
+2021-09-08 22:24:45.816 LOG_INFO  实例ID[1],请求订阅[添加-现货-行情快照],个数[1]. (ConnectObject.cpp):3999 
+2021-09-08 22:24:45.834 LOG_INFO  实例ID[1],订阅应答[添加-现货-指数快照],失败个数[0]. (ConnectObject.cpp):2269 
+2021-09-08 22:24:45.869 LOG_INFO  实例ID[1],订阅应答[添加-现货-行情快照],失败个数[0]. (ConnectObject.cpp):2269 
+2021-09-08 22:24:46.006 LOG_INFO  实例ID[1],订阅应答[添加-现货-行情快照],失败个数[0]. (ConnectObject.cpp):2269 

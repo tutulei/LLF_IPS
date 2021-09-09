@@ -64,5 +64,11 @@
     <Transaction>2021/08/18 17:28:41.589.pas,D:\Projects\LLF_IPS\Proxy\uTradeAPI.pas=</Transaction>
     <Transaction>2021/08/18 17:28:44.373.pas,D:\Projects\LLF_IPS\Proxy\uTradeResponse.pas=</Transaction>
     <Transaction>2021/08/30 19:57:41.290.pas,D:\Projects\LLF_IPS\Unit1.pas=</Transaction>
+    <Transaction>2021/09/03 17:33:59.673.pas,D:\Projects\LLF_IPS\Proxy\Futures\uQuotationAPI.pas=</Transaction>
+    <Transaction>2021/09/03 17:33:59.673.pas,D:\Projects\LLF_IPS\Proxy\Futures\uTradeAPI.pas=</Transaction>
+    <Transaction>2021/09/03 17:33:59.673.pas,D:\Projects\LLF_IPS\Proxy\Futures\uTradeResponse.pas=</Transaction>
+    <Transaction>2021/09/07 13:46:03.929.pas,D:\Projects\LLF_IPS\Unit2.pas=D:\Projects\LLF_IPS\uFunctions\uLogin.pas</Transaction>
+    <Transaction>2021/09/07 14:33:44.529.pas,D:\Projects\LLF_IPS\Unit2.pas=D:\Projects\LLF_IPS\uFunctions\uMainFunctions.pas</Transaction>
+    <Transaction>2021/09/07 14:33:53.798.pas,D:\Projects\LLF_IPS\uFunctions\uLogin.pas=D:\Projects\LLF_IPS\uFunctions\uLoginFunctions.pas</Transaction>
   </Transactions>
 </BorlandProject>
